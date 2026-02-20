@@ -2,6 +2,7 @@ package org.beatrice.diploma_new_pharmacy.user.model;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 
@@ -9,7 +10,7 @@ import java.time.Instant;
 @Table(name = "user_roles", schema = "pharmacy")
 public class UserRole {
     @EmbeddedId
-    private UserRoleId id;
+    private UserRoleId id = new UserRoleId();
 
     @MapsId("userId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -21,6 +22,7 @@ public class UserRole {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
+    @CreationTimestamp
     @ColumnDefault("now()")
     @Column(name = "assigned_at")
     private Instant assignedAt;
@@ -37,8 +39,14 @@ public class UserRole {
         return user;
     }
 
-    public void setUser(User user) {
+        public void setUser(User user) {
         this.user = user;
+        if (user != null && user.getId() != null) {
+            if (this.id == null) {
+                this.id = new UserRoleId();
+            }
+            this.id.setUserId(user.getId());
+        }
     }
 
     public Role getRole() {
@@ -47,6 +55,12 @@ public class UserRole {
 
     public void setRole(Role role) {
         this.role = role;
+        if (role != null && role.getId() != null) {
+            if (this.id == null) {
+                this.id = new UserRoleId();
+            }
+            this.id.setRoleId(role.getId());
+        }
     }
 
     public Instant getAssignedAt() {

@@ -4,11 +4,13 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import org.hibernate.Hibernate;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
 public class UserRoleId implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1199177003586974073L;
     @Column(name = "user_id", nullable = false)
     private Integer userId;

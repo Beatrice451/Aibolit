@@ -1,7 +1,9 @@
 package org.beatrice.diploma_new_pharmacy.user.model;
 
 import jakarta.persistence.*;
+import org.beatrice.diploma_new_pharmacy.pharmacy.model.Pharmacy;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 
@@ -22,9 +24,14 @@ public class User {
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
+    @CreationTimestamp
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
     private Instant createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pharmacy_id")
+    private Pharmacy pharmacy;
 
     public Integer getId() {
         return id;
@@ -62,8 +69,15 @@ public class User {
         return createdAt;
     }
 
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", passwordHash='" + passwordHash + '\'' +
+                ", createdAt=" + createdAt +
+                ", pharmacy=" + pharmacy +
+                '}';
     }
-
 }
