@@ -1,20 +1,17 @@
 package org.beatrice.diploma_new_pharmacy.auth.controller;
 
-import org.beatrice.diploma_new_pharmacy.auth.dto.RefreshRequest;
-import org.beatrice.diploma_new_pharmacy.auth.exception.InvalidTokenException;
-import org.beatrice.diploma_new_pharmacy.auth.exception.RevokedTokenException;
-import org.beatrice.diploma_new_pharmacy.auth.exception.TokenNotFoundException;
-import org.beatrice.diploma_new_pharmacy.auth.service.JwtService;
 import org.beatrice.diploma_new_pharmacy.auth.SecurityUser;
 import org.beatrice.diploma_new_pharmacy.auth.dto.AuthRequest;
 import org.beatrice.diploma_new_pharmacy.auth.dto.AuthResponse;
+import org.beatrice.diploma_new_pharmacy.auth.dto.RefreshRequest;
+import org.beatrice.diploma_new_pharmacy.auth.exception.UserAlreadyExistsException;
 import org.beatrice.diploma_new_pharmacy.auth.model.RefreshToken;
 import org.beatrice.diploma_new_pharmacy.auth.repository.RefreshTokenRepository;
 import org.beatrice.diploma_new_pharmacy.auth.service.AuthService;
 import org.beatrice.diploma_new_pharmacy.auth.service.CustomUserDetailsService;
+import org.beatrice.diploma_new_pharmacy.auth.service.JwtService;
 import org.beatrice.diploma_new_pharmacy.auth.service.RefreshTokenService;
 import org.beatrice.diploma_new_pharmacy.user.dto.UserRegistrationRequest;
-import org.beatrice.diploma_new_pharmacy.auth.exception.UserAlreadyExistsException;
 import org.beatrice.diploma_new_pharmacy.user.model.User;
 import org.beatrice.diploma_new_pharmacy.user.repository.UserRepository;
 import org.springframework.http.HttpStatus;
@@ -71,6 +68,22 @@ public class AuthController {
     }
 
 
+    /**
+     * Registers a new user in the system.
+     *
+     * <p>
+     * Accepts user registration data and delegates registration procces to the authenticaton service.
+     * If the user is successfully created, returns HTTP 201 (Created) with empty body.
+     * </p>
+     * <p>
+     * If the user with the same unique credentials (e.g., email or phone) already exists,
+     * returns HTTP 409 (Conflict) with an error message.
+     * </p>
+     *
+     * @param request the registration request containing required data
+     * @return a {@link ResponseEntity} with HTTP 201 if registration succeeds, HTTP 409 otherwise.
+     * @see AuthService
+     */
     @PostMapping("/register")
     public ResponseEntity<?> handleRegistration(@RequestBody UserRegistrationRequest request) {
         try {
@@ -81,22 +94,21 @@ public class AuthController {
         }
     }
 
+    /**
+     * Refreshes authentication tokens using a valid refresh token.
+     *
+     * <p>Accepts a refresh token, revokes it, and generates a new access and refresh token pair.</p>
+     * <p>If tokens updated successfully, returns HTTP 200 (OK) with the pair of tokens in the response body.</p>
+     *<p>If the provided token already revoked, expired or does not exist,
+     * returns HTTP 400 (Bad request) and an error message.</p>
+     * @param request the request containing the refresh token
+     * @return {@link ResponseEntity} containing a pair of auth tokens, if refreshed successfully. HTTP 400 and an error message
+     * otherwise.
+     */
     @PostMapping("/refresh")
     public ResponseEntity<?> refresh(@RequestBody RefreshRequest request) {
-        try {
             AuthResponse token = authService.refresh(request.refreshToken());
             return ResponseEntity.status(HttpStatus.OK)
                     .body(token);
-        } catch (InvalidTokenException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Stated token is expired");
-
-        } catch (RevokedTokenException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Stated token is revoked. Every other token will be revoked for security reasons");
-        } catch (TokenNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Token not found or invalid");
-        }
     }
 }

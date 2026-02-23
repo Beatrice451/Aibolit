@@ -7,9 +7,7 @@ import org.beatrice.diploma_new_pharmacy.auth.model.RefreshToken;
 import org.beatrice.diploma_new_pharmacy.auth.repository.RefreshTokenRepository;
 import org.beatrice.diploma_new_pharmacy.config.JwtProperties;
 import org.beatrice.diploma_new_pharmacy.user.model.User;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
@@ -57,7 +55,7 @@ public class RefreshTokenService {
         if (token.getRevoked()) {
             tokenRevocationService.revokeAllByUser(token.getUser());
             refreshTokenRepository.flush();
-            throw new RevokedTokenException("Token revoked");
+            throw new RevokedTokenException("Token revoked. Every other token will be revoked for security reasons");
         }
 
         if (token.getExpiryDate().isBefore(Instant.now())) {
