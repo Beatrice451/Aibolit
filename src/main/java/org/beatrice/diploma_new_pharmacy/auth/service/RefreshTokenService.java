@@ -49,20 +49,26 @@ public class RefreshTokenService {
 
     @Transactional
     public RefreshToken validate(String tokenValue) {
-        RefreshToken token = refreshTokenRepository.findRefreshTokenByToken(tokenValue)
-                .orElseThrow(() -> new TokenNotFoundException("Refresh token not found"));
 
-        if (token.getRevoked()) {
-            tokenRevocationService.revokeAllByUser(token.getUser());
-            refreshTokenRepository.flush();
-            throw new RevokedTokenException("Token revoked. Every other token will be revoked for security reasons");
+        int updated = refreshTokenRepository.consumeToken(tokenValue, Instant.now());
+
+        if (updated == 0) {
+            RefreshToken existing = refreshTokenRepository.findRefreshTokenByToken(tokenValue)
+                    .orElseThrow(() -> new TokenNotFoundException("Refresh token not found"));
+
+            if (existing.getRevoked()) {
+                tokenRevocationService.revokeAllByUser(existing.getUser());
+                throw new RevokedTokenException("Token reuse detected. Every other token will be revoked for security reasons");
+            }
+
+            if (existing.getExpiryDate().isBefore(Instant.now())) {
+                throw new InvalidTokenException("Token expired");
+            }
+
+            throw new InvalidTokenException("Invalid refresh token");
         }
 
-        if (token.getExpiryDate().isBefore(Instant.now())) {
-            throw new InvalidTokenException("Token expired");
-        }
-
-        return token;
+        return refreshTokenRepository.findRefreshTokenByToken(tokenValue).get();
     }
 
 }

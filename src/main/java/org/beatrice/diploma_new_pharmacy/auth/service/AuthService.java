@@ -1,5 +1,7 @@
 package org.beatrice.diploma_new_pharmacy.auth.service;
 
+import org.beatrice.diploma_new_pharmacy.auth.SecurityUser;
+import org.beatrice.diploma_new_pharmacy.auth.dto.AuthRequest;
 import org.beatrice.diploma_new_pharmacy.auth.dto.AuthResponse;
 import org.beatrice.diploma_new_pharmacy.auth.exception.PhoneAlreadyExistsException;
 import org.beatrice.diploma_new_pharmacy.auth.exception.UserAlreadyExistsException;
@@ -12,6 +14,9 @@ import org.beatrice.diploma_new_pharmacy.user.repository.RoleRepository;
 import org.beatrice.diploma_new_pharmacy.user.repository.UserRepository;
 import org.beatrice.diploma_new_pharmacy.user.repository.UserRoleRepository;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,12 +30,14 @@ public class AuthService {
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
     private final TokenRevocationService tokenRevocationService;
+    private final AuthenticationManager authenticationManager;
+    private final CustomUserDetailsService customUserDetailsService;
 
     public AuthService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
                        RoleRepository roleRepository,
                        UserRoleRepository userRoleRepository,
-                       JwtService jwtService, RefreshTokenService refreshTokenService, TokenRevocationService tokenRevocationService) {
+                       JwtService jwtService, RefreshTokenService refreshTokenService, TokenRevocationService tokenRevocationService, AuthenticationManager authenticationManager, CustomUserDetailsService customUserDetailsService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
@@ -38,8 +45,24 @@ public class AuthService {
         this.jwtService = jwtService;
         this.refreshTokenService = refreshTokenService;
         this.tokenRevocationService = tokenRevocationService;
+        this.authenticationManager = authenticationManager;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
+    public AuthResponse login(AuthRequest request) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.email(), request.password()));
+
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(request.email());
+        User user = ((SecurityUser) userDetails).getUser();
+
+        String accessToken = jwtService.generateAccessToken(user);
+
+        RefreshToken refreshToken = refreshTokenService.create(user);
+
+        return new AuthResponse(accessToken, refreshToken.getToken());
+    }
+
+    @Transactional
     public void registerUser(UserRegistrationRequest request) {
         userRepository.findUserByEmail(request.email())
                 .ifPresent(_ -> {
