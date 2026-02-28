@@ -11,7 +11,7 @@ public class RefreshCookieFactory {
         return ResponseCookie.from("refreshToken", token)
                 .httpOnly(true)
                 .secure(false)
-                .path("api/auth/refresh")
+                .path("/api/auth/refresh")
                 .maxAge(Duration.ofDays(30))
                 .sameSite("Strict")
                 .build();

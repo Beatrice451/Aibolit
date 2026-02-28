@@ -4,7 +4,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.beatrice.diploma_new_pharmacy.auth.repository.RefreshTokenRepository;
 import org.beatrice.diploma_new_pharmacy.config.JwtProperties;
 import org.beatrice.diploma_new_pharmacy.user.model.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,7 +24,7 @@ public class JwtService {
 
     private final JwtProperties props;
 
-    public JwtService(JwtProperties props, RefreshTokenRepository refreshTokenRepository) {
+    public JwtService(JwtProperties props) {
         this.props = props;
         this.key = Keys.hmacShaKeyFor(
                 props.getSecret().getBytes(StandardCharsets.UTF_8)
