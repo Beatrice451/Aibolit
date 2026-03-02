@@ -2,6 +2,7 @@ package org.beatrice.diploma_new_pharmacy.auth.service;
 
 import org.beatrice.diploma_new_pharmacy.auth.SecurityUser;
 import org.beatrice.diploma_new_pharmacy.auth.model.RefreshToken;
+import org.beatrice.diploma_new_pharmacy.auth.repository.RefreshTokenRepository;
 import org.beatrice.diploma_new_pharmacy.auth.service.model.LoginCommand;
 import org.beatrice.diploma_new_pharmacy.auth.service.model.TokenPair;
 import org.beatrice.diploma_new_pharmacy.user.model.User;
@@ -17,12 +18,14 @@ public class AuthenticationService {
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    public AuthenticationService(AuthenticationManager authenticationManager, CustomUserDetailsService customUserDetailsService, JwtService jwtService, RefreshTokenService refreshTokenService) {
+    public AuthenticationService(AuthenticationManager authenticationManager, CustomUserDetailsService customUserDetailsService, JwtService jwtService, RefreshTokenService refreshTokenService, RefreshTokenRepository refreshTokenRepository) {
         this.authenticationManager = authenticationManager;
         this.customUserDetailsService = customUserDetailsService;
         this.jwtService = jwtService;
         this.refreshTokenService = refreshTokenService;
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     public TokenPair login(LoginCommand cmd) {
@@ -36,6 +39,11 @@ public class AuthenticationService {
         RefreshToken refreshToken = refreshTokenService.create(user);
 
         return new TokenPair(accessToken, refreshToken.getToken());
+    }
+
+    @Transactional
+    public void logout(String refreshToken) {
+        refreshTokenRepository.revokeByToken(refreshToken);
     }
 
 

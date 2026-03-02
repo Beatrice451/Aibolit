@@ -28,4 +28,10 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Inte
             AND t.expiryDate > :now
             """)
     int consumeToken(String token, Instant now);
+
+    @Modifying
+    @Query("""
+            UPDATE RefreshToken t SET t.revoked = true WHERE t.token = :token
+            """)
+    void revokeByToken(String token);
 }
