@@ -2,10 +2,14 @@ package org.beatrice.diploma_new_pharmacy.auth.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 import org.beatrice.diploma_new_pharmacy.user.model.User;
 
 import java.time.Instant;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "refresh_tokens", schema = "pharmacy")
 public class RefreshToken {
@@ -30,45 +34,5 @@ public class RefreshToken {
     @NotNull
     @Column(name = "is_revoked", nullable = false)
     private Boolean revoked;
-
-    public Boolean getRevoked() {
-        return revoked;
-    }
-
-    public void setRevoked(Boolean revoked) {
-        this.revoked = revoked;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Instant getExpiryDate() {
-        return expiryDate;
-    }
-
-    public void setExpiryDate(Instant expiryDate) {
-        this.expiryDate = expiryDate;
-    }
 
 }

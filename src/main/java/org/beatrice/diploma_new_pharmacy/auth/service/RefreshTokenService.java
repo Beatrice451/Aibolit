@@ -1,5 +1,6 @@
 package org.beatrice.diploma_new_pharmacy.auth.service;
 
+import lombok.RequiredArgsConstructor;
 import org.beatrice.diploma_new_pharmacy.auth.exception.InvalidTokenException;
 import org.beatrice.diploma_new_pharmacy.auth.exception.RevokedTokenException;
 import org.beatrice.diploma_new_pharmacy.auth.exception.TokenNotFoundException;
@@ -15,19 +16,13 @@ import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class RefreshTokenService {
 
 
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtProperties jwtProperties;
     private final TokenRevocationService tokenRevocationService;
-
-
-    public RefreshTokenService(RefreshTokenRepository refreshTokenRepository, JwtProperties jwtProperties, TokenRevocationService tokenRevocationService) {
-        this.refreshTokenRepository = refreshTokenRepository;
-        this.jwtProperties = jwtProperties;
-        this.tokenRevocationService = tokenRevocationService;
-    }
 
     /**
      * @return UUID representing refresh token

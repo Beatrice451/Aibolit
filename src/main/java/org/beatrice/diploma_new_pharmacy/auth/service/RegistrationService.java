@@ -1,5 +1,6 @@
 package org.beatrice.diploma_new_pharmacy.auth.service;
 
+import lombok.RequiredArgsConstructor;
 import org.beatrice.diploma_new_pharmacy.auth.exception.PhoneAlreadyExistsException;
 import org.beatrice.diploma_new_pharmacy.auth.exception.UserAlreadyExistsException;
 import org.beatrice.diploma_new_pharmacy.auth.service.model.RegistrationCommand;
@@ -15,18 +16,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class RegistrationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final UserRoleRepository userRoleRepository;
 
-    public RegistrationService(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, UserRoleRepository userRoleRepository) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.roleRepository = roleRepository;
-        this.userRoleRepository = userRoleRepository;
-    }
 
     @Transactional
     public void registerUser(RegistrationCommand cmd) {

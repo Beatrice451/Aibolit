@@ -1,10 +1,12 @@
 package org.beatrice.diploma_new_pharmacy.auth.service;
 
+import lombok.RequiredArgsConstructor;
 import org.beatrice.diploma_new_pharmacy.auth.SecurityUser;
 import org.beatrice.diploma_new_pharmacy.auth.model.RefreshToken;
 import org.beatrice.diploma_new_pharmacy.auth.repository.RefreshTokenRepository;
 import org.beatrice.diploma_new_pharmacy.auth.service.model.LoginCommand;
 import org.beatrice.diploma_new_pharmacy.auth.service.model.TokenPair;
+import org.beatrice.diploma_new_pharmacy.security.JwtService;
 import org.beatrice.diploma_new_pharmacy.user.model.User;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService customUserDetailsService;
@@ -20,13 +23,6 @@ public class AuthenticationService {
     private final RefreshTokenService refreshTokenService;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public AuthenticationService(AuthenticationManager authenticationManager, CustomUserDetailsService customUserDetailsService, JwtService jwtService, RefreshTokenService refreshTokenService, RefreshTokenRepository refreshTokenRepository) {
-        this.authenticationManager = authenticationManager;
-        this.customUserDetailsService = customUserDetailsService;
-        this.jwtService = jwtService;
-        this.refreshTokenService = refreshTokenService;
-        this.refreshTokenRepository = refreshTokenRepository;
-    }
 
     public TokenPair login(LoginCommand cmd) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(cmd.email(), cmd.rawPassword()));

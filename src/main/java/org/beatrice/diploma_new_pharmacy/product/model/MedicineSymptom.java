@@ -1,9 +1,13 @@
 package org.beatrice.diploma_new_pharmacy.product.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "medicine_symptoms", schema = "pharmacy")
 public class MedicineSymptom {
@@ -20,29 +24,5 @@ public class MedicineSymptom {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "symptom_id", nullable = false)
     private Symptom symptom;
-
-    public MedicineSymptomId getId() {
-        return id;
-    }
-
-    public void setId(MedicineSymptomId id) {
-        this.id = id;
-    }
-
-    public Medicine getMedicine() {
-        return medicine;
-    }
-
-    public void setMedicine(Medicine medicine) {
-        this.medicine = medicine;
-    }
-
-    public Symptom getSymptom() {
-        return symptom;
-    }
-
-    public void setSymptom(Symptom symptom) {
-        this.symptom = symptom;
-    }
 
 }

@@ -2,11 +2,15 @@ package org.beatrice.diploma_new_pharmacy.order.model;
 
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.beatrice.diploma_new_pharmacy.user.model.User;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "order_owners", schema = "pharmacy")
 public class OrderOwner {
     @Id

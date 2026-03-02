@@ -1,14 +1,18 @@
 package org.beatrice.diploma_new_pharmacy.user.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(name = "user_roles", schema = "pharmacy")
 public class UserRole {
+    @Setter
     @EmbeddedId
     private UserRoleId id = new UserRoleId();
 
@@ -22,24 +26,13 @@ public class UserRole {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
+    @Setter
     @CreationTimestamp
     @ColumnDefault("now()")
     @Column(name = "assigned_at")
     private Instant assignedAt;
 
-    public UserRoleId getId() {
-        return id;
-    }
-
-    public void setId(UserRoleId id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-        public void setUser(User user) {
+    public void setUser(User user) {
         this.user = user;
         if (user != null && user.getId() != null) {
             if (this.id == null) {
@@ -47,10 +40,6 @@ public class UserRole {
             }
             this.id.setUserId(user.getId());
         }
-    }
-
-    public Role getRole() {
-        return role;
     }
 
     public void setRole(Role role) {
@@ -61,14 +50,6 @@ public class UserRole {
             }
             this.id.setRoleId(role.getId());
         }
-    }
-
-    public Instant getAssignedAt() {
-        return assignedAt;
-    }
-
-    public void setAssignedAt(Instant assignedAt) {
-        this.assignedAt = assignedAt;
     }
 
 }

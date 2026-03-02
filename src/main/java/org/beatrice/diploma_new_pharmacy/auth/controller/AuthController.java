@@ -1,5 +1,6 @@
 package org.beatrice.diploma_new_pharmacy.auth.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.beatrice.diploma_new_pharmacy.auth.dto.AccessTokenResponse;
 import org.beatrice.diploma_new_pharmacy.auth.dto.AuthRequest;
 import org.beatrice.diploma_new_pharmacy.auth.dto.UserRegistrationRequest;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -24,14 +26,6 @@ public class AuthController {
     private final RefreshCookieFactory refreshCookieFactory;
     private final RegistrationService registrationService;
 
-
-    public AuthController(
-            AuthenticationService authenticationService, RefreshCookieFactory refreshCookieFactory, RegistrationService registrationService) {
-        this.authenticationService = authenticationService;
-
-        this.refreshCookieFactory = refreshCookieFactory;
-        this.registrationService = registrationService;
-    }
 
     @PostMapping("/login")
     public ResponseEntity<AccessTokenResponse> login(@RequestBody AuthRequest request) {
@@ -85,9 +79,11 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@CookieValue("refreshToken") String refreshToken) {
+    public ResponseEntity<Void> logout(@CookieValue(value = "refreshToken", required = false) String refreshToken) {
+        if (refreshToken != null) {
+            authenticationService.logout(refreshToken);
+        }
         refreshCookieFactory.delete();
-        authenticationService.logout(refreshToken);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

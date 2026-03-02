@@ -1,10 +1,10 @@
 package org.beatrice.diploma_new_pharmacy.auth.service;
 
+import lombok.RequiredArgsConstructor;
 import org.beatrice.diploma_new_pharmacy.auth.model.RefreshToken;
 import org.beatrice.diploma_new_pharmacy.auth.repository.RefreshTokenRepository;
 import org.beatrice.diploma_new_pharmacy.user.model.User;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -13,13 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
  * Так надо.
  *
  */
+@RequiredArgsConstructor
 @Service
 public class TokenRevocationService {
     private final RefreshTokenRepository refreshTokenRepository;
-
-    public TokenRevocationService(RefreshTokenRepository refreshTokenRepository) {
-        this.refreshTokenRepository = refreshTokenRepository;
-    }
 
     /**
      * Отзывает (инвалидирует) указанный токен

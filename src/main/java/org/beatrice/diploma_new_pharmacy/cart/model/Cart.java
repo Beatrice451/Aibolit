@@ -1,11 +1,15 @@
 package org.beatrice.diploma_new_pharmacy.cart.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.beatrice.diploma_new_pharmacy.order.model.OrderOwner;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "carts", schema = "pharmacy")
 public class Cart {
@@ -25,37 +29,5 @@ public class Cart {
     @ColumnDefault("now()")
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public OrderOwner getOrderOwner() {
-        return orderOwner;
-    }
-
-    public void setOrderOwner(OrderOwner orderOwner) {
-        this.orderOwner = orderOwner;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 
 }

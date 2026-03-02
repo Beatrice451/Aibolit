@@ -1,6 +1,9 @@
 package org.beatrice.diploma_new_pharmacy.user.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.beatrice.diploma_new_pharmacy.pharmacy.model.Pharmacy;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
@@ -8,6 +11,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.Instant;
 import java.util.Set;
 
+@Getter
+@Setter
+@ToString
 @Entity
 @Table(name = "users", schema = "pharmacy")
 public class User {
@@ -36,60 +42,4 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<UserRole> userRoles;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Set<UserRole> getUserRoles() {
-        return userRoles;
-    }
-
-    public void setUserRoles(Set<UserRole> userRoles) {
-        this.userRoles = userRoles;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                ", phone='" + phone + '\'' +
-                ", passwordHash='" + passwordHash + '\'' +
-                ", createdAt=" + createdAt +
-                ", pharmacy=" + pharmacy +
-                '}';
-    }
 }
