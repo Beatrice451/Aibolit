@@ -11,17 +11,17 @@ public class RefreshCookieFactory {
         return ResponseCookie.from("refreshToken", token)
                 .httpOnly(true)
                 .secure(false)
-                .path("/api/auth/refresh")
+                .path("/api/auth")
                 .maxAge(Duration.ofDays(30))
                 .sameSite("Strict")
                 .build();
     }
 
-    public ResponseCookie delete() {
-        return ResponseCookie.from("refreshToken", "")
+    public void delete() {
+        ResponseCookie.from("refreshToken", "")
                 .httpOnly(true)
                 .secure(false)
-                .path("/api/auth/refresh")
+                .path("/api/auth")
                 .maxAge(0)
                 .build();
     }
