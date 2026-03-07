@@ -15,9 +15,11 @@ import java.security.Key;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.List;
 import java.util.function.Function;
 
 @Service
+
 public class JwtService {
 
     private final Key key;
@@ -58,6 +60,22 @@ public class JwtService {
     public <T> T extractClaim(String token, Function<Claims, T> resolver) {
         Claims claims = extractAllClaims(token);
         return resolver.apply(claims);
+    }
+
+
+    public List<String> extractRoles(String token) throws ClassCastException {
+        List<?> rolesRawList = extractClaim(token, claims -> claims.get("roles", List.class));
+        // Комический эффект шутки в том, что claims.get вернёт Raw List. Поэтому нужен явный каст в строку.
+        return rolesRawList
+                .stream()
+                .map(role -> {
+                    if (role instanceof String) {
+                        return (String) role;
+                    } else {
+                        throw new ClassCastException("Role name is not an instance of String, cannot cast: " + role); // TODO replace with logging
+                    }
+                })
+                .toList();
     }
 
     public String extractUsername(String token) {
