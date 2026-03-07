@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.beatrice.diploma_new_pharmacy.auth.exception.PhoneAlreadyExistsException;
 import org.beatrice.diploma_new_pharmacy.auth.exception.UserAlreadyExistsException;
 import org.beatrice.diploma_new_pharmacy.auth.service.model.RegistrationCommand;
+import org.beatrice.diploma_new_pharmacy.auth.util.PhoneNormalizer;
 import org.beatrice.diploma_new_pharmacy.user.model.Role;
 import org.beatrice.diploma_new_pharmacy.user.model.User;
 import org.beatrice.diploma_new_pharmacy.user.model.UserRole;
@@ -31,12 +32,13 @@ public class RegistrationService {
                     throw new UserAlreadyExistsException("User with stated email already exists: " + cmd.email());
                 });
 
-        if (userRepository.existsUserByPhone(cmd.phone())) {
-            throw new PhoneAlreadyExistsException("User with stated phone already exists:" + cmd.phone());
+        String normalizedPhone = PhoneNormalizer.normalize(cmd.phone());
+        if (userRepository.existsUserByPhone(normalizedPhone)) {
+            throw new PhoneAlreadyExistsException("User with stated phone already exists: " + cmd.phone());
         }
         User user = new User();
         user.setEmail(cmd.email());
-        user.setPhone(cmd.phone());
+        user.setPhone(normalizedPhone);
         user.setPasswordHash(passwordEncoder.encode(cmd.password()));
         try {
             userRepository.save(user);

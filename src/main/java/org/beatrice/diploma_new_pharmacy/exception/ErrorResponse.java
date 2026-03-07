@@ -1,7 +1,10 @@
 package org.beatrice.diploma_new_pharmacy.exception;
 
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 
+@Getter
 public class ErrorResponse {
     private final int status;
     private final String message;
@@ -14,19 +17,4 @@ public class ErrorResponse {
         this.path = path;
     }
 
-    public int getStatus() {
-        return status;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
 }

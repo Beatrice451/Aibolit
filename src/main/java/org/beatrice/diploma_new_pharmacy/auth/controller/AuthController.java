@@ -1,5 +1,6 @@
 package org.beatrice.diploma_new_pharmacy.auth.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.beatrice.diploma_new_pharmacy.auth.dto.AccessTokenResponse;
 import org.beatrice.diploma_new_pharmacy.auth.dto.AuthRequest;
@@ -56,7 +57,7 @@ public class AuthController {
      * @see AuthenticationService
      */
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UserRegistrationRequest request) {
+    public ResponseEntity<?> register(@Valid @RequestBody UserRegistrationRequest request) {
         registrationService.registerUser(new RegistrationCommand(
                 request.name(),
                 request.email(),
