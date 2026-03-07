@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 @Getter
 @Entity
 @Table(name = "products", schema = "pharmacy")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

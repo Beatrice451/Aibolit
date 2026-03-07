@@ -9,16 +9,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Getter
 @Entity
 @Table(name = "medicines", schema = "pharmacy")
-public class Medicine {
-    @Id
-    @Column(name = "id", nullable = false)
-    private Integer id;
-
-    @MapsId
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id", nullable = false)
-    private Product products;
-
+public class Medicine extends Product {
     @Column(name = "dosage", nullable = false)
     private Integer dosage;
 
