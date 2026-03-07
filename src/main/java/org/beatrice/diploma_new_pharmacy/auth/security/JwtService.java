@@ -1,4 +1,4 @@
-package org.beatrice.diploma_new_pharmacy.auth.service;
+package org.beatrice.diploma_new_pharmacy.auth.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;

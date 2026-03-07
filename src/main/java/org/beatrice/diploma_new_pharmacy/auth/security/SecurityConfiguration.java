@@ -1,4 +1,4 @@
-package org.beatrice.diploma_new_pharmacy.config;
+package org.beatrice.diploma_new_pharmacy.auth.security;
 
 import org.beatrice.diploma_new_pharmacy.auth.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;

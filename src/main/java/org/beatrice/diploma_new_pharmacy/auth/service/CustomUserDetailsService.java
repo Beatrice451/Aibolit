@@ -1,6 +1,6 @@
 package org.beatrice.diploma_new_pharmacy.auth.service;
 
-import org.beatrice.diploma_new_pharmacy.auth.SecurityUser;
+import org.beatrice.diploma_new_pharmacy.auth.security.SecurityUser;
 import org.beatrice.diploma_new_pharmacy.user.model.User;
 import org.beatrice.diploma_new_pharmacy.user.repository.UserRepository;
 import org.jspecify.annotations.NonNull;

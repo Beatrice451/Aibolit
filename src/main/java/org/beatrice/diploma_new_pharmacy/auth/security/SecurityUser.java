@@ -1,4 +1,4 @@
-package org.beatrice.diploma_new_pharmacy.auth;
+package org.beatrice.diploma_new_pharmacy.auth.security;
 
 import org.beatrice.diploma_new_pharmacy.user.model.User;
 import org.jspecify.annotations.NonNull;
