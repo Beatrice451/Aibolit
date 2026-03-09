@@ -9,22 +9,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
-public class SecurityUser implements UserDetails {
-    private final User user;
-
-    public SecurityUser(User user) {
-        this.user = user;
-    }
-
-    public User getUser() {
-        return user;
-    }
+public record SecurityUser(User user) implements UserDetails {
 
     @Override
     public @NonNull Collection<? extends GrantedAuthority> getAuthorities() {
         return user.getUserRoles()
                 .stream()
-                .map(ur -> new SimpleGrantedAuthority(("ROLE_" + ur.getRole().getRoleName())))
+                .map(ur -> new SimpleGrantedAuthority("ROLE_" + ur.getRole().getRoleName()))
                 .toList();
     }
 

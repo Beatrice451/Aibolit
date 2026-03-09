@@ -28,7 +28,7 @@ public class AuthenticationService {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(cmd.email(), cmd.rawPassword()));
 
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(cmd.email());
-        User user = ((SecurityUser) userDetails).getUser();
+        User user = ((SecurityUser) userDetails).user();
 
         String accessToken = jwtService.generateAccessToken(user);
 
