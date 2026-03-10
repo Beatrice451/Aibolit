@@ -37,7 +37,7 @@ public class Product {
     @Column(name = "image_url", length = Integer.MAX_VALUE)
     private String imageUrl;
 
-    @ColumnDefault("true")
+    @ColumnDefault("false")
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = false;
 
