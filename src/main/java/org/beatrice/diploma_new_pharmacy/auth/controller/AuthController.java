@@ -84,7 +84,9 @@ public class AuthController {
         if (refreshToken != null) {
             authenticationService.logout(refreshToken);
         }
-        refreshCookieFactory.delete();
-        return ResponseEntity.noContent().build();
+
+        return ResponseEntity.noContent()
+                .header(HttpHeaders.SET_COOKIE, refreshCookieFactory.delete().toString())
+                .build();
     }
 }

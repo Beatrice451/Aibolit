@@ -17,8 +17,8 @@ public class RefreshCookieFactory {
                 .build();
     }
 
-    public void delete() {
-        ResponseCookie.from("refreshToken", "")
+    public ResponseCookie delete() {
+        return ResponseCookie.from("refreshToken", "")
                 .httpOnly(true)
                 .secure(false)
                 .path("/api/auth")
