@@ -3,6 +3,7 @@ package org.beatrice.diploma_new_pharmacy.auth.security;
 import org.beatrice.diploma_new_pharmacy.auth.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -39,8 +40,11 @@ class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
                         auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .anyRequest().authenticated()
+                                .requestMatchers("/api/auth/**", "/api/products/**").permitAll()
+                                .requestMatchers("/api/files/**").authenticated()
+                                .requestMatchers(HttpMethod.GET, "/media/**").permitAll()
+                                .requestMatchers("/swagger-ui/**", "/v3/**", "/swagger-ui.html").permitAll() // TODO
+                                .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

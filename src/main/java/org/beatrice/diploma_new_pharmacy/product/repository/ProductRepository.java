@@ -1,7 +1,13 @@
 package org.beatrice.diploma_new_pharmacy.product.repository;
 
 import org.beatrice.diploma_new_pharmacy.product.model.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-interface ProductRepository extends JpaRepository<Product, Integer> {
+public interface ProductRepository extends JpaRepository<Product, Integer> {
+    @EntityGraph(attributePaths = {"category"})
+    Page<Product> findAll(Specification<Product> spec, Pageable pageable);
 }
