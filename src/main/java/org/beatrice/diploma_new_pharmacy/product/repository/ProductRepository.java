@@ -7,7 +7,11 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface ProductRepository extends JpaRepository<Product, Integer> {
     @EntityGraph(attributePaths = {"category"})
     Page<Product> findAll(Specification<Product> spec, Pageable pageable);
+
+    Optional<Product> findProductById(Integer id);
 }

@@ -2,15 +2,22 @@ package org.beatrice.diploma_new_pharmacy.order.model;
 
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.beatrice.diploma_new_pharmacy.user.model.User;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.dialect.type.PostgreSQLEnumJdbcType;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-@Entity
 @Getter
 @Setter
+@Entity
 @Table(name = "order_owners", schema = "pharmacy")
 public class OrderOwner {
     @Id
@@ -19,11 +26,16 @@ public class OrderOwner {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "owner_type", nullable = false)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private OrderOwnerType ownerType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Column(name = "guest_uuid")
+    private UUID guestUuid;
 
     @Column(name = "guest_email")
     private String guestEmail;
@@ -31,6 +43,7 @@ public class OrderOwner {
     @Column(name = "guest_phone", length = 32)
     private String guestPhone;
 
+    @CreationTimestamp
     @Column(name = "created_at", updatable = false, insertable = false)
     private LocalDateTime createdAt;
 }

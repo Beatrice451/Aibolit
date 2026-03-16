@@ -1,7 +1,15 @@
 package org.beatrice.diploma_new_pharmacy.order.repository;
 
 import org.beatrice.diploma_new_pharmacy.order.model.OrderOwner;
+import org.beatrice.diploma_new_pharmacy.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-interface OrderOwnerRepository extends JpaRepository<OrderOwner, Integer> {
+import java.util.Optional;
+import java.util.UUID;
+
+public interface OrderOwnerRepository extends JpaRepository<OrderOwner, Integer> {
+    Optional<OrderOwner> findByUser(User user);
+
+    Optional<OrderOwner> findByGuestUuid(UUID uuid);
+
 }

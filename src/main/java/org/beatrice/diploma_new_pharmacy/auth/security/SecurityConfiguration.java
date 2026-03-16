@@ -40,10 +40,12 @@ class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
                         auth -> auth
-                                .requestMatchers("/api/auth/**", "/api/products/**").permitAll()
+                                .requestMatchers("/api/auth/**", "/api/products/**", "/api/cart/", "/api/cart/**").permitAll()
+                                .requestMatchers("/actuator/", "/actuator/**").permitAll() // TODO remove
                                 .requestMatchers("/api/files/**").authenticated()
                                 .requestMatchers(HttpMethod.GET, "/media/**").permitAll()
-                                .requestMatchers("/swagger-ui/**", "/v3/**", "/swagger-ui.html").permitAll() // TODO
+                                .requestMatchers("/swagger-ui/**", "/v3/**", "/swagger-ui.html").permitAll() // TODO remove
+                                .requestMatchers("/api/users/whoami").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
