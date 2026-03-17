@@ -1,12 +1,12 @@
 package org.beatrice.diploma_new_pharmacy.config;
 
 import lombok.RequiredArgsConstructor;
-import org.beatrice.diploma_new_pharmacy.user.model.Role;
-import org.beatrice.diploma_new_pharmacy.user.model.User;
-import org.beatrice.diploma_new_pharmacy.user.model.UserRole;
-import org.beatrice.diploma_new_pharmacy.user.repository.RoleRepository;
-import org.beatrice.diploma_new_pharmacy.user.repository.UserRepository;
-import org.beatrice.diploma_new_pharmacy.user.repository.UserRoleRepository;
+import org.beatrice.diploma_new_pharmacy.domain.user.model.Role;
+import org.beatrice.diploma_new_pharmacy.domain.user.model.User;
+import org.beatrice.diploma_new_pharmacy.domain.user.model.UserRole;
+import org.beatrice.diploma_new_pharmacy.domain.user.repository.RoleRepository;
+import org.beatrice.diploma_new_pharmacy.domain.user.repository.UserRepository;
+import org.beatrice.diploma_new_pharmacy.domain.user.repository.UserRoleRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

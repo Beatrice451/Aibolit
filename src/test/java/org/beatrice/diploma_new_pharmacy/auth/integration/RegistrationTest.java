@@ -1,12 +1,12 @@
 package org.beatrice.diploma_new_pharmacy.auth.integration;
 
-import org.beatrice.diploma_new_pharmacy.auth.dto.UserRegistrationRequest;
-import org.beatrice.diploma_new_pharmacy.user.model.Role;
-import org.beatrice.diploma_new_pharmacy.user.model.User;
-import org.beatrice.diploma_new_pharmacy.user.model.UserRole;
-import org.beatrice.diploma_new_pharmacy.user.repository.RoleRepository;
-import org.beatrice.diploma_new_pharmacy.user.repository.UserRepository;
-import org.beatrice.diploma_new_pharmacy.user.repository.UserRoleRepository;
+import org.beatrice.diploma_new_pharmacy.domain.auth.dto.UserRegistrationRequest;
+import org.beatrice.diploma_new_pharmacy.domain.user.model.Role;
+import org.beatrice.diploma_new_pharmacy.domain.user.model.User;
+import org.beatrice.diploma_new_pharmacy.domain.user.model.UserRole;
+import org.beatrice.diploma_new_pharmacy.domain.user.repository.RoleRepository;
+import org.beatrice.diploma_new_pharmacy.domain.user.repository.UserRepository;
+import org.beatrice.diploma_new_pharmacy.domain.user.repository.UserRoleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

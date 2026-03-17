@@ -1,7 +1,7 @@
 package org.beatrice.diploma_new_pharmacy.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.beatrice.diploma_new_pharmacy.auth.exception.*;
+import org.beatrice.diploma_new_pharmacy.domain.auth.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -78,6 +78,20 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 message,
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(
+            Exception ex,
+            HttpServletRequest request
+    ) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage(),
                 request.getRequestURI()
         );
 
