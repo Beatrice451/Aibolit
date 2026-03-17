@@ -11,7 +11,7 @@ public record CartResponse(
         Integer id,
         @Nullable UUID guestUuid, // not null only if the user is a guest
         List<CartItemDto> items,
-        BigDecimal totalPrice, // TODO
+        BigDecimal totalPrice,
         int totalItems,
         Instant updatedAt
 ) {

@@ -1,12 +1,16 @@
 package org.beatrice.diploma_new_pharmacy.domain.loyalty.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.beatrice.diploma_new_pharmacy.domain.order.model.Order;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "loyalty_transactions", schema = "pharmacy")
 public class LoyaltyTransaction {
     @Id
@@ -34,53 +38,4 @@ public class LoyaltyTransaction {
 
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public LoyaltyAccount getLoyaltyAccount() {
-        return loyaltyAccount;
-    }
-
-    public void setLoyaltyAccount(LoyaltyAccount loyaltyAccount) {
-        this.loyaltyAccount = loyaltyAccount;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
-    public BigDecimal getLoyaltyPoints() {
-        return loyaltyPoints;
-    }
-
-    public void setLoyaltyPoints(BigDecimal loyaltyPoints) {
-        this.loyaltyPoints = loyaltyPoints;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
 }

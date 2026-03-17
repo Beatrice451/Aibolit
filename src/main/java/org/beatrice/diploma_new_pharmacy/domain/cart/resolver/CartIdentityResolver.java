@@ -20,6 +20,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import java.util.UUID;
 
+@SuppressWarnings("DataFlowIssue")
 @Component
 public class CartIdentityResolver implements HandlerMethodArgumentResolver {
 
@@ -53,13 +54,12 @@ public class CartIdentityResolver implements HandlerMethodArgumentResolver {
      * @param webRequest    the current request
      * @param binderFactory a factory for creating {@link WebDataBinder} instances
      * @return the resolved argument value, or {@code null} if not resolvable
-     * @throws Exception in case of errors with the preparation of argument values
      */
     @Override
     public @Nullable Object resolveArgument(MethodParameter parameter,
                                             @Nullable ModelAndViewContainer mavContainer,
                                             NativeWebRequest webRequest,
-                                            @Nullable WebDataBinderFactory binderFactory) throws Exception {
+                                            @Nullable WebDataBinderFactory binderFactory) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
             Integer userId = ((SecurityUser) authentication.getPrincipal()).user().getId();
