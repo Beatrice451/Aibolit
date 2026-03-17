@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.beatrice.diploma_new_pharmacy.config.JwtProperties;
 import org.beatrice.diploma_new_pharmacy.domain.user.model.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,8 +19,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 
+@Slf4j
 @Service
-
 public class JwtService {
 
     private final Key key;
@@ -69,10 +70,10 @@ public class JwtService {
         return rolesRawList
                 .stream()
                 .map(role -> {
-                    if (role instanceof String) {
-                        return (String) role;
-                    } else {
-                        throw new ClassCastException("Role name is not an instance of String, cannot cast: " + role); // TODO replace with logging
+                    if (role instanceof String) return (String) role;
+                    else {
+                        log.debug("Role name is not an instance of String, cannot cast: {}", role);
+                        return null;
                     }
                 })
                 .toList();
