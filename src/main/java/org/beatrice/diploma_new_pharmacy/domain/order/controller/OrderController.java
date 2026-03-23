@@ -1,5 +1,6 @@
 package org.beatrice.diploma_new_pharmacy.domain.order.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.beatrice.diploma_new_pharmacy.domain.order.dto.CreateOrderCommand;
 import org.beatrice.diploma_new_pharmacy.domain.order.dto.CreateOrderRequest;
@@ -25,8 +26,8 @@ class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<OrderResponse> createOrder(@RequestBody CreateOrderRequest request, OrderIdentity identity) {
-        var cmd = new CreateOrderCommand(identity, request.pharmacyId());
+    public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody CreateOrderRequest request, OrderIdentity identity) {
+        var cmd = new CreateOrderCommand(identity, request.pharmacyId(), request.phone(), request.email());
         OrderResponse response = orderService.createOrder(cmd);
         return ResponseEntity.ok(response);
     }

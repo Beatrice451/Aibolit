@@ -36,12 +36,6 @@ public class OrderOwner {
     @Column(name = "guest_uuid")
     private UUID guestUuid;
 
-    @Column(name = "guest_email")
-    private String guestEmail;
-
-    @Column(name = "guest_phone", length = 32)
-    private String guestPhone;
-
     @CreationTimestamp
     @Column(name = "created_at", updatable = false, insertable = false)
     private LocalDateTime createdAt;

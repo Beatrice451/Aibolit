@@ -50,6 +50,12 @@ public class Order {
     @Column(name = "final_amount", precision = 11, scale = 2, insertable = false, updatable = false)
     private BigDecimal finalAmount;
 
+    @Column(name = "phone", nullable = false)
+    private String phone;
+
+    @Column(name = "email")
+    private String email;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;

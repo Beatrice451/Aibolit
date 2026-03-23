@@ -18,6 +18,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 @SuppressWarnings("DataFlowIssue")
@@ -81,6 +83,7 @@ public class CartIdentityResolver implements HandlerMethodArgumentResolver {
             Cookie cookie = new Cookie(cookieName, guestUuid.toString());
             cookie.setPath("/");
             cookie.setHttpOnly(true);
+            cookie.setMaxAge((int) Instant.now().plus(30, ChronoUnit.DAYS).getEpochSecond()); // TODO remove hardcode
             webRequest.getNativeResponse(HttpServletResponse.class).addCookie(cookie);
         }
 

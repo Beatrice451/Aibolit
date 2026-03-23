@@ -17,6 +17,8 @@ import org.beatrice.diploma_new_pharmacy.domain.order.model.OrderStatus;
 import org.beatrice.diploma_new_pharmacy.domain.order.repository.OrderRepository;
 import org.beatrice.diploma_new_pharmacy.domain.pharmacy.model.Pharmacy;
 import org.beatrice.diploma_new_pharmacy.domain.pharmacy.service.PharmacyService;
+import org.beatrice.diploma_new_pharmacy.domain.user.model.User;
+import org.beatrice.diploma_new_pharmacy.domain.user.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +34,7 @@ public class OrderService {
     private final OrderMapper orderMapper;
     private final CartService cartService;
     private final PharmacyService pharmacyService;
+    private final UserService userService;
     @PersistenceContext
     private EntityManager em;
 
@@ -52,6 +55,22 @@ public class OrderService {
 
 
     private Order create(CreateOrderCommand cmd) {
+        String phone;
+        String email;
+
+        if (cmd.identity().isUser()) {
+            User user = userService.getUserById(cmd.identity().userId());
+            phone = user.getPhone();
+            email = user.getEmail();
+        } else {
+            phone = cmd.phone();
+            email = cmd.email();
+
+            if (phone == null || phone.isBlank()) {
+                throw new IllegalArgumentException("Phone number is required for guest");
+            }
+        }
+
         Cart cart = cartService.getCart(cmd.identity());
         List<CartItem> cartItems = cart.getItems();
         if (cartItems.isEmpty()) throw new IllegalArgumentException("Cart is empty, cannot create an order");
@@ -67,6 +86,8 @@ public class OrderService {
                 .orderStatus(OrderStatus.NEW)
                 .totalAmount(totalAmount)
                 .discount(discount)
+                .phone(phone)
+                .email(email)
                 .build();
 
 
