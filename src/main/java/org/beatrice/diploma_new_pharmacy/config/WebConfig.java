@@ -32,12 +32,23 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(new HandlerInterceptor() {
             @Override
             public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-                log.debug("Request details:");
-                log.debug("  Remote Address: {}", request.getRemoteAddr());
-                log.debug("  X-Forwarded-For: {}", request.getHeader("X-Forwarded-For"));
-                log.debug("  X-Real-IP: {}", request.getHeader("X-Real-IP"));
-                log.debug("  Host: {}", request.getHeader("Host"));
-                log.debug("  User-Agent: {}", request.getHeader("User-Agent"));
+                log.debug("""
+                                Request details:
+                                  Remote Address: {}
+                                  X-Forwarded-For: {}
+                                  X-Real-IP: {}
+                                  Host: {}
+                                  User-Agent: {}
+                                  URI: {}
+                                  Method: {}
+                                """,
+                        request.getRemoteAddr(),
+                        request.getHeader("X-Forwarded-For"),
+                        request.getHeader("X-Real-IP"),
+                        request.getHeader("Host"),
+                        request.getHeader("User-Agent"),
+                        request.getRequestURI(),
+                        request.getMethod());
                 return true;
             }
         });
