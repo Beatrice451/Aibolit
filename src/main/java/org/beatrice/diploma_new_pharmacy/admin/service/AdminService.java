@@ -2,36 +2,46 @@ package org.beatrice.diploma_new_pharmacy.admin.service;
 
 
 import lombok.RequiredArgsConstructor;
-import org.beatrice.diploma_new_pharmacy.admin.dto.AddProductCommand;
-import org.beatrice.diploma_new_pharmacy.domain.product.model.Category;
-import org.beatrice.diploma_new_pharmacy.domain.product.model.Product;
-import org.beatrice.diploma_new_pharmacy.domain.product.repository.CategoryRepository;
-import org.beatrice.diploma_new_pharmacy.domain.product.repository.ProductRepository;
+import org.beatrice.diploma_new_pharmacy.domain.product.dto.command.AddCategoryCommand;
+import org.beatrice.diploma_new_pharmacy.domain.product.dto.command.AddProductCommand;
+import org.beatrice.diploma_new_pharmacy.domain.product.dto.command.UpdateProductCommand;
+import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.CategoryResponse;
+import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.ProductResponse;
+import org.beatrice.diploma_new_pharmacy.domain.product.service.CategoryService;
+import org.beatrice.diploma_new_pharmacy.domain.product.service.ProductService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
 public class AdminService {
-    private final ProductRepository productRepository;
-    private final CategoryRepository categoryRepository;
+    private final ProductService productService;
+    private final CategoryService categoryService;
 
-    public Product addProduct(AddProductCommand cmd) {
-        Product newProduct = Product.builder()
-                .price(cmd.price())
-                .description(cmd.description())
-                .name(cmd.name())
-                .manufacturer(cmd.manufacturer())
-                .category(categoryRepository.findCategoryByName(cmd.categoryName()))
-                .build();
-
-        return productRepository.save(newProduct);
+    public ProductResponse addProduct(AddProductCommand cmd) {
+        return productService.addProduct(cmd);
     }
 
-    public Category addCategory(String categoryName) {
-        Category newCategory = Category.builder()
-                .name(categoryName)
-                .build();
-
-        return categoryRepository.save(newCategory);
+    public ProductResponse updateProduct(Integer productId, UpdateProductCommand cmd) {
+        return productService.updateProduct(productId, cmd);
     }
+
+    public void deleteProduct(Integer productId) {
+        productService.deleteProduct(productId);
+    }
+
+    public CategoryResponse addCategory(AddCategoryCommand cmd) {
+        return categoryService.addCategory(cmd);
+    }
+
+    public List<CategoryResponse> getCategories() {
+        return categoryService.getCategories();
+    }
+
+    public CategoryResponse getCategoryById(Integer id) {
+        return categoryService.getCategoryById(id);
+    }
+
 }

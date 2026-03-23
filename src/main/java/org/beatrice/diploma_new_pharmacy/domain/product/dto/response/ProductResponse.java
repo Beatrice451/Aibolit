@@ -1,4 +1,4 @@
-package org.beatrice.diploma_new_pharmacy.domain.product.dto;
+package org.beatrice.diploma_new_pharmacy.domain.product.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDto {
+public class ProductResponse {
     private Integer id;
     private String name;
     private BigDecimal price;
@@ -18,5 +18,6 @@ public class ProductDto {
     private String manufacturer;
     private Integer categoryId;
     private String categoryName;
+    private Boolean isActive;
 }
 

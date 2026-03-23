@@ -1,23 +1,24 @@
 package org.beatrice.diploma_new_pharmacy.domain.product.mapper;
 
-import org.beatrice.diploma_new_pharmacy.domain.product.dto.MedicineDto;
-import org.beatrice.diploma_new_pharmacy.domain.product.dto.ProductDto;
+import org.beatrice.diploma_new_pharmacy.domain.product.dto.command.UpdateProductCommand;
+import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.MedicineResponse;
+import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.ProductResponse;
 import org.beatrice.diploma_new_pharmacy.domain.product.model.Medicine;
 import org.beatrice.diploma_new_pharmacy.domain.product.model.Product;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.SubclassMapping;
+import org.mapstruct.*;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ProductMapper {
-    @SubclassMapping(source = Medicine.class, target = MedicineDto.class)
+    @SubclassMapping(source = Medicine.class, target = MedicineResponse.class)
     @Mapping(target = "categoryId", source = "category.id")
     @Mapping(target = "categoryName", source = "category.name")
-    ProductDto toDto(Product product);
+    ProductResponse toDto(Product product);
 
-    List<ProductDto> toDtoList(List<Product> products);
+    List<ProductResponse> toDtoList(List<Product> products);
+
+    void updateFromCommand(UpdateProductCommand cmd, @MappingTarget Product entity);
 
 
 

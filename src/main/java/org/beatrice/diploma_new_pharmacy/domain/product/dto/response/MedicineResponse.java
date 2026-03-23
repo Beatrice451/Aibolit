@@ -1,4 +1,4 @@
-package org.beatrice.diploma_new_pharmacy.domain.product.dto;
+package org.beatrice.diploma_new_pharmacy.domain.product.dto.response;
 
 
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MedicineDto extends ProductDto {
+public class MedicineResponse extends ProductResponse {
      private Integer dosage;
      private Boolean requiresPrescription;
      private String form;

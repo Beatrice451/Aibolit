@@ -1,4 +1,4 @@
-package org.beatrice.diploma_new_pharmacy.admin.dto;
+package org.beatrice.diploma_new_pharmacy.domain.product.dto.command;
 
 import lombok.Builder;
 
@@ -6,10 +6,11 @@ import java.math.BigDecimal;
 
 @Builder
 public record AddProductCommand(
-        String categoryName,
+        Integer categoryId,
         String name,
         String description,
         String manufacturer,
+        String imageUrl,
         BigDecimal price
 ) {
 }
