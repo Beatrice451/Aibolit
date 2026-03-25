@@ -78,7 +78,7 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    public Page<ProductResponse> getProducts(ProductFilter filter, Pageable pageable) {
+    public Page<ProductResponse> getProductsByFilter(ProductFilter filter, Pageable pageable) {
         Specification<Product> spec = buildSpecification(filter);
         Page<Product> productPage = productRepository.findAll(spec, pageable);
         return productPage.map(productMapper::toDto);
