@@ -1,8 +1,8 @@
-package org.beatrice.diploma_new_pharmacy.domain.order.dto;
+package org.beatrice.diploma_new_pharmacy.domain.order.dto.response;
 
 import java.math.BigDecimal;
 
-public record OrderItemDto(
+public record OrderItemResponse(
         Integer productId,
         String name,
         Short quantity,

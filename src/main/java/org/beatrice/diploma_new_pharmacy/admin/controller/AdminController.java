@@ -3,6 +3,8 @@ package org.beatrice.diploma_new_pharmacy.admin.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.beatrice.diploma_new_pharmacy.admin.service.AdminService;
+import org.beatrice.diploma_new_pharmacy.domain.order.dto.response.OrderResponse;
+import org.beatrice.diploma_new_pharmacy.domain.order.specification.OrderFilter;
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.command.AddCategoryCommand;
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.request.AddCategoryRequest;
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.request.AddProductRequest;
@@ -10,6 +12,8 @@ import org.beatrice.diploma_new_pharmacy.domain.product.dto.request.UpdateProduc
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.CategoryResponse;
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.ProductResponse;
 import org.beatrice.diploma_new_pharmacy.domain.product.mapper.ProductCommandRequestMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -69,5 +73,10 @@ public class AdminController {
     @GetMapping("/category/{id}")
     public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable Integer id) {
         return ResponseEntity.ok(adminService.getCategoryById(id));
+    }
+
+    @GetMapping("/order")
+    public ResponseEntity<Page<OrderResponse>> getOrders(@ModelAttribute OrderFilter filter, Pageable pageable) {
+        return ResponseEntity.ok(adminService.getOrdersByFilter(filter, pageable));
     }
 }

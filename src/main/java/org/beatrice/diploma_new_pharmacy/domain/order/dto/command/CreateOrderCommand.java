@@ -1,7 +1,8 @@
-package org.beatrice.diploma_new_pharmacy.domain.order.dto;
+package org.beatrice.diploma_new_pharmacy.domain.order.dto.command;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
+import org.beatrice.diploma_new_pharmacy.domain.order.dto.OrderIdentity;
 
 public record CreateOrderCommand(
         OrderIdentity identity,

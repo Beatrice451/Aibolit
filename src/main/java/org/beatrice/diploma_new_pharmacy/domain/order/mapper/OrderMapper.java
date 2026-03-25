@@ -1,8 +1,8 @@
 package org.beatrice.diploma_new_pharmacy.domain.order.mapper;
 
 
-import org.beatrice.diploma_new_pharmacy.domain.order.dto.OrderAmountResponse;
-import org.beatrice.diploma_new_pharmacy.domain.order.dto.OrderResponse;
+import org.beatrice.diploma_new_pharmacy.domain.order.dto.response.OrderAmountResponse;
+import org.beatrice.diploma_new_pharmacy.domain.order.dto.response.OrderResponse;
 import org.beatrice.diploma_new_pharmacy.domain.order.model.Order;
 import org.beatrice.diploma_new_pharmacy.domain.pharmacy.mapper.PharmacyMapper;
 import org.mapstruct.Mapper;

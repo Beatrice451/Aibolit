@@ -1,4 +1,4 @@
-package org.beatrice.diploma_new_pharmacy.domain.order.dto;
+package org.beatrice.diploma_new_pharmacy.domain.order.dto.response;
 
 import java.math.BigDecimal;
 

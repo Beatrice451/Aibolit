@@ -7,18 +7,24 @@ import lombok.RequiredArgsConstructor;
 import org.beatrice.diploma_new_pharmacy.domain.cart.model.Cart;
 import org.beatrice.diploma_new_pharmacy.domain.cart.model.CartItem;
 import org.beatrice.diploma_new_pharmacy.domain.cart.service.CartService;
-import org.beatrice.diploma_new_pharmacy.domain.order.dto.CreateOrderCommand;
 import org.beatrice.diploma_new_pharmacy.domain.order.dto.OrderIdentity;
-import org.beatrice.diploma_new_pharmacy.domain.order.dto.OrderResponse;
+import org.beatrice.diploma_new_pharmacy.domain.order.dto.command.CreateOrderCommand;
+import org.beatrice.diploma_new_pharmacy.domain.order.dto.response.OrderResponse;
 import org.beatrice.diploma_new_pharmacy.domain.order.mapper.OrderMapper;
 import org.beatrice.diploma_new_pharmacy.domain.order.model.Order;
 import org.beatrice.diploma_new_pharmacy.domain.order.model.OrderItem;
 import org.beatrice.diploma_new_pharmacy.domain.order.model.OrderStatus;
 import org.beatrice.diploma_new_pharmacy.domain.order.repository.OrderRepository;
+import org.beatrice.diploma_new_pharmacy.domain.order.specification.OrderFilter;
+import org.beatrice.diploma_new_pharmacy.domain.order.specification.OrderSpecifications;
 import org.beatrice.diploma_new_pharmacy.domain.pharmacy.model.Pharmacy;
 import org.beatrice.diploma_new_pharmacy.domain.pharmacy.service.PharmacyService;
 import org.beatrice.diploma_new_pharmacy.domain.user.model.User;
 import org.beatrice.diploma_new_pharmacy.domain.user.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +48,13 @@ public class OrderService {
         var orderOwner = orderOwnerService.resolveOrderOwner(identity);
         List<Order> orders = orderRepository.getOrdersByOrderOwner(orderOwner);
         return orderMapper.toDtoList(orders);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'PHARMACIST')")
+    public Page<OrderResponse> getOrders(OrderFilter filter, Pageable pageable) {
+        Specification<Order> spec = buildSpecification(filter);
+        Page<Order> orderPage = orderRepository.findAll(spec, pageable);
+        return orderPage.map(orderMapper::toDto);
     }
 
 
@@ -123,4 +136,32 @@ public class OrderService {
         return BigDecimal.ZERO;
     }
 
+    private Specification<Order> buildSpecification(OrderFilter filter) {
+        Specification<Order> spec = (
+                (root, query, criteriaBuilder)
+                        -> criteriaBuilder.conjunction()
+        );
+
+        if (filter.orderStatus() != null) {
+            spec = spec.and(OrderSpecifications.hasOrderStatus(filter.orderStatus()));
+        }
+
+        if (filter.pharmacyId() != null) {
+            spec = spec.and(OrderSpecifications.hasPharmacyId(filter.pharmacyId()));
+        }
+
+        if (filter.userId() != null) {
+            spec = spec.and(OrderSpecifications.hasUserId(filter.userId()));
+        }
+
+        if (filter.email() != null && !filter.email().isBlank()) {
+            spec = spec.and(OrderSpecifications.hasEmail(filter.email()));
+        }
+
+        if (filter.phone() != null && !filter.phone().isBlank()) {
+            spec = spec.and(OrderSpecifications.hasPhone(filter.phone()));
+        }
+
+        return spec;
+    }
 }
