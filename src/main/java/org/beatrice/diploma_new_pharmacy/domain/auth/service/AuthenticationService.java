@@ -1,12 +1,12 @@
 package org.beatrice.diploma_new_pharmacy.domain.auth.service;
 
 import lombok.RequiredArgsConstructor;
-import org.beatrice.diploma_new_pharmacy.domain.auth.security.SecurityUser;
 import org.beatrice.diploma_new_pharmacy.domain.auth.model.RefreshToken;
 import org.beatrice.diploma_new_pharmacy.domain.auth.repository.RefreshTokenRepository;
+import org.beatrice.diploma_new_pharmacy.domain.auth.security.JwtService;
+import org.beatrice.diploma_new_pharmacy.domain.auth.security.SecurityUser;
 import org.beatrice.diploma_new_pharmacy.domain.auth.service.model.LoginCommand;
 import org.beatrice.diploma_new_pharmacy.domain.auth.service.model.TokenPair;
-import org.beatrice.diploma_new_pharmacy.domain.auth.security.JwtService;
 import org.beatrice.diploma_new_pharmacy.domain.user.model.User;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

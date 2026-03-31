@@ -2,7 +2,7 @@ package org.beatrice.diploma_new_pharmacy.domain.cart.dto;
 
 import java.math.BigDecimal;
 
-public record CartItemDto(
+public record CartItemResponse(
         Integer productId,
         String productName,
         String productImage,

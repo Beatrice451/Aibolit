@@ -1,7 +1,7 @@
 package org.beatrice.diploma_new_pharmacy.domain.product.service;
 
 import lombok.RequiredArgsConstructor;
-import org.beatrice.diploma_new_pharmacy.domain.product.dto.command.AddCategoryCommand;
+import org.beatrice.diploma_new_pharmacy.domain.product.dto.request.AddCategoryRequest;
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.CategoryResponse;
 import org.beatrice.diploma_new_pharmacy.domain.product.exception.CategoryAlreadyExistsException;
 import org.beatrice.diploma_new_pharmacy.domain.product.exception.CategoryNotFoundException;
@@ -18,14 +18,14 @@ import java.util.List;
 public class CategoryService {
     private final CategoryRepository categoryRepository;
 
-    public CategoryResponse addCategory(AddCategoryCommand cmd) {
+    public CategoryResponse addCategory(AddCategoryRequest request) {
         Category parent = null;
-        if (cmd.parentId() != null) {
-            parent = categoryRepository.findCategoryById(cmd.parentId())
+        if (request.parentId() != null) {
+            parent = categoryRepository.findCategoryById(request.parentId())
                     .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
         }
         Category newCategory = Category.builder()
-                .name(cmd.name())
+                .name(request.name())
                 .parent(parent)
                 .build();
 

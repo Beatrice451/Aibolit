@@ -10,7 +10,7 @@ import java.util.UUID;
 public record CartResponse(
         Integer id,
         @Nullable UUID guestUuid, // not null only if the user is a guest
-        List<CartItemDto> items,
+        List<CartItemResponse> items,
         BigDecimal totalPrice,
         int totalItems,
         Instant updatedAt
@@ -33,6 +33,6 @@ public record CartResponse(
             return 0;
         }
 
-        return items.stream().mapToInt(CartItemDto::quantity).sum();
+        return items.stream().mapToInt(CartItemResponse::quantity).sum();
     }
 }

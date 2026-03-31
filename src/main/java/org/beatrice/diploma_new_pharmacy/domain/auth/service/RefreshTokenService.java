@@ -1,12 +1,12 @@
 package org.beatrice.diploma_new_pharmacy.domain.auth.service;
 
 import lombok.RequiredArgsConstructor;
+import org.beatrice.diploma_new_pharmacy.config.JwtProperties;
 import org.beatrice.diploma_new_pharmacy.domain.auth.exception.InvalidTokenException;
 import org.beatrice.diploma_new_pharmacy.domain.auth.exception.RevokedTokenException;
 import org.beatrice.diploma_new_pharmacy.domain.auth.exception.TokenNotFoundException;
 import org.beatrice.diploma_new_pharmacy.domain.auth.model.RefreshToken;
 import org.beatrice.diploma_new_pharmacy.domain.auth.repository.RefreshTokenRepository;
-import org.beatrice.diploma_new_pharmacy.config.JwtProperties;
 import org.beatrice.diploma_new_pharmacy.domain.user.model.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

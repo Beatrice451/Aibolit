@@ -9,7 +9,7 @@ import org.beatrice.diploma_new_pharmacy.domain.cart.model.CartItem;
 import org.beatrice.diploma_new_pharmacy.domain.cart.service.CartService;
 import org.beatrice.diploma_new_pharmacy.domain.order.dto.OrderIdentity;
 import org.beatrice.diploma_new_pharmacy.domain.order.dto.command.CreateOrderCommand;
-import org.beatrice.diploma_new_pharmacy.domain.order.dto.command.UpdateOrderStatusCommand;
+import org.beatrice.diploma_new_pharmacy.domain.order.dto.request.UpdateOrderStatusRequest;
 import org.beatrice.diploma_new_pharmacy.domain.order.dto.response.OrderResponse;
 import org.beatrice.diploma_new_pharmacy.domain.order.mapper.OrderMapper;
 import org.beatrice.diploma_new_pharmacy.domain.order.model.Order;
@@ -67,10 +67,10 @@ public class OrderService {
 
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'PHARMACIST')")
-    public OrderResponse updateOrderStatus(Integer id, UpdateOrderStatusCommand cmd) {
+    public OrderResponse updateOrderStatus(Integer id, UpdateOrderStatusRequest request) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Order with id " + id + " not found"));
-        orderMapper.updateFromCommand(cmd, order);
+        orderMapper.updateFromRequest(request, order);
 
         orderRepository.save(order);
 

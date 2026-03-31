@@ -1,5 +1,6 @@
 package org.beatrice.diploma_new_pharmacy.domain.order.service;
 
+import lombok.RequiredArgsConstructor;
 import org.beatrice.diploma_new_pharmacy.domain.order.dto.OrderIdentity;
 import org.beatrice.diploma_new_pharmacy.domain.order.model.OrderOwner;
 import org.beatrice.diploma_new_pharmacy.domain.order.model.OrderOwnerType;
@@ -7,7 +8,6 @@ import org.beatrice.diploma_new_pharmacy.domain.order.repository.OrderOwnerRepos
 import org.beatrice.diploma_new_pharmacy.domain.user.model.User;
 import org.beatrice.diploma_new_pharmacy.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
-import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;
 

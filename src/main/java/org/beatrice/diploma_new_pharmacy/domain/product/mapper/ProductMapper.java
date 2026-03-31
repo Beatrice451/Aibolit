@@ -1,6 +1,6 @@
 package org.beatrice.diploma_new_pharmacy.domain.product.mapper;
 
-import org.beatrice.diploma_new_pharmacy.domain.product.dto.command.UpdateProductCommand;
+import org.beatrice.diploma_new_pharmacy.domain.product.dto.request.UpdateProductRequest;
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.MedicineResponse;
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.ProductResponse;
 import org.beatrice.diploma_new_pharmacy.domain.product.model.Medicine;
@@ -18,8 +18,7 @@ public interface ProductMapper {
 
     List<ProductResponse> toDtoList(List<Product> products);
 
-    void updateFromCommand(UpdateProductCommand cmd, @MappingTarget Product entity);
-
+    void updateFromRequest(UpdateProductRequest request, @MappingTarget Product entity);
 
 
 }

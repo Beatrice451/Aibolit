@@ -3,8 +3,8 @@ package org.beatrice.diploma_new_pharmacy.domain.product.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.ProductFilter;
-import org.beatrice.diploma_new_pharmacy.domain.product.dto.command.AddProductCommand;
-import org.beatrice.diploma_new_pharmacy.domain.product.dto.command.UpdateProductCommand;
+import org.beatrice.diploma_new_pharmacy.domain.product.dto.request.AddProductRequest;
+import org.beatrice.diploma_new_pharmacy.domain.product.dto.request.UpdateProductRequest;
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.MedicineResponse;
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.ProductResponse;
 import org.beatrice.diploma_new_pharmacy.domain.product.exception.ProductNotFoundException;
@@ -36,14 +36,14 @@ public class ProductService {
     private final CategoryService categoryService;
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
-    public ProductResponse addProduct(AddProductCommand cmd) {
+    public ProductResponse addProduct(AddProductRequest request) {
         Product newProduct = Product.builder()
-                .price(cmd.price())
-                .description(cmd.description())
-                .name(cmd.name())
-                .manufacturer(cmd.manufacturer())
-                .imageUrl(cmd.imageUrl())
-                .category(categoryService.getCategoryEntityById(cmd.categoryId()))
+                .price(request.price())
+                .description(request.description())
+                .name(request.name())
+                .manufacturer(request.manufacturer())
+                .imageUrl(request.imageUrl())
+                .category(categoryService.getCategoryEntityById(request.categoryId()))
                 .build();
 
         return productMapper.toDto(productRepository.save(newProduct));
@@ -59,11 +59,11 @@ public class ProductService {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
-    public ProductResponse updateProduct(Integer productId, UpdateProductCommand cmd) {
-        log.debug("Product update request received: {}", cmd);
+    public ProductResponse updateProduct(Integer productId, UpdateProductRequest request) {
+        log.debug("Product update request received: {}", request);
         Product product = productRepository.findProductById(productId)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
-        productMapper.updateFromCommand(cmd, product);
+        productMapper.updateFromRequest(request, product);
 
         log.debug("Product updated: {}", product);
 
