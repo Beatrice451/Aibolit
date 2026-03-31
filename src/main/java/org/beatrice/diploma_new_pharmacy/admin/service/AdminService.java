@@ -2,6 +2,7 @@ package org.beatrice.diploma_new_pharmacy.admin.service;
 
 
 import lombok.RequiredArgsConstructor;
+import org.beatrice.diploma_new_pharmacy.domain.order.dto.command.UpdateOrderStatusCommand;
 import org.beatrice.diploma_new_pharmacy.domain.order.dto.response.OrderResponse;
 import org.beatrice.diploma_new_pharmacy.domain.order.service.OrderService;
 import org.beatrice.diploma_new_pharmacy.domain.order.specification.OrderFilter;
@@ -54,4 +55,12 @@ public class AdminService {
         return orderService.getOrders(filter, pageable);
     }
 
+    public OrderResponse getOrderById(Integer id) {
+        return orderService.getOrderById(id);
+    }
+
+
+    public OrderResponse updateOrderStatus(Integer id, UpdateOrderStatusCommand cmd) {
+        return orderService.updateOrderStatus(id, cmd);
+    }
 }

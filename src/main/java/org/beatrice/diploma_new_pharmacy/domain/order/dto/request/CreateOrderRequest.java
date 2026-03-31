@@ -1,4 +1,4 @@
-package org.beatrice.diploma_new_pharmacy.domain.order.dto;
+package org.beatrice.diploma_new_pharmacy.domain.order.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;

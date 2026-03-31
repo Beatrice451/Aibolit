@@ -9,6 +9,7 @@ import org.beatrice.diploma_new_pharmacy.domain.cart.model.CartItem;
 import org.beatrice.diploma_new_pharmacy.domain.cart.service.CartService;
 import org.beatrice.diploma_new_pharmacy.domain.order.dto.OrderIdentity;
 import org.beatrice.diploma_new_pharmacy.domain.order.dto.command.CreateOrderCommand;
+import org.beatrice.diploma_new_pharmacy.domain.order.dto.command.UpdateOrderStatusCommand;
 import org.beatrice.diploma_new_pharmacy.domain.order.dto.response.OrderResponse;
 import org.beatrice.diploma_new_pharmacy.domain.order.mapper.OrderMapper;
 import org.beatrice.diploma_new_pharmacy.domain.order.model.Order;
@@ -21,6 +22,7 @@ import org.beatrice.diploma_new_pharmacy.domain.pharmacy.model.Pharmacy;
 import org.beatrice.diploma_new_pharmacy.domain.pharmacy.service.PharmacyService;
 import org.beatrice.diploma_new_pharmacy.domain.user.model.User;
 import org.beatrice.diploma_new_pharmacy.domain.user.service.UserService;
+import org.beatrice.diploma_new_pharmacy.exception.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -57,6 +59,23 @@ public class OrderService {
         return orderPage.map(orderMapper::toDto);
     }
 
+    public OrderResponse getOrderById(Integer id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Order with id " + id + " not found"));
+        return orderMapper.toDto(order);
+    }
+
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'PHARMACIST')")
+    public OrderResponse updateOrderStatus(Integer id, UpdateOrderStatusCommand cmd) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Order with id " + id + " not found"));
+        orderMapper.updateFromCommand(cmd, order);
+
+        orderRepository.save(order);
+
+        return orderMapper.toDto(order);
+    }
 
     @Transactional
     public OrderResponse createOrder(CreateOrderCommand cmd) {

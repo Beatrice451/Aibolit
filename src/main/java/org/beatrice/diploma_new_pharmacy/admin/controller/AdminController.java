@@ -3,6 +3,8 @@ package org.beatrice.diploma_new_pharmacy.admin.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.beatrice.diploma_new_pharmacy.admin.service.AdminService;
+import org.beatrice.diploma_new_pharmacy.domain.order.dto.command.UpdateOrderStatusCommand;
+import org.beatrice.diploma_new_pharmacy.domain.order.dto.request.UpdateOrderStatusRequest;
 import org.beatrice.diploma_new_pharmacy.domain.order.dto.response.OrderResponse;
 import org.beatrice.diploma_new_pharmacy.domain.order.specification.OrderFilter;
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.command.AddCategoryCommand;
@@ -78,5 +80,19 @@ public class AdminController {
     @GetMapping("/order")
     public ResponseEntity<Page<OrderResponse>> getOrders(@ModelAttribute OrderFilter filter, Pageable pageable) {
         return ResponseEntity.ok(adminService.getOrdersByFilter(filter, pageable));
+    }
+
+    @GetMapping("/order/{id}")
+    public ResponseEntity<OrderResponse> getOrderById(@PathVariable Integer id) {
+        return ResponseEntity.ok(adminService.getOrderById(id));
+    }
+
+    @PatchMapping("/order/{id}")
+    public ResponseEntity<OrderResponse> updateOrderStatus(
+            @RequestBody UpdateOrderStatusRequest request,
+            @PathVariable Integer id
+    ) {
+        UpdateOrderStatusCommand cmd = new UpdateOrderStatusCommand(request.status());
+        return ResponseEntity.ok(adminService.updateOrderStatus(id, cmd));
     }
 }
