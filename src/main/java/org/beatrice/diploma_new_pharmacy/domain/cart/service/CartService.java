@@ -28,14 +28,27 @@ public class CartService {
     private final OrderOwnerService orderOwnerService;
 
 
-    // TODO extract common code from the two methods below
     public CartResponse addItemToCart(OrderIdentity identity, Integer productId, Short quantity) {
+        updateCartItemQuantity(identity, productId, quantity, true);
+        return getCartResponse(identity);
+    }
+
+    public CartResponse setItemInCart(OrderIdentity identity, Integer productId, Short newQuantity) {
+        updateCartItemQuantity(identity, productId, newQuantity, false);
+        return getCartResponse(identity);
+    }
+
+    private void updateCartItemQuantity(OrderIdentity identity, Integer productId, Short quantity, boolean isAddition) {
         Cart cart = getOrCreateCart(identity);
         Product product = productRepository.findProductById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("Product does not exist"));
         CartItem cartItem = cartItemRepository.findCartItemByProductAndCart(product, cart)
                 .map(existingItem -> {
-                    existingItem.setQuantity((short) (existingItem.getQuantity() + quantity));
+                    if (isAddition) {
+                        existingItem.setQuantity((short) (existingItem.getQuantity() + quantity));
+                    } else {
+                        existingItem.setQuantity(quantity);
+                    }
                     return existingItem;
                 })
                 .orElseGet(() -> {
@@ -46,27 +59,6 @@ public class CartService {
                     return item;
                 });
         cartItemRepository.save(cartItem);
-        return cartMapper.toDto(cart);
-    }
-
-    public CartResponse setItemInCart(OrderIdentity identity, Integer productId, Short newQuantity) {
-        Cart cart = getOrCreateCart(identity);
-        Product product = productRepository.findProductById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("Product does not exist"));
-        CartItem cartItem = cartItemRepository.findCartItemByProductAndCart(product, cart)
-                .map(existingItem -> {
-                    existingItem.setQuantity(newQuantity);
-                    return existingItem;
-                })
-                .orElseGet(() -> {
-                    CartItem item = new CartItem();
-                    item.setCart(cart);
-                    item.setProduct(product);
-                    item.setQuantity(newQuantity);
-                    return item;
-                });
-        cartItemRepository.save(cartItem);
-        return cartMapper.toDto(cart);
     }
 
     public BigDecimal countTotalCartAmount(Cart cart) {

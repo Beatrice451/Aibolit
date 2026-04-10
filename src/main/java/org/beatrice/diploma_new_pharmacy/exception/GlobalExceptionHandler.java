@@ -7,6 +7,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -64,7 +65,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({
-            IllegalArgumentException.class
+            IllegalArgumentException.class,
+            HttpMessageNotReadableException.class
     })
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(Exception ex, HttpServletRequest request) {
         return generateResponse(ex, request, HttpStatus.BAD_REQUEST);

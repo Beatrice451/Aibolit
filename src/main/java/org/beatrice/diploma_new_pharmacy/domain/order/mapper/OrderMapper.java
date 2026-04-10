@@ -20,6 +20,7 @@ public interface OrderMapper {
 
     List<OrderResponse> toDtoList(List<Order> orders);
 
+    @Mapping(target = "orderStatus", source = "status")
     void updateFromRequest(UpdateOrderStatusRequest request, @MappingTarget Order entity);
 
 
