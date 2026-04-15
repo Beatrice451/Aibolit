@@ -22,13 +22,4 @@ class AdminCategoryController {
                 .body(categoryService.addCategory(request));
     }
 
-    @GetMapping
-    public ResponseEntity<List<CategoryResponse>> getCategories() {
-        return ResponseEntity.ok(categoryService.getCategories());
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable Integer id) {
-        return ResponseEntity.ok(categoryService.getCategoryById(id));
-    }
 }

@@ -1,8 +1,10 @@
 package org.beatrice.diploma_new_pharmacy.domain.product.controller;
 
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.ProductFilter;
+import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.CategoryResponse;
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.MedicineResponse;
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.ProductResponse;
+import org.beatrice.diploma_new_pharmacy.domain.product.service.CategoryService;
 import org.beatrice.diploma_new_pharmacy.domain.product.service.ProductService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,9 +18,11 @@ import java.util.List;
 class ProductController {
 
     private final ProductService productService;
+    private final CategoryService categoryService;
 
-    ProductController(ProductService productService) {
+    ProductController(ProductService productService, CategoryService categoryService) {
         this.productService = productService;
+        this.categoryService = categoryService;
     }
 
     @GetMapping
@@ -38,5 +42,16 @@ class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getProductById(@PathVariable Integer id) {
         return ResponseEntity.ok(productService.getProductById(id));
+    }
+
+
+    @GetMapping
+    public ResponseEntity<List<CategoryResponse>> getCategories() {
+        return ResponseEntity.ok(categoryService.getCategories());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable Integer id) {
+        return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
 }
