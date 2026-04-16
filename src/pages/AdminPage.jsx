@@ -32,6 +32,7 @@ const AdminPage = () => {
 
   const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [categoryForm, setCategoryForm] = useState({ name: '', parentId: '' });
+  const [expandedCategories, setExpandedCategories] = useState({});
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -456,31 +457,57 @@ const AdminPage = () => {
                 </div>
               )}
               
-              <div className="admin-table">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Название</th>
-                      <th>Подкатегории</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {categoriesList.map(category => (
-                      <tr key={category.id}>
-                        <td>{category.id}</td>
-                        <td>{category.name}</td>
-                        <td>{category.children?.length || 0}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="admin-categories-tree">
+                {categoriesList.map(category => (
+                  <CategoryTreeItem 
+                    key={category.id} 
+                    category={category} 
+                    expanded={expandedCategories}
+                    onToggle={setExpandedCategories}
+                    depth={0}
+                  />
+                ))}
               </div>
             </div>
           )}
         </div>
       </div>
     </>
+  );
+};
+
+const CategoryTreeItem = ({ category, expanded, onToggle, depth }) => {
+  const hasChildren = category.children && category.children.length > 0;
+  const isExpanded = expanded[category.id];
+  
+  return (
+    <div className="category-tree-item" style={{ marginLeft: depth * 20 }}>
+      <div className="category-tree-item__row">
+        {hasChildren && (
+          <button 
+            className="category-tree-item__toggle"
+            onClick={() => onToggle(prev => ({ ...prev, [category.id]: !prev[category.id] }))}
+          >
+            {isExpanded ? '▼' : '▶'}
+          </button>
+        )}
+        <span className="category-tree-item__name">{category.name}</span>
+        <span className="category-tree-item__id">#{category.id}</span>
+      </div>
+      {isExpanded && hasChildren && (
+        <div className="category-tree-item__children">
+          {category.children.map(child => (
+            <CategoryTreeItem 
+              key={child.id} 
+              category={child} 
+              expanded={expanded}
+              onToggle={onToggle}
+              depth={depth + 1}
+            />
+          ))}
+        </div>
+      )}
+    </div>
   );
 };
 
