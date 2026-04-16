@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import adminApi from '../api/adminService';
+import authApi from '../api/authService';
 
 const API_BASE_URL = 'http://localhost:1488';
 
@@ -14,6 +15,8 @@ const AdminPage = () => {
   const [error, setError] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [accessDenied, setAccessDenied] = useState(false);
+  const [checkingAccess, setCheckingAccess] = useState(true);
   
   const [showProductForm, setShowProductForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
@@ -29,16 +32,7 @@ const AdminPage = () => {
   const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [categoryForm, setCategoryForm] = useState({ name: '', parentId: '' });
 
-  useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-    loadData();
-  }, []);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -54,16 +48,66 @@ const AdminPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchQuery]);
+
+  const checkAccessAndLoad = useCallback(async () => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+    
+    const adminStatus = await authApi.isAdmin();
+    if (!adminStatus) {
+      setAccessDenied(true);
+      setCheckingAccess(false);
+      return;
+    }
+    
+    setCheckingAccess(false);
+    loadData();
+  }, [navigate, loadData]);
+
+  useEffect(() => {
+    checkAccessAndLoad();
+  }, [checkAccessAndLoad]);
+
+  useEffect(() => {
+    if (!checkingAccess && !accessDenied) {
+      loadData();
+    }
+  }, [loadData, checkingAccess, accessDenied, activeTab]);
+
+  if (accessDenied) {
+    return (
+      <>
+        <Header />
+        <div className="admin-forbidden">
+          <div className="admin-forbidden__content">
+            <div className="admin-forbidden__icon">🚫</div>
+            <h1 className="admin-forbidden__code">401</h1>
+            <p className="admin-forbidden__text">Доступ запрещён</p>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (checkingAccess) {
+    return (
+      <>
+        <Header />
+        <div className="admin-page">
+          <div className="container">Проверка прав доступа...</div>
+        </div>
+      </>
+    );
+  }
 
   const handleSearch = (e) => {
     e.preventDefault();
     loadData();
   };
-
-  useEffect(() => {
-    loadData();
-  }, [activeTab, searchQuery]);
 
   const flattenCategories = (nodes, depth = 0, parentPath = '') => {
     let result = [];

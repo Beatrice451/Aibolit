@@ -245,3 +245,35 @@
   margin-bottom: 20px;
   font-family: 'Orelega One', sans-serif;
 }
+
+.admin-forbidden {
+  min-height: calc(100vh - 80px);
+  background: var(--color-beige);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  
+  &__content {
+    text-align: center;
+  }
+  
+  &__icon {
+    font-size: 120px;
+    margin-bottom: 20px;
+  }
+  
+  &__code {
+    font-family: 'Orelega One', sans-serif;
+    font-size: 80px;
+    color: var(--color-red);
+    margin: 0 0 10px 0;
+  }
+  
+  &__text {
+    font-family: 'Orelega One', sans-serif;
+    font-size: 24px;
+    color: var(--color-dark-blue);
+    margin: 0;
+  }
+}
