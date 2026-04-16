@@ -16,6 +16,7 @@ const AdminPage = () => {
   const [uploading, setUploading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [accessDenied, setAccessDenied] = useState(false);
+  const [accessDeniedReason, setAccessDeniedReason] = useState(null);
   const [checkingAccess, setCheckingAccess] = useState(true);
   
   const [showProductForm, setShowProductForm] = useState(false);
@@ -53,13 +54,16 @@ const AdminPage = () => {
   const checkAccessAndLoad = useCallback(async () => {
     const token = localStorage.getItem('accessToken');
     if (!token) {
-      navigate('/login');
+      setAccessDenied(true);
+      setAccessDeniedReason('no-auth');
+      setCheckingAccess(false);
       return;
     }
     
     const adminStatus = await authApi.isAdmin();
     if (!adminStatus) {
       setAccessDenied(true);
+      setAccessDeniedReason('not-admin');
       setCheckingAccess(false);
       return;
     }
@@ -84,9 +88,17 @@ const AdminPage = () => {
         <Header />
         <div className="admin-forbidden">
           <div className="admin-forbidden__content">
-            <div className="admin-forbidden__icon">🚫</div>
+            <img 
+              src="/sticker.webp" 
+              alt="Доступ запрещён" 
+              className="admin-forbidden__image"
+            />
             <h1 className="admin-forbidden__code">401</h1>
-            <p className="admin-forbidden__text">Доступ запрещён</p>
+            <p className="admin-forbidden__text">
+              {accessDeniedReason === 'no-auth' 
+                ? 'Требуется авторизация' 
+                : 'Доступ запрещён'}
+            </p>
           </div>
         </div>
       </>
