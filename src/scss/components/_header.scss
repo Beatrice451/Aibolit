@@ -1,0 +1,123 @@
+
+.header {
+  background: var(--color-dark-blue);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  &__inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+  }
+
+  &__logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    
+    h1 {
+      font-family: 'Oi', cursive;
+      font-size: 28px;
+      color: var(--color-beige);
+      margin: 0;
+      letter-spacing: 1px;
+      
+      span {
+        color: var(--color-red);
+      }
+    }
+    
+    p {
+      font-size: 12px;
+      color: var(--color-blue);
+      margin: 0;
+      font-family: 'Orelega One', sans-serif;
+    }
+  }
+
+  &__links {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  &__cart, &__profile, &__login, &__register {
+    text-decoration: none;
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-weight: 500;
+    transition: all 0.3s;
+    font-family: 'Orelega One', sans-serif;
+  }
+
+  &__cart {
+     background: var(--color-red);
+    color: var(--color-beige);
+    border: none;
+    
+    &:hover {
+      color: #b32410;
+      background: var(--color-beige);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+
+  &__profile {
+     background: var(--color-red);
+    color: var(--color-beige);
+    border: none;
+    
+    &:hover {
+      color: #b32410;
+      background: var(--color-beige);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+
+  &__login {
+     background: var(--color-red);
+    color: var(--color-beige);
+    border: none;
+    
+    &:hover {
+      color: #b32410;
+      background: var(--color-beige);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+
+  &__register {
+    background: var(--color-red);
+    color: var(--color-beige);
+    border: none;
+    
+    &:hover {
+      color: #b32410;
+      background: var(--color-beige);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    &__inner {
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    &__links {
+      width: 100%;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+  }
+}
