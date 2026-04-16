@@ -1,6 +1,7 @@
 package org.beatrice.diploma_new_pharmacy.domain.auth.security;
 
 import org.beatrice.diploma_new_pharmacy.domain.auth.service.CustomUserDetailsService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -28,6 +29,9 @@ class SecurityConfiguration {
         this.customUserDetailsService = customUserDetailsService;
     }
 
+    @Value("${media.path}")
+    private String mediaPath;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -40,10 +44,13 @@ class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
                         auth -> auth
-                                .requestMatchers("/api/auth/**", "/api/products/**", "/api/cart/", "/api/cart/**").permitAll()
+                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                                .requestMatchers("/api/auth/**", "/api/products/**", "/api/cart/",
+                                                 "/api/cart/**", "/api/categories", "/api/categories/**").permitAll()
+                                .requestMatchers("/api/orders").permitAll()
                                 .requestMatchers("/actuator/", "/actuator/**").permitAll() // TODO remove
                                 .requestMatchers("/api/files/**").authenticated()
-                                .requestMatchers(HttpMethod.GET, "/media/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, mediaPath + "**").permitAll()
                                 .requestMatchers("/swagger-ui/**", "/v3/**", "/swagger-ui.html").permitAll() // TODO remove
                                 .requestMatchers("/api/users/whoami").permitAll()
                                 .requestMatchers("/api/admin/**").hasRole("ADMIN")

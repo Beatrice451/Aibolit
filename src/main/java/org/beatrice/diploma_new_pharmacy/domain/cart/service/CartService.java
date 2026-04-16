@@ -73,6 +73,11 @@ public class CartService {
         cart.getItems().clear();
     }
 
+    public void truncateCart(OrderIdentity identity) {
+        Cart cart = getOrCreateCart(identity);
+        truncateCart(cart);
+    }
+
 
     public CartResponse getCartResponse(OrderIdentity identity) {
         Cart cart = getOrCreateCart(identity);
