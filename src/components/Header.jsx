@@ -1,8 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import authApi from '../api/authService';
 
 const Header = () => {
+  const [isAdmin, setIsAdmin] = useState(false);
   const token = localStorage.getItem('accessToken');
+
+  useEffect(() => {
+    if (token) {
+      authApi.isAdmin().then(setIsAdmin).catch(() => setIsAdmin(false));
+    }
+  }, [token]);
 
   return (
     <div className="header">
@@ -21,9 +29,16 @@ const Header = () => {
             </Link>
             
             {token ? (
-              <Link to="/profile" className="header__profile">
-                👤 Профиль
-              </Link>
+              <>
+                {isAdmin && (
+                  <Link to="/admin" className="header__admin">
+                    ⚙️ Админ
+                  </Link>
+                )}
+                <Link to="/profile" className="header__profile">
+                  👤 Профиль
+                </Link>
+              </>
             ) : (
               <>
                 <Link to="/login" className="header__login">

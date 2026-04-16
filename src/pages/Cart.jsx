@@ -5,10 +5,12 @@ import cartApi from '../api/cartService';
 
 const API_BASE_URL = 'http://localhost:1488';
 
-const getImageUrl = (url) => {
-  if (!url) return null;
-  if (url.startsWith('http')) return url;
-  return `${API_BASE_URL}/${url}`;
+const getImageUrl = (imagePath) => {
+  if (!imagePath) return null;
+  if (imagePath.startsWith('http')) return imagePath;
+  // Handle paths like "media/filename.jpg" or "/media/filename.jpg"
+  const cleanPath = imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
+  return `${API_BASE_URL}${cleanPath}`;
 };
 
 const globalNotifications = [];
@@ -163,10 +165,13 @@ const Cart = () => {
                 <div key={item.productId} className="cart-item">
                   <div className="cart-item__image">
                     {item.productImage ? (
-                      <img src={getImageUrl(item.productImage)} alt={item.productName} />
-                    ) : (
-                      <span className="cart-item__placeholder">💊</span>
-                    )}
+                      <img 
+                        src={getImageUrl(item.productImage)} 
+                        alt={item.productName}
+                        onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+                      />
+                    ) : null}
+                    <span className="cart-item__placeholder" style={item.productImage ? { display: 'none' } : {}}>💊</span>
                   </div>
                   <div className="cart-item__info">
                     <h3 className="cart-item__title">{item.productName}</h3>

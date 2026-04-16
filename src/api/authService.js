@@ -36,6 +36,15 @@ const authApi = {
     return response.data;
   },
 
+  isAdmin: async () => {
+    try {
+      const user = await axiosInstance.get('/api/users/whoami');
+      return user.data.userRoles?.some(role => role.roleName === 'ADMIN');
+    } catch {
+      return false;
+    }
+  },
+
   setAuthHeader: (token) => {
     if (token) {
       axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;

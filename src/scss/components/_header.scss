@@ -105,6 +105,25 @@
       box-shadow: var(--shadow-sm);
     }
   }
+
+  &__admin {
+    background: var(--color-blue);
+    color: var(--color-beige);
+    border: none;
+    text-decoration: none;
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-weight: 500;
+    transition: all 0.3s;
+    font-family: 'Orelega One', sans-serif;
+    
+    &:hover {
+      color: var(--color-blue);
+      background: var(--color-beige);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+  }
 }
 
 @media (max-width: 768px) {
