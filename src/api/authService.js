@@ -2,7 +2,9 @@ import axiosInstance, { initAuth } from './axiosInstance';
 
 const authApi = {
   login: async (email, password) => {
-    const response = await axiosInstance.post('/api/auth/login', { email, password });
+    const response = await axiosInstance.post('/api/auth/login', { email, password }, {
+      withCredentials: true
+    });
     const { accessToken } = response.data;
     if (accessToken) {
       localStorage.setItem('accessToken', accessToken);

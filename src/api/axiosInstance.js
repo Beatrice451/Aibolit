@@ -48,9 +48,9 @@ axiosInstance.interceptors.response.use(
       
       try {
         console.log('[Auth] Token expired, attempting refresh...');
-        const token = localStorage.getItem('accessToken');
+        // Backend expects refresh token in cookies, not in Authorization header
+        // Cookie will be sent automatically with withCredentials: true
         const response = await axiosInstance.post('/api/auth/refresh', {}, {
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
           withCredentials: true
         });
         
