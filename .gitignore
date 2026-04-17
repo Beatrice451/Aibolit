@@ -23,9 +23,9 @@ backend/out/
 .settings/
 .vscode/
 
-# Frontend
+# Frontend (Vite)
 frontend/node_modules/
-frontend/build/
+frontend/dist/
 frontend/.env
 frontend/.env.local
 frontend/.env.development.local
