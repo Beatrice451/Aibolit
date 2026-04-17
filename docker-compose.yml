@@ -24,7 +24,7 @@ services:
   app:
     env_file:
       - .env
-    build: .
+    build: backend
     container_name: spring_app
     depends_on:
       db:
