@@ -10,7 +10,7 @@ services:
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./db/init:/docker-entrypoint-initdb.d
+      - ./backend/db/init:/docker-entrypoint-initdb.d
     ports:
       - "5434:5432"
 
@@ -51,6 +51,16 @@ services:
       JWT_SECRET_KEY: ${JWT_SECRET_KEY:?JWT_SECRET_KEY var is required in .env file}
       SPRING_ADMIN_LOGIN: ${SPRING_ADMIN_LOGIN:?SPRING_ADMIN_LOGIN var is required in .env file}
       SPRING_ADMIN_PASSWORD: ${SPRING_ADMIN_PASSWORD:?SPRING_ADMIN_PASSWORD var is required in .env file}
+
+
+  frontend:
+    build: frontend
+    container_name: frontend_app
+    depends_on:
+      - app
+    ports:
+      - "8080:80"
+    restart: unless-stopped
 
 volumes:
   postgres_data:
