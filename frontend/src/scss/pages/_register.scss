@@ -1,0 +1,228 @@
+
+
+
+// ========== СТРАНИЦА РЕГИСТРАЦИИ (REGISTER) ==========
+.register-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--color-beige) 0%, var(--color-light-blue) 100%);
+  padding: 40px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.register-block {
+  max-width: 520px;
+  width: 100%;
+  margin: 0 auto;
+  background: var(--color-white);
+  border-radius: 32px;
+  padding: 48px 40px;
+  box-shadow: var(--shadow-xl);
+  animation: slideUp 0.5s ease;
+
+  &__header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  &__icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+  }
+
+  &__title {
+    font-family: 'Oi', cursive;
+    font-size: 32px;
+    color: var(--color-dark-blue);
+  }
+
+  &__subtitle {
+    color: var(--color-blue);
+    font-size: 14px;
+    margin-top: 8px;
+  }
+}
+
+.register-form {
+  &__group {
+    margin-bottom: 24px;
+  }
+
+  &__label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-dark-blue);
+    margin-bottom: 8px;
+    font-family: 'Orelega One', sans-serif;
+  }
+
+  &__input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid var(--color-light-blue);
+    border-radius: 20px;
+    font-size: 16px;
+    transition: all 0.3s;
+    outline: none;
+    font-family: 'Orelega One', sans-serif;
+    background: var(--color-white);
+
+    &:focus {
+      border-color: var(--color-blue);
+      box-shadow: 0 0 0 3px rgba(49, 128, 159, 0.1);
+    }
+
+    &::placeholder {
+      color: var(--color-light-blue);
+      opacity: 0.7;
+    }
+
+    &.error {
+      border-color: var(--color-red);
+      
+      &:focus {
+        box-shadow: 0 0 0 3px rgba(205, 43, 20, 0.1);
+      }
+    }
+  }
+
+  &__btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    margin-top: 16px;
+    font-family: 'Orelega One', sans-serif;
+
+    &--primary {
+      background: var(--color-red);
+      color: var(--color-white);
+
+      &:hover {
+        background: #b32410;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-sm);
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+    }
+  }
+
+  &__error {
+    color: var(--color-red);
+    font-size: 13px;
+    margin-top: 6px;
+    padding-left: 12px;
+  }
+
+  &__error-global {
+    color: var(--color-red);
+    font-size: 14px;
+    margin-bottom: 16px;
+    text-align: center;
+    padding: 10px;
+    background: rgba(205, 43, 20, 0.1);
+    border-radius: 12px;
+  }
+
+  &__success {
+    color: var(--color-blue);
+    font-size: 14px;
+    margin-bottom: 16px;
+    text-align: center;
+    padding: 10px;
+    background: rgba(49, 128, 159, 0.1);
+    border-radius: 12px;
+  }
+
+  &__footer {
+    text-align: center;
+    margin-top: 24px;
+    color: var(--color-blue);
+    font-size: 14px;
+
+    a {
+      color: var(--color-red);
+      text-decoration: none;
+      font-weight: 600;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  &__terms {
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--color-blue);
+
+    input {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: var(--color-red);
+    }
+
+    label {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    a {
+      color: var(--color-red);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Адаптивность для страницы регистрации
+@media (max-width: 480px) {
+  .register-block {
+    padding: 32px 24px;
+  }
+
+  .register-block__title {
+    font-size: 28px;
+  }
+
+  .register-block__icon {
+    font-size: 48px;
+  }
+
+  .register-form__group {
+    margin-bottom: 18px;
+  }
+
+  .register-form__input {
+    padding: 12px 14px;
+  }
+}

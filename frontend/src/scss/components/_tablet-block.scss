@@ -1,0 +1,143 @@
+
+
+.tablet-block {
+  background: var(--color-white);
+  border-radius: 16px;
+  padding: 20px 14px;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-light-blue);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-red), var(--color-blue));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-xl);
+    
+    &::before {
+      transform: scaleX(1);
+    }
+  }
+
+  &__image {
+    font-size: 48px;
+    margin-bottom: 16px;
+    height: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+
+    img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  &__title {
+    font-family: 'Oi', cursive;
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--color-dark-blue);
+    margin-bottom: 12px;
+    min-height: 48px;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  &__price {
+    font-size: 22px;
+    font-weight: bold;
+    color: var(--color-red);
+    margin-bottom: 16px;
+    font-family: 'Orelega One', sans-serif;
+  }
+
+  &__quantity-selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  &__btn {
+    width: 100%;
+    background: var(--color-dark-blue);
+    color: var(--color-beige);
+    border: none;
+    padding: 12px;
+    border-radius: 40px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Orelega One', sans-serif;
+
+    &:hover {
+      background: var(--color-dark-blue);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+}
+
+.quantity-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 2px solid var(--color-light-blue);
+  background: var(--color-white);
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-dark-blue);
+
+  &:hover:not(:disabled) {
+    background: var(--color-light-blue);
+    border-color: var(--color-blue);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &--minus {
+    color: var(--color-red);
+  }
+
+  &--plus {
+    color: var(--color-blue);
+  }
+}
+
+.quantity-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-dark-blue);
+  min-width: 40px;
+  text-align: center;
+  font-family: 'Orelega One', sans-serif;
+}

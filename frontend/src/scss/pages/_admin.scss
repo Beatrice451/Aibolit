@@ -1,0 +1,340 @@
+.admin-page {
+  min-height: 100vh;
+  background: var(--color-beige);
+  padding: 40px 20px;
+
+  h1 {
+    font-family: 'Oi', cursive;
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--color-dark-blue);
+  }
+}
+
+.admin-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.admin-tab {
+  padding: 12px 24px;
+  border: 2px solid var(--color-red);
+  background: var(--color-white);
+  color: var(--color-red);
+  border-radius: 30px;
+  cursor: pointer;
+  font-family: 'Orelega One', sans-serif;
+  font-size: 16px;
+  transition: all 0.3s;
+
+  &:hover {
+    background: var(--color-red);
+    color: var(--color-white);
+  }
+
+  &.active {
+    background: var(--color-red);
+    color: var(--color-white);
+  }
+}
+
+.admin-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  font-family: 'Orelega One', sans-serif;
+  background: var(--color-dark-blue);
+  color: var(--color-beige);
+  transition: all 0.3s;
+
+  &:hover {
+    background: var(--color-blue);
+  }
+
+  &--primary {
+    background: var(--color-red);
+    color: var(--color-white);
+    &:hover {
+      background: #b32410;
+    }
+  }
+
+  &--small {
+    padding: 6px 12px;
+    font-size: 12px;
+    margin-right: 5px;
+  }
+
+  &--danger {
+    background: #dc3545;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.admin-search {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+
+  input {
+    flex: 1;
+    padding: 10px 16px;
+    border: 2px solid var(--color-light-blue);
+    border-radius: 30px;
+    font-family: 'Orelega One', sans-serif;
+    font-size: 14px;
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-red);
+    }
+  }
+}
+
+.admin-content {
+  background: var(--color-white);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+}
+
+.admin-table {
+  margin-top: 24px;
+  overflow-x: auto;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--color-light-blue);
+  }
+
+  th {
+    font-family: 'Orelega One', sans-serif;
+    background: var(--color-beige);
+  }
+
+  td {
+    font-family: 'Orelega One', sans-serif;
+  }
+
+  &__img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+}
+
+.admin-form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.admin-form {
+  background: var(--color-white);
+  border-radius: 20px;
+  padding: 30px;
+  min-width: 400px;
+  max-width: 90%;
+
+  h3 {
+    font-family: 'Orelega One', sans-serif;
+    margin-bottom: 20px;
+    color: var(--color-dark-blue);
+  }
+
+  &__group {
+    margin-bottom: 15px;
+
+    label {
+      display: block;
+      font-family: 'Orelega One', sans-serif;
+      margin-bottom: 5px;
+      color: var(--color-dark-blue);
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid var(--color-light-blue);
+      border-radius: 8px;
+      font-family: 'Orelega One', sans-serif;
+      font-size: 14px;
+
+      &:focus {
+        outline: none;
+        border-color: var(--color-red);
+      }
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid var(--color-light-blue);
+      border-radius: 8px;
+      font-family: 'Orelega One', sans-serif;
+      font-size: 14px;
+      background: var(--color-white);
+
+      &:focus {
+        outline: none;
+        border-color: var(--color-red);
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  &__preview {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__uploading {
+    display: block;
+    margin-top: 5px;
+    color: var(--color-red);
+    font-size: 12px;
+  }
+}
+
+.admin-error {
+  background: #fee;
+  color: #c00;
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-family: 'Orelega One', sans-serif;
+}
+
+.admin-forbidden {
+  min-height: calc(100vh - 80px);
+  background: var(--color-beige);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  
+  &__content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  &__image {
+    width: 300px;
+    height: 300px;
+    object-fit: contain;
+    margin-bottom: 20px;
+    border-radius: 20px;
+  }
+  
+  &__code {
+    font-family: 'Orelega One', sans-serif;
+    font-size: 80px;
+    color: var(--color-red);
+    margin: 0 0 10px 0;
+  }
+  
+  &__text {
+    font-family: 'Orelega One', sans-serif;
+    font-size: 24px;
+    color: var(--color-dark-blue);
+    margin: 0;
+  }
+}
+
+.category-tree-item {
+  margin-bottom: 8px;
+  
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--color-white);
+    border-radius: 8px;
+    border: 1px solid var(--color-light-blue);
+    transition: all 0.2s;
+    
+    &:hover {
+      border-color: var(--color-blue);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+  
+  &__toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 4px;
+    color: var(--color-dark-blue);
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    
+    &:hover {
+      background: var(--color-light-blue);
+    }
+  }
+  
+  &__name {
+    flex: 1;
+    font-family: 'Orelega One', sans-serif;
+    font-size: 16px;
+    color: var(--color-dark-blue);
+  }
+  
+  &__id {
+    font-size: 12px;
+    color: #999;
+  }
+  
+  &__children {
+    margin-top: 4px;
+  }
+}

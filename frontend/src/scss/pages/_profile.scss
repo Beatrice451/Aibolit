@@ -1,0 +1,327 @@
+
+
+// ========== СТРАНИЦА ПРОФИЛЯ (PROFILE) ==========
+.profile-page {
+  min-height: 100vh;
+  background: var(--color-beige);
+  padding: 40px 20px;
+}
+
+.profile-block {
+  max-width: 800px;
+  margin: 0 auto;
+  background: var(--color-white);
+  border-radius: 40px;
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+  animation: fadeInUp 0.5s ease;
+
+  &__header {
+    background: linear-gradient(135deg, var(--color-dark-blue) 0%, var(--color-blue) 100%);
+    padding: 48px 40px;
+    text-align: center;
+    color: var(--color-white);
+    position: relative;
+  }
+
+  &__avatar {
+    background: var(--color-white);
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 48px;
+    color: var(--color-blue);
+    box-shadow: var(--shadow-lg);
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+
+  &__name {
+    font-family: 'Oi', cursive;
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+
+  &__date {
+    font-size: 14px;
+    opacity: 0.9;
+  }
+
+  &__content {
+    padding: 40px;
+  }
+
+  &__logout {
+    width: 100%;
+    background: none;
+    border: 2px solid var(--color-light-blue);
+    color: var(--color-red);
+    padding: 14px;
+    border-radius: 40px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 16px;
+    font-family: 'Orelega One', sans-serif;
+
+    &:hover {
+      background: rgba(205, 43, 20, 0.05);
+      border-color: var(--color-red);
+      transform: translateY(-2px);
+    }
+  }
+}
+
+.profile-card {
+  background: var(--color-beige);
+  border-radius: 28px;
+  padding: 28px;
+  margin-bottom: 32px;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+  }
+
+  &__title {
+    font-family: 'Oi', cursive;
+    font-size: 22px;
+    font-weight: normal;
+    color: var(--color-dark-blue);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--color-light-blue);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__label {
+    font-weight: 600;
+    color: var(--color-dark-blue);
+    font-size: 15px;
+  }
+
+  &__value {
+    color: var(--color-blue);
+    font-size: 15px;
+    text-align: right;
+    word-break: break-word;
+    max-width: 60%;
+  }
+}
+
+.bonus-card {
+  background: linear-gradient(135deg, var(--color-beige) 0%, #fff5e8 100%);
+  border-radius: 28px;
+  padding: 28px;
+  margin-bottom: 32px;
+  border: 2px solid var(--color-light-blue);
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+  }
+
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Oi', cursive;
+    font-size: 18px;
+    font-weight: normal;
+    color: var(--color-red);
+    margin-bottom: 16px;
+  }
+
+  &__points {
+    font-size: 48px;
+    font-weight: 800;
+    color: var(--color-red);
+    font-family: 'Oi', cursive;
+    margin: 16px 0 8px;
+  }
+
+  &__info {
+    font-size: 12px;
+    color: var(--color-blue);
+    margin-top: 8px;
+    line-height: 1.4;
+  }
+
+  &__progress {
+    margin-top: 20px;
+    
+    &-bar {
+      height: 8px;
+      background: var(--color-light-blue);
+      border-radius: 10px;
+      overflow: hidden;
+      
+      div {
+        height: 100%;
+        background: var(--color-red);
+        border-radius: 10px;
+        transition: width 0.5s ease;
+      }
+    }
+    
+    &-text {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--color-blue);
+    }
+  }
+}
+
+.orders-card {
+  background: var(--color-beige);
+  border-radius: 28px;
+  padding: 28px;
+  margin-bottom: 32px;
+
+  &__title {
+    font-family: 'Oi', cursive;
+    font-size: 22px;
+    font-weight: normal;
+    color: var(--color-dark-blue);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--color-blue);
+    line-height: 1.6;
+    
+    small {
+      display: block;
+      margin-top: 12px;
+      font-size: 12px;
+      opacity: 0.8;
+    }
+  }
+
+  &__item {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--color-light-blue);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &-info {
+      flex: 1;
+    }
+
+    &-title {
+      font-weight: 600;
+      color: var(--color-dark-blue);
+      margin-bottom: 4px;
+    }
+
+    &-date {
+      font-size: 12px;
+      color: var(--color-blue);
+    }
+
+    &-price {
+      color: var(--color-red);
+      font-weight: 600;
+      font-size: 18px;
+    }
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Адаптивность для страницы профиля
+@media (max-width: 768px) {
+  .profile-block {
+    border-radius: 30px;
+  }
+
+  .profile-block__header {
+    padding: 32px 24px;
+  }
+
+  .profile-block__content {
+    padding: 24px;
+  }
+
+  .profile-block__name {
+    font-size: 24px;
+  }
+
+  .profile-card__row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .profile-card__value {
+    max-width: 100%;
+    text-align: left;
+  }
+
+  .bonus-card__points {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-block__header {
+    padding: 24px 20px;
+  }
+
+  .profile-block__avatar {
+    width: 80px;
+    height: 80px;
+    font-size: 36px;
+  }
+
+  .profile-block__name {
+    font-size: 20px;
+  }
+
+  .profile-card, .bonus-card, .orders-card {
+    padding: 20px;
+  }
+
+  .profile-card__title, .orders-card__title {
+    font-size: 18px;
+  }
+}

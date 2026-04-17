@@ -1,0 +1,60 @@
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 30px 0;
+  flex-wrap: wrap;
+
+  &__btn {
+    background-color: var(--color-red, #CD2B14);
+    color: var(--color-beige, #F8E8CF);
+    border: none;
+    border-radius: 30px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-family: 'Orelega One', sans-serif;
+    font-size: 14px;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    white-space: nowrap;
+
+    &:hover:not(:disabled) {
+      background-color: #b32410;
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  &__page {
+    background-color: var(--color-dark-blue, #2C2C2C);
+    color: var(--color-beige, #F8E8CF);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    font-family: 'Orelega One', sans-serif;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background-color: var(--color-blue, #4A6C9C);
+    }
+
+    &.active {
+      background-color: var(--color-red, #CD2B14);
+      color: var(--color-white, #fff);
+      cursor: default;
+    }
+  }
+}
