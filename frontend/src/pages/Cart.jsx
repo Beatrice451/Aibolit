@@ -3,14 +3,11 @@ import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import cartApi from '../api/cartService';
 
-const API_BASE_URL = 'http://localhost:1488';
-
 const getImageUrl = (imagePath) => {
   if (!imagePath) return null;
   if (imagePath.startsWith('http')) return imagePath;
-  // Handle paths like "media/filename.jpg" or "/media/filename.jpg"
-  const cleanPath = imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
-  return `${API_BASE_URL}${cleanPath}`;
+  // Add /media/ prefix
+  return imagePath.startsWith('/') ? imagePath : `/media/${imagePath}`;
 };
 
 const globalNotifications = [];

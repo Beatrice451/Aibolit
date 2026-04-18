@@ -6,7 +6,7 @@ import Tabletblock from '../components/Tabletblock';
 import Pagination from '../components/Pagination';
 import productApi from '../api/productService';
 
-const API_BASE_URL = 'http://localhost:1488';
+const API_BASE_URL = '';
 
 const MainPage = () => {
   const [products, setProducts] = useState([]);
@@ -126,7 +126,7 @@ const MainPage = () => {
                     product.imageUrl?.startsWith('http')
                       ? product.imageUrl
                       : product.imageUrl
-                        ? `${API_BASE_URL}${product.imageUrl.startsWith('/') ? '' : '/'}${product.imageUrl}`
+                        ? `/media/${product.imageUrl.startsWith('/') ? '' : ''}${product.imageUrl}`
                         : '/placeholder.png'
                   }
                 />

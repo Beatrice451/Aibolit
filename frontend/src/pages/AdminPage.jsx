@@ -4,7 +4,7 @@ import Header from '../components/Header';
 import adminApi from '../api/adminService';
 import authApi from '../api/authService';
 
-const API_BASE_URL = 'http://localhost:1488';
+const API_BASE_URL = '';
 
 const AdminPage = () => {
   const navigate = useNavigate();
@@ -237,9 +237,9 @@ const AdminPage = () => {
   const getImageUrl = (url) => {
     if (!url || typeof url !== 'string') return null;
     if (url.startsWith('http')) return url;
-    // Keep original path as-is
+    // Add /media/ prefix
     const cleanUrl = url.startsWith('/') ? url : '/' + url;
-    return `${API_BASE_URL}${cleanUrl}`;
+    return `/media${cleanUrl}`;
   };
 
   const flatCategories = flattenCategories(categoriesList);
