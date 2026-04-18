@@ -29,11 +29,12 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    ports:
-      - "1488:8080"
 
     volumes:
       - ./media:/app/media
+
+    ports:
+      - "1488:8080"
 
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]

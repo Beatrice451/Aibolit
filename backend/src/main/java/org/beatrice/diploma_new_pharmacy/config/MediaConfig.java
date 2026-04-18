@@ -13,7 +13,7 @@ public class MediaConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler(mediaPath + "**")
-                .addResourceLocations("file:" + mediaPath + "/");
+        registry.addResourceHandler("/media/**")
+                .addResourceLocations("file:" + (mediaPath.endsWith("/") ? mediaPath : mediaPath + "/"));
     }
 }

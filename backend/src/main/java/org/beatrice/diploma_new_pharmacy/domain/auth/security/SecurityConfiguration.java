@@ -50,7 +50,7 @@ class SecurityConfiguration {
                                 .requestMatchers("/api/orders").permitAll()
                                 .requestMatchers("/actuator/", "/actuator/**").permitAll() // TODO remove
                                 .requestMatchers("/api/files/**").authenticated()
-                                .requestMatchers(HttpMethod.GET, mediaPath + "**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/media/**").permitAll()
                                 .requestMatchers("/swagger-ui/**", "/v3/**", "/swagger-ui.html").permitAll() // TODO remove
                                 .requestMatchers("/api/users/whoami").permitAll()
                                 .requestMatchers("/api/admin/**").hasRole("ADMIN")

@@ -39,6 +39,6 @@ public class FileService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return mediaPath + fileName;
+        return fileName;
     }
 }

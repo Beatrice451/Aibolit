@@ -11,9 +11,9 @@ public class RefreshCookieFactory {
         return ResponseCookie.from("refreshToken", token)
                 .httpOnly(true)
                 .secure(false)
-                .path("/api/auth")
+                .path("/")
                 .maxAge(Duration.ofDays(30))
-                .sameSite("Strict")
+                .sameSite("Lax")
                 .build();
     }
 
@@ -21,7 +21,8 @@ public class RefreshCookieFactory {
         return ResponseCookie.from("refreshToken", "")
                 .httpOnly(true)
                 .secure(false)
-                .path("/api/auth")
+                .path("/")
+                .sameSite("Lax")
                 .maxAge(0)
                 .build();
     }
