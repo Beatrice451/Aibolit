@@ -20,6 +20,15 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Inte
 
     List<RefreshToken> findAllByUserAndRevokedFalse(User user);
 
+    @Modifying
+    @Query("""
+            UPDATE RefreshToken t
+            SET t.revoked = true, t.revokeReason = :reason
+            WHERE t.token = :token
+            AND t.revoked = false
+            AND t.expiryDate > :now
+            """)
+    int consumeToken(String token, String reason, Instant now);
 
     @Query("""
             SELECT t from RefreshToken t

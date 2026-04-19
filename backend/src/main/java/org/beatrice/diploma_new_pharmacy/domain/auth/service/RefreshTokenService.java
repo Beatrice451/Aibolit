@@ -19,20 +19,13 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class RefreshTokenService {
 
-
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtProperties jwtProperties;
     private final TokenRevocationService tokenRevocationService;
 
-    /**
-     * @return UUID representing refresh token
-     */
-//    Why UUID instead of JWT? UUID refresh token is stateful.
-//    I can't revoke JWT cause it's stateless but I can revoke UUID (until I store it in DB)
     @Transactional
     public RefreshToken create(User user) {
         return create(user, null);
-
     }
 
     @Transactional
@@ -48,29 +41,49 @@ public class RefreshTokenService {
         return refreshTokenRepository.save(refreshToken);
     }
 
-
-
+    /**
+     * Атомарный refresh токена.
+     * consumeToken атомарно помечает токен как revoked.
+     * Если updated == 0 - токен уже был использован (race condition).
+     */
     @Transactional
     public RefreshToken replaceToken(String previousTokenValue) {
-        RefreshToken previousToken = refreshTokenRepository.findByToken(previousTokenValue)
-                .orElseThrow(() -> new TokenNotFoundException("Refresh token not found"));
-        validate(previousToken);
+        // АТОМНАЯ операция: сразу помечаем токен revoked
+        int updated = refreshTokenRepository.consumeToken(previousTokenValue, "Token replaced", Instant.now());
+
+        if (updated == 0) {
+            // Токен уже был использован — race condition detected!
+            RefreshToken token = refreshTokenRepository.findByToken(previousTokenValue)
+                    .orElseThrow(() -> new TokenNotFoundException("Refresh token not found"));
+
+            // Если токен уже revoked — это reuse атака
+            if (token.getRevoked()) {
+                tokenRevocationService.revokeFamily(token.getTokenFamily(), "Reuse attack");
+                throw new RevokedTokenException("Token reuse detected. All tokens in family are revoked.");
+            }
+
+            // Если не истёк — неизвестная ошибка
+            if (token.getExpiryDate().isBefore(Instant.now())) {
+                throw new InvalidTokenException("Token expired");
+            }
+
+            throw new InvalidTokenException("Invalid refresh token");
+        }
+
+        // Токен успешно помечен revoked, продолжаем
+        RefreshToken previousToken = refreshTokenRepository.findByToken(previousTokenValue).get();
         previousToken.setIsCurrent(false);
+        refreshTokenRepository.save(previousToken);
+
+        // Создаём новый токен в той же семье
         RefreshToken newToken = create(previousToken.getUser(), previousToken.getTokenFamily());
-        tokenRevocationService.revoke(previousToken, "Token replaced", newToken);
         newToken.setIsCurrent(true);
+        refreshTokenRepository.save(newToken);
+
+        // Связываем old -> new
+        previousToken.setReplacedBy(newToken);
+        refreshTokenRepository.save(previousToken);
+
         return newToken;
-    }
-
-    @Transactional
-    public void validate(RefreshToken token) {
-        if (token.getRevoked()) {
-            tokenRevocationService.revokeFamily(token.getTokenFamily(), "Token reuse");
-            throw new RevokedTokenException("Token reuse detected");
-        }
-
-        if (token.getExpiryDate().isBefore(Instant.now())) {
-            throw new InvalidTokenException("Token expired");
-        }
     }
 }
