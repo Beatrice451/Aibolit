@@ -29,41 +29,48 @@ public class RefreshTokenService {
      */
 //    Why UUID instead of JWT? UUID refresh token is stateful.
 //    I can't revoke JWT cause it's stateless but I can revoke UUID (until I store it in DB)
+    @Transactional
     public RefreshToken create(User user) {
+        return create(user, null);
+
+    }
+
+    @Transactional
+    public RefreshToken create(User user, UUID family) {
         String token = UUID.randomUUID().toString();
         Instant expiryDate = Instant.now().plus(jwtProperties.getRefreshTokenTtl(), ChronoUnit.DAYS);
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setToken(token);
-        refreshToken.setUser(user);
+        refreshToken.setTokenFamily(family != null ? family : UUID.randomUUID());
         refreshToken.setExpiryDate(expiryDate);
         refreshToken.setRevoked(false);
+        refreshToken.setUser(user);
         return refreshTokenRepository.save(refreshToken);
-
     }
+
 
 
     @Transactional
-    public RefreshToken validate(String tokenValue) {
-
-        int updated = refreshTokenRepository.consumeToken(tokenValue, Instant.now());
-
-        if (updated == 0) {
-            RefreshToken existing = refreshTokenRepository.findRefreshTokenByToken(tokenValue)
-                    .orElseThrow(() -> new TokenNotFoundException("Refresh token not found"));
-
-            if (existing.getRevoked()) {
-                tokenRevocationService.revokeAllByUser(existing.getUser());
-                throw new RevokedTokenException("Token reuse detected. Every other token will be revoked for security reasons");
-            }
-
-            if (existing.getExpiryDate().isBefore(Instant.now())) {
-                throw new InvalidTokenException("Token expired");
-            }
-
-            throw new InvalidTokenException("Invalid refresh token");
-        }
-
-        return refreshTokenRepository.findRefreshTokenByToken(tokenValue).get();
+    public RefreshToken replaceToken(String previousTokenValue) {
+        RefreshToken previousToken = refreshTokenRepository.findByToken(previousTokenValue)
+                .orElseThrow(() -> new TokenNotFoundException("Refresh token not found"));
+        validate(previousToken);
+        previousToken.setIsCurrent(false);
+        RefreshToken newToken = create(previousToken.getUser(), previousToken.getTokenFamily());
+        tokenRevocationService.revoke(previousToken, "Token replaced", newToken);
+        newToken.setIsCurrent(true);
+        return newToken;
     }
 
+    @Transactional
+    public void validate(RefreshToken token) {
+        if (token.getRevoked()) {
+            tokenRevocationService.revokeFamily(token.getTokenFamily(), "Token reuse");
+            throw new RevokedTokenException("Token reuse detected");
+        }
+
+        if (token.getExpiryDate().isBefore(Instant.now())) {
+            throw new InvalidTokenException("Token expired");
+        }
+    }
 }

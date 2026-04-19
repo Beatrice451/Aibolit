@@ -10,28 +10,25 @@ import org.springframework.stereotype.Repository;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Integer> {
-    Optional<RefreshToken> findRefreshTokenByToken(String token);
+    Optional<RefreshToken> findByToken(String token);
 
     void deleteRefreshTokenByUser(User user);
 
     List<RefreshToken> findAllByUserAndRevokedFalse(User user);
 
-    @Modifying
-    @Query("""
-            UPDATE RefreshToken t
-            SET t.revoked = true
-            WHERE t.token = :token
-            AND t.revoked = false
-            AND t.expiryDate > :now
-            """)
-    int consumeToken(String token, Instant now);
 
-    @Modifying
     @Query("""
-            UPDATE RefreshToken t SET t.revoked = true WHERE t.token = :token
+            SELECT t from RefreshToken t
+            WHERE t.tokenFamily = :family
+            AND t.expiryDate > :now
+            AND t.revoked = false
             """)
-    void revokeByToken(String token);
+    List<RefreshToken> fintActiveByFamliy(UUID family, Instant now);
+
+    RefreshToken findByIsCurrentTrue();
+
 }

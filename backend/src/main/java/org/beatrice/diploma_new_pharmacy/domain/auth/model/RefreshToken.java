@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.beatrice.diploma_new_pharmacy.domain.user.model.User;
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Setter
 @Getter
@@ -34,5 +35,20 @@ public class RefreshToken {
     @NotNull
     @Column(name = "is_revoked", nullable = false)
     private Boolean revoked;
+
+    @NotNull
+    @Column(name = "token_family", nullable = false)
+    private UUID tokenFamily;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "replaced_by")
+    private RefreshToken replacedBy;
+
+    @NotNull
+    @Column(name = "is_current", nullable = false)
+    private Boolean isCurrent = true;
+
+    @Column(name = "revoke_reason")
+    private String revokeReason;
 
 }

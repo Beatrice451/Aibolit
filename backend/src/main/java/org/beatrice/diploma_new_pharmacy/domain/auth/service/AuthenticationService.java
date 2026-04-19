@@ -1,6 +1,7 @@
 package org.beatrice.diploma_new_pharmacy.domain.auth.service;
 
 import lombok.RequiredArgsConstructor;
+import org.beatrice.diploma_new_pharmacy.domain.auth.exception.TokenNotFoundException;
 import org.beatrice.diploma_new_pharmacy.domain.auth.model.RefreshToken;
 import org.beatrice.diploma_new_pharmacy.domain.auth.repository.RefreshTokenRepository;
 import org.beatrice.diploma_new_pharmacy.domain.auth.security.JwtService;
@@ -22,6 +23,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final TokenRevocationService tokenRevocationService;
 
 
     public TokenPair login(LoginCommand cmd) {
@@ -39,15 +41,14 @@ public class AuthenticationService {
 
     @Transactional
     public void logout(String refreshToken) {
-        refreshTokenRepository.revokeByToken(refreshToken);
+        tokenRevocationService.revokeByTokenValue(refreshToken, "Logout");
     }
 
 
     @Transactional
     public TokenPair refresh(String refreshToken) {
-        RefreshToken stored = refreshTokenService.validate(refreshToken);
-        String accessToken = jwtService.generateAccessToken(stored.getUser());
-        RefreshToken newToken = refreshTokenService.create(stored.getUser());
+        RefreshToken newToken = refreshTokenService.replaceToken(refreshToken);
+        String accessToken = jwtService.generateAccessToken(newToken.getUser());
         return new TokenPair(accessToken, newToken.getToken());
     }
 }
