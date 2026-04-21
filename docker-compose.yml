@@ -4,7 +4,7 @@ services:
     container_name: postgres_db
     restart: unless-stopped
     environment:
-      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD var is required in .env file}
+      POSTGRES_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:?SPRING_DATASOURCE_PASSWORD var is required in .env file}
       POSTGRES_USER: pharmacy_app
       POSTGRES_DB: pharmacy_db
 
@@ -58,6 +58,27 @@ services:
       - backend
     ports:
       - "8080:80"
+    restart: unless-stopped
+
+  mailserver:
+    image: ghcr.io/docker-mailserver/docker-mailserver:latest
+    container_name: mailserver
+    hostname: mail
+    domainname: chebupitsa.ru
+    ports:
+      - "25:25"
+      - "587:587"
+    environment:
+      - ENABLE_OPENDKIM=1
+      - ENABLE_OPENDMARC=1
+      - ENABLE_IMAP=1
+      - ENABLE_POP3=0
+      - ENABLE_SPAMASSASSIN=0
+      - ENABLE_CLAMAV=0
+      - ENABLE_FAIL2BAN=0
+    volumes:
+      - ./maildata:/var/mail
+      - ./config:/tmp/docker-mailserver
     restart: unless-stopped
 
 volumes:
