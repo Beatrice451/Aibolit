@@ -37,7 +37,7 @@ spring:
             enable: true
             required: true
           ssl:
-            trust: * # TODO убрать в проде
+            trust: '*' # TODO убрать в проде
 
 jwt:
   secret: ${JWT_SECRET_KEY}

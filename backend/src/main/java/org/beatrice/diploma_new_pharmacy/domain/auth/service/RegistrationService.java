@@ -7,10 +7,8 @@ import org.beatrice.diploma_new_pharmacy.domain.auth.service.model.RegistrationC
 import org.beatrice.diploma_new_pharmacy.domain.auth.util.PhoneNormalizer;
 import org.beatrice.diploma_new_pharmacy.domain.user.model.Role;
 import org.beatrice.diploma_new_pharmacy.domain.user.model.User;
-import org.beatrice.diploma_new_pharmacy.domain.user.model.UserRole;
 import org.beatrice.diploma_new_pharmacy.domain.user.repository.RoleRepository;
 import org.beatrice.diploma_new_pharmacy.domain.user.repository.UserRepository;
-import org.beatrice.diploma_new_pharmacy.domain.user.repository.UserRoleRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,7 +20,6 @@ public class RegistrationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
-    private final UserRoleRepository userRoleRepository;
 
 
     @Transactional
@@ -42,17 +39,14 @@ public class RegistrationService {
         user.setPasswordHash(passwordEncoder.encode(cmd.password()));
         try {
             userRepository.save(user);
-        } catch (DataIntegrityViolationException e) { // ловим исключение на случай гонки
+        } catch (DataIntegrityViolationException e) {
             throw new UserAlreadyExistsException("User with stated email/phone already exists: " + cmd.email());
         }
         Role role = roleRepository.findByRoleName("USER").orElseThrow(
                 () -> new IllegalStateException("Role USER not found")
         );
 
-        UserRole userRole = new UserRole();
-        userRole.setUser(user);
-        userRole.setRole(role);
-
-        userRoleRepository.save(userRole);
+        user.getUserRoles().add(role);
+        userRepository.save(user);
     }
 }

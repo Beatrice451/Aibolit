@@ -1,7 +1,6 @@
 package org.beatrice.diploma_new_pharmacy.domain.auth.service;
 
 import lombok.RequiredArgsConstructor;
-import org.beatrice.diploma_new_pharmacy.domain.auth.exception.TokenNotFoundException;
 import org.beatrice.diploma_new_pharmacy.domain.auth.model.RefreshToken;
 import org.beatrice.diploma_new_pharmacy.domain.auth.repository.RefreshTokenRepository;
 import org.beatrice.diploma_new_pharmacy.domain.auth.security.JwtService;
@@ -22,7 +21,6 @@ public class AuthenticationService {
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
-    private final RefreshTokenRepository refreshTokenRepository;
     private final TokenRevocationService tokenRevocationService;
 
 

@@ -15,7 +15,7 @@ public record SecurityUser(User user) implements UserDetails {
     public @NonNull Collection<? extends GrantedAuthority> getAuthorities() {
         return user.getUserRoles()
                 .stream()
-                .map(ur -> new SimpleGrantedAuthority("ROLE_" + ur.getRole().getRoleName()))
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRoleName()))
                 .toList();
     }
 

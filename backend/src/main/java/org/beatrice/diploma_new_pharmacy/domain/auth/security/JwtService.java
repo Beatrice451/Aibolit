@@ -46,7 +46,7 @@ public class JwtService {
                 ))
                 .claim("roles", user.getUserRoles()
                         .stream()
-                        .map(ur -> "ROLE_" + ur.getRole().getRoleName())
+                        .map(role -> "ROLE_" + role.getRoleName())
                         .toList())
                 .signWith(key)
                 .compact();

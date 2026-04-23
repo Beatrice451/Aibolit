@@ -15,9 +15,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     // Used by Spring Security.
     // Loads user AND roles to avoid LazyInitializationException
-    // Since userRoles has lazy fetch type, transaction would be closed by the time Security tries to access roles
+    // Since roles has lazy fetch type (but actually EAGER now), transaction would be closed by the time Security tries to access roles
     // which would cause an exception
-    @EntityGraph(attributePaths = {"userRoles", "userRoles.role"})
+    @EntityGraph(attributePaths = {"userRoles"})
     @Query("SELECT u FROM User u WHERE u.email = :email")
     Optional<User> findUserByEmailWithRoles(@Param("email") String email);
 

@@ -6,6 +6,6 @@ public record UserResponse(
         Integer id,
         String email,
         String phone,
-        Set<UserRoleResponse> userRoles
+        Set<RoleResponse> roles
 ) {
 }

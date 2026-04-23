@@ -3,10 +3,8 @@ package org.beatrice.diploma_new_pharmacy.config;
 import lombok.RequiredArgsConstructor;
 import org.beatrice.diploma_new_pharmacy.domain.user.model.Role;
 import org.beatrice.diploma_new_pharmacy.domain.user.model.User;
-import org.beatrice.diploma_new_pharmacy.domain.user.model.UserRole;
 import org.beatrice.diploma_new_pharmacy.domain.user.repository.RoleRepository;
 import org.beatrice.diploma_new_pharmacy.domain.user.repository.UserRepository;
-import org.beatrice.diploma_new_pharmacy.domain.user.repository.UserRoleRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -20,7 +18,6 @@ public class AdminBootstrap implements ApplicationRunner {
 
    private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final UserRoleRepository userRoleRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Value("${app.bootstrap-admin.email}")
@@ -42,14 +39,10 @@ public class AdminBootstrap implements ApplicationRunner {
         admin.setPasswordHash(passwordEncoder.encode(adminPassword));
         admin.setPhone("88005553535");
 
-        admin = userRepository.save(admin);
-
         Role adminRole = roleRepository.findByRoleName("ADMIN")
                 .orElseThrow();
 
-        UserRole ur = new UserRole();
-        ur.setUser(admin);
-        ur.setRole(adminRole);
-        userRoleRepository.save(ur);
+        admin.getUserRoles().add(adminRole);
+        userRepository.save(admin);
     }
 }

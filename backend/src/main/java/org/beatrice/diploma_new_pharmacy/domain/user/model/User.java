@@ -40,6 +40,12 @@ public class User {
     @JoinColumn(name = "pharmacy_id")
     private Pharmacy pharmacy;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private Set<UserRole> userRoles;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            schema = "pharmacy",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> userRoles;
 }
