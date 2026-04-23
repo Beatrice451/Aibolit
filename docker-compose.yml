@@ -63,23 +63,35 @@ services:
   mailserver:
     image: ghcr.io/docker-mailserver/docker-mailserver:latest
     container_name: mailserver
-    hostname: mail
+    hostname: mail.chebupitsa.ru
     domainname: chebupitsa.ru
-    ports:
-      - "25:25"
-      - "587:587"
-    environment:
-      - ENABLE_OPENDKIM=1
-      - ENABLE_OPENDMARC=1
-      - ENABLE_IMAP=1
-      - ENABLE_POP3=0
-      - ENABLE_SPAMASSASSIN=0
-      - ENABLE_CLAMAV=0
-      - ENABLE_FAIL2BAN=0
+
+    env_file:
+      - ./smtp/mailserver.env
+
+    ports: # ничего из этого не понял, но на всякий подписал
+      - "25:25" # SMTP
+      - "143:143" # IMAP
+      - "465:465" # SMTPS
+      - "587:587" # Submission
+      - "993:993" # IMAPS
+
     volumes:
-      - ./maildata:/var/mail
-      - ./config:/tmp/docker-mailserver
-    restart: unless-stopped
+      - ./smtp/mail-data/:/var/mail/
+      - ./smtp/mail-state/:/var/mail-state/
+      - ./smtp/mail-logs/:/var/log/mail/
+      - ./smtp/config/:/tmp/docker-mailserver/
+      - mail-queue:/var/spool/postfix
+
+
+    restart: always
+    stop_grace_period: 1m
+
+    healthcheck:
+      test: "ss --listening --ipv4 --tcp | grep --silent ':smtp' || exit 1"
+      timeout: 3s
+      retries: 1
 
 volumes:
   postgres_data:
+  mail-queue:

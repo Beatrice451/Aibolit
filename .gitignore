@@ -41,10 +41,13 @@ frontend/yarn-error.log*
 Thumbs.db
 
 # Environment
-.env
+*.env
 *.env.local
 
 media
 
+# SMTP server
 config
-maildata
+mail-data
+mail-state
+mail-logs
