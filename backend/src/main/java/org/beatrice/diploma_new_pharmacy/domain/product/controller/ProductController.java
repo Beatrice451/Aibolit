@@ -1,7 +1,7 @@
 package org.beatrice.diploma_new_pharmacy.domain.product.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.beatrice.diploma_new_pharmacy.domain.product.dto.ProductFilter;
+import org.beatrice.diploma_new_pharmacy.domain.product.specification.ProductFilter;
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.MedicineResponse;
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.ProductResponse;
 import org.beatrice.diploma_new_pharmacy.domain.product.service.ProductService;

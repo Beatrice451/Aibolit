@@ -2,7 +2,7 @@ package org.beatrice.diploma_new_pharmacy.domain.product.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.beatrice.diploma_new_pharmacy.domain.product.dto.ProductFilter;
+import org.beatrice.diploma_new_pharmacy.domain.product.specification.ProductFilter;
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.request.AddProductRequest;
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.request.UpdateProductRequest;
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.MedicineResponse;
