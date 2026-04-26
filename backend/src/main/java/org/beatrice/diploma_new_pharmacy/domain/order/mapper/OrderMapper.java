@@ -18,6 +18,7 @@ public interface OrderMapper {
     @Mapping(target = "amount", expression = "java(mapAmount(order))")
     @Mapping(target = "phone", source = "phone")
     @Mapping(target = "email", source = "email")
+    @Mapping(target = "clientName", expression = "java(order.getFirstName() + \" \" + order.getLastName())")
     OrderResponse toDto(Order order);
 
     List<OrderResponse> toDtoList(List<Order> orders);
@@ -33,4 +34,5 @@ public interface OrderMapper {
                 order.getFinalAmount()
         );
     }
-}
+
+    }

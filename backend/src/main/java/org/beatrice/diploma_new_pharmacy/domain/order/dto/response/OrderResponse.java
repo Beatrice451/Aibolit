@@ -16,6 +16,7 @@ public record OrderResponse(
         Instant createdAt,
         Instant updatedAt,
         String phone,
-        String email
+        String email,
+        String clientName
 ) {
 }

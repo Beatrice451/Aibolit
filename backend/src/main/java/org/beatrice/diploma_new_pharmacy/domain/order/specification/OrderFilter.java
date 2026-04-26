@@ -7,6 +7,8 @@ public record OrderFilter(
         Integer pharmacyId,
         Integer userId,
         String email,
-        String phone
+        String phone,
+        Boolean excludeCompleted,
+        Boolean excludeCancelled
 ) {
 }

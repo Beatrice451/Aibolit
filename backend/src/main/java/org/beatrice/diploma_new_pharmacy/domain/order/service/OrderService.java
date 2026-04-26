@@ -213,6 +213,14 @@ public class OrderService {
             spec = spec.and(OrderSpecifications.hasPhone(filter.phone()));
         }
 
+        if (Boolean.TRUE.equals(filter.excludeCompleted())) {
+            spec = spec.and(OrderSpecifications.excludeCompleted(true));
+        }
+
+        if (Boolean.TRUE.equals(filter.excludeCancelled())) {
+            spec = spec.and(OrderSpecifications.excludeCancelled(true));
+        }
+
         return spec;
     }
 }

@@ -4,6 +4,9 @@ import org.beatrice.diploma_new_pharmacy.domain.order.model.Order;
 import org.beatrice.diploma_new_pharmacy.domain.order.model.OrderStatus;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class OrderSpecifications {
     public static Specification<Order> hasOrderStatus(OrderStatus orderStatus) {
         return ((root, query, criteriaBuilder) ->
@@ -29,4 +32,24 @@ public class OrderSpecifications {
         return ((root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("phone"), phone));
     }
+
+    public static Specification<Order> excludeCompleted(Boolean exclude) {
+        if (exclude == null || !exclude) return null;
+        return ((root, query, criteriaBuilder) ->
+                criteriaBuilder.notEqual(root.get("orderStatus"), OrderStatus.COMPLETED));
+    }
+
+    public static Specification<Order> excludeCancelled(Boolean exclude) {
+    if (exclude == null || !exclude) return null;
+
+    return (root, query, criteriaBuilder) -> {
+        List<OrderStatus> excludedStatuses = Arrays.asList(
+            OrderStatus.CANCELLED_USER,
+            OrderStatus.CANCELLED_SYSTEM,
+            OrderStatus.EXPIRED
+        );
+
+        return root.get("orderStatus").in(excludedStatuses).not();
+    };
+}
 }
