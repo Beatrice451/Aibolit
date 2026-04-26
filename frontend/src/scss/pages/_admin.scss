@@ -6,6 +6,7 @@
   h1 {
     font-family: 'Oi', cursive;
     font-size: 36px;
+    font-weight: 300;
     text-align: center;
     margin-bottom: 30px;
     color: var(--color-dark-blue);
@@ -336,5 +337,564 @@
   
   &__children {
     margin-top: 4px;
+  }
+}
+
+.admin-loading,
+.admin-empty {
+  text-align: center;
+  padding: 40px;
+  font-family: 'Orelega One', sans-serif;
+  color: var(--color-dark-blue);
+}
+
+.orders-filters {
+  margin-bottom: 24px;
+
+  &__row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+
+    select, input {
+      padding: 10px 16px;
+      border: 2px solid var(--color-light-blue);
+      border-radius: 30px;
+      font-family: 'Orelega One', sans-serif;
+      font-size: 14px;
+
+      &:focus {
+        outline: none;
+        border-color: var(--color-red);
+      }
+    }
+
+    input {
+      flex: 1;
+      min-width: 150px;
+    }
+
+    select {
+      min-width: 180px;
+      background: var(--color-white);
+    }
+  }
+
+  &__switches {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  &__switch {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Orelega One', sans-serif;
+    font-size: 14px;
+    color: var(--color-dark-blue);
+    cursor: pointer;
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+  }
+}
+
+.orders-table {
+  overflow-x: auto;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+  }
+
+  th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--color-light-blue);
+  }
+
+  th {
+    font-family: 'Orelega One', sans-serif;
+    background: var(--color-beige);
+    font-size: 13px;
+  }
+
+  td {
+    font-family: 'Orelega One', sans-serif;
+    font-size: 14px;
+  }
+}
+
+.order-status {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+
+  &--new {
+    background: #e3f2fd;
+    color: #1565c0;
+  }
+
+  &--assembling {
+    background: #fff3e0;
+    color: #e65100;
+  }
+
+  &--ready {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  &--delivery_pending {
+    background: #f3e5f5;
+    color: #7b1fa2;
+  }
+
+  &--delivery_delayed {
+    background: #fce4ec;
+    color: #c2185b;
+  }
+
+  &--completed {
+    background: #e0f2f1;
+    color: #00695c;
+  }
+
+  &--cancelled_user {
+    background: #f5f5f5;
+    color: #757575;
+  }
+
+  &--expired {
+    background: #fffde7;
+    color: #f9a825;
+  }
+}
+
+.order-status-select {
+  padding: 6px 10px;
+  border: 1px solid var(--color-light-blue);
+  border-radius: 8px;
+  font-family: 'Orelega One', sans-serif;
+  font-size: 12px;
+  background: var(--color-white);
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-red);
+  }
+}
+
+.admin-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+
+  &__info {
+    font-family: 'Orelega One', sans-serif;
+    font-size: 14px;
+    color: var(--color-dark-blue);
+  }
+}
+
+.order-row {
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: var(--color-beige);
+  }
+
+  &--expanded {
+    background: var(--color-light-blue);
+  }
+
+  &__toggle {
+    width: 30px;
+    text-align: center;
+  }
+
+  &__arrow {
+    font-size: 10px;
+    color: var(--color-dark-blue);
+  }
+
+  &__amount {
+    font-weight: bold;
+    color: var(--color-dark-blue);
+  }
+
+  &__status {
+    min-width: 160px;
+  }
+}
+
+.order-status-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.order-status-actions {
+  display: flex;
+  gap: 4px;
+
+  &__confirm {
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 4px;
+    background: #4caf50;
+    color: white;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background: #43a047;
+    }
+  }
+
+  &__cancel {
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 4px;
+    background: #f44336;
+    color: white;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background: #e53935;
+    }
+  }
+}
+
+.order-items-row {
+  background: var(--color-beige);
+
+  td {
+    padding: 16px;
+    border-bottom: 2px solid var(--color-light-blue);
+  }
+}
+
+.order-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.order-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: var(--color-white);
+  border-radius: 8px;
+  border: 1px solid var(--color-light-blue);
+
+  &__image {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: var(--color-beige);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__placeholder {
+    font-size: 20px;
+  }
+
+  &__info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__name {
+    font-family: 'Orelega One', sans-serif;
+    font-size: 13px;
+    color: var(--color-dark-blue);
+  }
+
+  &__qty {
+    font-family: 'Orelega One', sans-serif;
+    font-size: 12px;
+    color: #666;
+  }
+
+  &__price {
+    font-family: 'Orelega One', sans-serif;
+    font-size: 13px;
+    color: #666;
+  }
+
+  &__total {
+    font-family: 'Orelega One', sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--color-dark-blue);
+    min-width: 80px;
+    text-align: right;
+  }
+}
+
+.admin-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.admin-modal {
+  background: var(--color-white);
+  border-radius: 20px;
+  padding: 30px;
+  min-width: 350px;
+  max-width: 90%;
+  text-align: center;
+
+  h3 {
+    font-family: 'Orelega One', sans-serif;
+    margin-bottom: 16px;
+    color: var(--color-dark-blue);
+  }
+
+  p {
+    font-family: 'Orelega One', sans-serif;
+    font-size: 14px;
+    color: var(--color-dark-blue);
+    margin-bottom: 24px;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+  }
+}
+
+.order-status-select {
+  padding: 8px 12px;
+  border: 1px solid var(--color-light-blue);
+  border-radius: 8px;
+  font-family: 'Orelega One', sans-serif;
+  font-size: 13px;
+  background: var(--color-white);
+  cursor: pointer;
+  min-width: 140px;
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-red);
+  }
+
+  &--new {
+    background: #e3f2fd;
+    border-color: #bbdefb;
+    color: #1565c0;
+  }
+
+  &--assembling {
+    background: #fff3e0;
+    border-color: #ffe0b2;
+    color: #e65100;
+  }
+
+  &--ready {
+    background: #e8f5e9;
+    border-color: #c8e6c9;
+    color: #2e7d32;
+  }
+
+  &--delivery_pending {
+    background: #f3e5f5;
+    border-color: #e1bee7;
+    color: #7b1fa2;
+  }
+
+  &--delivery_delayed {
+    background: #fce4ec;
+    border-color: #f8bbd0;
+    color: #c2185b;
+  }
+
+  &--completed {
+    background: #e0f2f1;
+    border-color: #b2dfdb;
+    color: #00695c;
+  }
+
+  &--cancelled_user {
+    background: #f5f5f5;
+    border-color: #e0e0e0;
+    color: #757575;
+  }
+
+  &--expired {
+    background: #fffde7;
+    border-color: #fff9c4;
+    color: #f9a825;
+  }
+}
+
+.users-filters {
+  margin-bottom: 24px;
+
+  &__row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+
+    input, select {
+      padding: 10px 16px;
+      border: 2px solid var(--color-light-blue);
+      border-radius: 30px;
+      font-family: 'Orelega One', sans-serif;
+      font-size: 14px;
+
+      &:focus {
+        outline: none;
+        border-color: var(--color-red);
+      }
+    }
+
+    input {
+      flex: 1;
+      min-width: 150px;
+    }
+
+    select {
+      min-width: 140px;
+      background: var(--color-white);
+    }
+  }
+}
+
+.users-table {
+  overflow-x: auto;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--color-light-blue);
+  }
+
+  th {
+    font-family: 'Orelega One', sans-serif;
+    background: var(--color-beige);
+    font-size: 13px;
+  }
+
+  td {
+    font-family: 'Orelega One', sans-serif;
+    font-size: 14px;
+  }
+}
+
+.user-row--deleted {
+  opacity: 0.6;
+  background: #f5f5f5;
+}
+
+.user-roles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.user-role {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: var(--color-beige);
+  border-radius: 12px;
+  font-size: 12px;
+  font-family: 'Orelega One', sans-serif;
+
+  &__remove {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 0;
+    font-size: 14px;
+    line-height: 1;
+
+    &:hover {
+      color: var(--color-red);
+    }
+  }
+}
+
+.user-role-add {
+  padding: 4px 8px;
+  border: 1px dashed var(--color-light-blue);
+  border-radius: 12px;
+  font-size: 12px;
+  font-family: 'Orelega One', sans-serif;
+  background: transparent;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--color-dark-blue);
+  }
+}
+
+.user-status {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+
+  &--active {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  &--deleted {
+    background: #f5f5f5;
+    color: #757575;
   }
 }
