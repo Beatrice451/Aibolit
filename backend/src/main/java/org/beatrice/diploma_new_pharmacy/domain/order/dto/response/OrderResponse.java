@@ -14,6 +14,8 @@ public record OrderResponse(
         OrderStatus orderStatus,
         OrderAmountResponse amount,
         Instant createdAt,
-        Instant updatedAt
+        Instant updatedAt,
+        String phone,
+        String email
 ) {
 }

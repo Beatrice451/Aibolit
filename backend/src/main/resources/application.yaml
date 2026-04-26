@@ -26,7 +26,7 @@ spring:
 
   mail:
     host: ${SPRING_MAIL_HOST}
-    port: 587
+    port: 25 # SMTP, заменить на 587 в проде TODO
     username: ${SPRING_MAIL_USERNAME}
     password: ${SPRING_MAIL_PASSWORD}
     properties:
@@ -34,8 +34,8 @@ spring:
         smtp:
           auth: true
           starttls:
-            enable: true
-            required: true
+            enable: false # ТУТ ТОЖЕ ЗАМЕНИТЬ В ПРОДЕ НА TRUE
+            required: false
           ssl:
             trust: '*' # TODO убрать в проде
 

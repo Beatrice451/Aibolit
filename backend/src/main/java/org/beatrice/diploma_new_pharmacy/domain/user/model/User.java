@@ -40,6 +40,12 @@ public class User {
     @JoinColumn(name = "pharmacy_id")
     private Pharmacy pharmacy;
 
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",

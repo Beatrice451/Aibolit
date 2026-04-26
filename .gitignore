@@ -47,7 +47,7 @@ Thumbs.db
 media
 
 # SMTP server
-config
-mail-data
-mail-state
-mail-logs
+smtp/config
+smtp/mail-data
+smtp/mail-state
+smtp/mail-logs

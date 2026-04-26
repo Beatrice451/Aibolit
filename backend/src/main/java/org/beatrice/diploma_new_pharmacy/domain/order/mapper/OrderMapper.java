@@ -16,6 +16,8 @@ import java.util.List;
 public interface OrderMapper {
     @Mapping(target = "items", source = "orderItems")
     @Mapping(target = "amount", expression = "java(mapAmount(order))")
+    @Mapping(target = "phone", source = "phone")
+    @Mapping(target = "email", source = "email")
     OrderResponse toDto(Order order);
 
     List<OrderResponse> toDtoList(List<Order> orders);

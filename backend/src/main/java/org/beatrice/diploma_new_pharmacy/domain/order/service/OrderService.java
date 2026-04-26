@@ -8,6 +8,7 @@ import org.beatrice.diploma_new_pharmacy.domain.cart.model.Cart;
 import org.beatrice.diploma_new_pharmacy.domain.cart.model.CartItem;
 import org.beatrice.diploma_new_pharmacy.domain.cart.service.CartService;
 import org.beatrice.diploma_new_pharmacy.domain.order.dto.OrderIdentity;
+import org.beatrice.diploma_new_pharmacy.domain.order.dto.OrderReadyForPickupEvent;
 import org.beatrice.diploma_new_pharmacy.domain.order.dto.command.CreateOrderCommand;
 import org.beatrice.diploma_new_pharmacy.domain.order.dto.request.UpdateOrderStatusRequest;
 import org.beatrice.diploma_new_pharmacy.domain.order.dto.response.OrderResponse;
@@ -23,6 +24,7 @@ import org.beatrice.diploma_new_pharmacy.domain.pharmacy.service.PharmacyService
 import org.beatrice.diploma_new_pharmacy.domain.user.model.User;
 import org.beatrice.diploma_new_pharmacy.domain.user.service.UserService;
 import org.beatrice.diploma_new_pharmacy.exception.NotFoundException;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -43,6 +45,7 @@ public class OrderService {
     private final CartService cartService;
     private final PharmacyService pharmacyService;
     private final UserService userService;
+    private final ApplicationEventPublisher applicationEventPublisher;
     @PersistenceContext
     private EntityManager em;
 
@@ -67,12 +70,21 @@ public class OrderService {
 
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'PHARMACIST')")
+    @Transactional
     public OrderResponse updateOrderStatus(Integer id, UpdateOrderStatusRequest request) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Order with id " + id + " not found"));
         orderMapper.updateFromRequest(request, order);
 
         orderRepository.save(order);
+
+        if (request.status() == OrderStatus.READY) {
+            applicationEventPublisher.publishEvent(new OrderReadyForPickupEvent(
+                    order.getId(),
+                    order.getEmail(),
+                    "REPLACE WITH ACTUAL NAME FROM THE ORDER" // TODO
+            ));
+        }
 
         return orderMapper.toDto(order);
     }
@@ -89,17 +101,35 @@ public class OrderService {
     private Order create(CreateOrderCommand cmd) {
         String phone;
         String email;
+        String firstName;
+        String lastName;
 
         if (cmd.identity().isUser()) {
             User user = userService.getUserById(cmd.identity().userId());
             phone = user.getPhone();
             email = user.getEmail();
+            firstName = user.getFirstName();
+            lastName = user.getLastName();
         } else {
             phone = cmd.phone();
             email = cmd.email();
+            firstName = cmd.firstName();
+            lastName = cmd.lastName();
 
             if (phone == null || phone.isBlank()) {
                 throw new IllegalArgumentException("Phone number is required for guest");
+            }
+
+            if (email == null || email.isBlank()) {
+                throw new IllegalArgumentException("Email is required for guest");
+            }
+
+            if (firstName == null || firstName.isBlank()) {
+                throw new IllegalArgumentException("First name is required for guest");
+            }
+
+            if (lastName == null || lastName.isBlank()) {
+                throw new IllegalArgumentException("Last name is required for guest");
             }
         }
 
@@ -120,6 +150,8 @@ public class OrderService {
                 .discount(discount)
                 .phone(phone)
                 .email(email)
+                .firstName(firstName)
+                .lastName(lastName)
                 .build();
 
 

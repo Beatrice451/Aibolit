@@ -27,7 +27,7 @@ class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody CreateOrderRequest request, OrderIdentity identity) {
-        var cmd = new CreateOrderCommand(identity, request.pharmacyId(), request.phone(), request.email());
+        var cmd = new CreateOrderCommand(identity, request.pharmacyId(), request.phone(), request.email(), request.firstName(), request.lastName());
         OrderResponse response = orderService.createOrder(cmd);
         return ResponseEntity.ok(response);
     }

@@ -12,6 +12,9 @@ public record CreateOrderCommand(
         String phone,
 
         @Email
-        String email
+        String email,
+
+        String firstName,
+        String lastName
 ) {
 }
