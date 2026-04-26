@@ -24,7 +24,15 @@ const Login = () => {
         navigate('/profile');
       }
     } catch (err) {
-      const message = err.response?.data?.message || 'Ошибка при входе. Проверьте email и пароль.';
+      const status = err.response?.status;
+      let message;
+      if (status === 418) {
+        message = 'Аккаунт удалён. Восстановление невозможно.';
+      } else if (status === 401) {
+        message = 'Неверный email или пароль.';
+      } else {
+        message = err.response?.data?.message || 'Ошибка при входе. Проверьте email и пароль.';
+      }
       setError(message);
     } finally {
       setLoading(false);

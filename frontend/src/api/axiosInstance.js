@@ -4,6 +4,11 @@ const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL || '',
 });
 
+axiosInstance.interceptors.request.use(config => {
+  console.log('[Axios] Request:', config.method, config.url, 'Auth:', config.headers.Authorization);
+  return config;
+});
+
 const initAuth = () => {
   const token = localStorage.getItem('accessToken');
   if (token) {
