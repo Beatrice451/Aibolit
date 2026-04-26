@@ -39,7 +39,7 @@ const authApi = {
   isAdmin: async () => {
     try {
       const user = await axiosInstance.get('/api/users/whoami');
-      return user.data.userRoles?.some(role => role.roleName === 'ADMIN');
+      return user.data.roles?.some(role => role.roleName === 'ADMIN');
     } catch {
       return false;
     }

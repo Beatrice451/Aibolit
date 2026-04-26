@@ -63,4 +63,4 @@ app:
     password: ${SPRING_ADMIN_PASSWORD}
 
 media:
-  path: /app/media/
+  path: ${MEDIA_PATH:media}

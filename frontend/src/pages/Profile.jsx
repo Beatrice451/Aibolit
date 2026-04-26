@@ -80,10 +80,10 @@ const Profile = () => {
                 </div>
               </div>
 
-              {user.userRoles && user.userRoles.length > 0 && (
+              {user.roles && user.roles.length > 0 && (
                 <div className="profile-card">
                   <h3 className="profile-card__title">Ваши роли</h3>
-                  {user.userRoles.map((role, index) => (
+                  {user.roles.map((role, index) => (
                     <div key={index} className="profile-card__row">
                       <span className="profile-card__label">🏷️ Роль</span>
                       <span className="profile-card__value">{role.roleName}</span>

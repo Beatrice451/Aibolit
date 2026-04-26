@@ -49,6 +49,7 @@ services:
       JWT_SECRET_KEY: ${JWT_SECRET_KEY:?JWT_SECRET_KEY var is required in .env file}
       SPRING_ADMIN_LOGIN: ${SPRING_ADMIN_LOGIN:?SPRING_ADMIN_LOGIN var is required in .env file}
       SPRING_ADMIN_PASSWORD: ${SPRING_ADMIN_PASSWORD:?SPRING_ADMIN_PASSWORD var is required in .env file}
+      MEDIA_PATH: /app/media/
 
 
   frontend:
