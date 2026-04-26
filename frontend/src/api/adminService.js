@@ -99,9 +99,6 @@ const adminApi = {
       params.append('excludeCancelled', 'true');
     }
 
-    console.log('[Admin] Fetching orders with params:', params.toString());
-    console.log('[Admin] Token:', localStorage.getItem('accessToken'));
-    console.log('[Admin] Auth header:', axiosInstance.defaults.headers.common['Authorization']);
     const response = await axiosInstance.get('/api/admin/order', { params });
     return response.data;
   },

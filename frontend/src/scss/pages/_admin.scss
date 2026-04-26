@@ -404,6 +404,33 @@
   }
 }
 
+.order-toggle-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--color-dark-blue);
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: var(--color-light-blue);
+    color: var(--color-red);
+  }
+
+  svg {
+    transition: transform 0.3s ease;
+  }
+
+  &--expanded {
+    svg {
+      transform: rotate(90deg);
+    }
+  }
+}
+
 .orders-table {
   overflow-x: auto;
 
