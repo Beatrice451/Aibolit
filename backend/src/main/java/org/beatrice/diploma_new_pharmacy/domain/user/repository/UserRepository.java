@@ -1,6 +1,9 @@
 package org.beatrice.diploma_new_pharmacy.domain.user.repository;
 
 import org.beatrice.diploma_new_pharmacy.domain.user.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -26,5 +29,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     boolean existsUserByPhone(String phone);
 
     boolean existsByEmail(String email);
+
+    Page<User> findAll(Specification<User> spec, Pageable pageable);
 }
 

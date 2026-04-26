@@ -6,6 +6,9 @@ public record UserResponse(
         Integer id,
         String email,
         String phone,
-        Set<RoleResponse> roles
+        Set<RoleResponse> roles,
+        String firstName,
+        String lastName,
+        Boolean isDeleted
 ) {
 }
