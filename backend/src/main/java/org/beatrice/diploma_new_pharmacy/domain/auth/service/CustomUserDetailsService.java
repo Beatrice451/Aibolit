@@ -4,6 +4,7 @@ import org.beatrice.diploma_new_pharmacy.domain.auth.security.SecurityUser;
 import org.beatrice.diploma_new_pharmacy.domain.user.model.User;
 import org.beatrice.diploma_new_pharmacy.domain.user.repository.UserRepository;
 import org.jspecify.annotations.NonNull;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,6 +26,11 @@ public class CustomUserDetailsService implements UserDetailsService {
     public @NonNull UserDetails loadUserByUsername(@NonNull String username) throws UsernameNotFoundException {
         User user = userRepository.findUserByEmailWithRoles(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
+
+        if (Boolean.TRUE.equals(user.getIsDeleted())) {
+            // На русском, потому что лень изменить на фронте сообщение.
+            throw new DisabledException("Аккаунт удалён.");
+        }
         return new SecurityUser(user);
     }
 }
