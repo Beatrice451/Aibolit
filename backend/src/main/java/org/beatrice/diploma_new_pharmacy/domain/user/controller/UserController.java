@@ -7,9 +7,7 @@ import org.beatrice.diploma_new_pharmacy.domain.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -26,5 +24,12 @@ class UserController {
             return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).build(); // why not?
         }
         return ResponseEntity.ok(response);
+    }
+
+
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteCurrentUser(@AuthenticationPrincipal SecurityUser user) {
+        userService.deleteUser(user.user().getId());
+        return ResponseEntity.ok().build();
     }
 }
