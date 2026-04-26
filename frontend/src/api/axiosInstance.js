@@ -5,7 +5,6 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use(config => {
-  console.log('[Axios] Request:', config.method, config.url, 'Auth:', config.headers.Authorization);
   return config;
 });
 
@@ -38,7 +37,6 @@ axiosInstance.interceptors.response.use(
     
     // Handle 401 (unauthorized) or 418 (as some backends use this for invalid tokens)
     if ((status === 401 || status === 418) && !originalRequest._retry) {
-      console.log(`[Auth] Caught ${status}, attempting token refresh...`);
       if (isRefreshing) {
         return new Promise(resolve => {
           subscribeTokenRefresh((newToken) => {
@@ -52,7 +50,6 @@ axiosInstance.interceptors.response.use(
       isRefreshing = true;
       
       try {
-        console.log('[Auth] Token expired, attempting refresh...');
         // Backend expects refresh token in cookies, not in Authorization header
         // Cookie will be sent automatically with withCredentials: true
         const response = await axiosInstance.post('/api/auth/refresh', {}, {
@@ -60,8 +57,7 @@ axiosInstance.interceptors.response.use(
         });
         
         const newToken = response.data.accessToken;
-        console.log('[Auth] Refresh successful, new token:', newToken ? 'received' : 'MISSING');
-        
+
         if (newToken) {
           localStorage.setItem('accessToken', newToken);
           axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
