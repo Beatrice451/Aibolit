@@ -78,17 +78,84 @@ const adminApi = {
   },
 
   // Orders (admin only)
-  getOrders: async (page = 0, size = 20) => {
+  getOrders: async (page = 0, size = 20, filters = {}) => {
     const params = new URLSearchParams();
     params.append('page', page);
     params.append('size', size);
-    const paramsObj = { filter: {}, pageable: { page, size } };
-    const response = await axiosInstance.get('/api/admin/order', { params: paramsObj });
+
+    if (filters.orderStatus && filters.orderStatus !== '') {
+      params.append('orderStatus', filters.orderStatus);
+    }
+    if (filters.email && filters.email.trim() !== '') {
+      params.append('email', filters.email.trim());
+    }
+    if (filters.phone && filters.phone.trim() !== '') {
+      params.append('phone', filters.phone.trim());
+    }
+    if (filters.excludeCompleted) {
+      params.append('excludeCompleted', 'true');
+    }
+    if (filters.excludeCancelled) {
+      params.append('excludeCancelled', 'true');
+    }
+
+    console.log('[Admin] Fetching orders with params:', params.toString());
+    console.log('[Admin] Token:', localStorage.getItem('accessToken'));
+    console.log('[Admin] Auth header:', axiosInstance.defaults.headers.common['Authorization']);
+    const response = await axiosInstance.get('/api/admin/order', { params });
     return response.data;
   },
 
   updateOrderStatus: async (id, status) => {
     const response = await axiosInstance.patch(`/api/admin/order/${id}`, { status });
+    return response.data;
+  },
+
+  // Users (admin only)
+  getUsers: async (page = 0, size = 20, filters = {}) => {
+    const params = new URLSearchParams();
+    params.append('page', page);
+    params.append('size', size);
+
+    if (filters.email) {
+      params.append('email', filters.email);
+    }
+    if (filters.name) {
+      params.append('name', filters.name);
+    }
+    if (filters.isDeleted !== undefined && filters.isDeleted !== '') {
+      params.append('isDeleted', filters.isDeleted);
+    }
+    if (filters.role) {
+      params.append('role', filters.role);
+    }
+
+    const response = await axiosInstance.get('/api/admin/user', { params });
+    return response.data;
+  },
+
+  getRoles: async () => {
+    const response = await axiosInstance.get('/api/admin/user/roles');
+    return response.data;
+  },
+
+  assignRole: async (userId, roleId) => {
+    const response = await axiosInstance.put(`/api/admin/user/${userId}/roles/${roleId}`);
+    return response.data;
+  },
+
+  removeRole: async (userId, roleId) => {
+    const response = await axiosInstance.delete(`/api/admin/user/${userId}/roles/${roleId}`);
+    return response.data;
+  },
+
+  restoreUser: async (userId) => {
+    const response = await axiosInstance.patch(`/api/admin/user/${userId}/restore`);
+    return response.data;
+  },
+
+  deleteUser: async (userId) => {
+    const response = await axiosInstance.delete(`/api/admin/user/${userId}`);
     return response.data;
   }
 };
