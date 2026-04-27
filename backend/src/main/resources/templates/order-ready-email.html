@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ваш заказ готов к выдаче</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', 'Roboto', Arial, sans-serif; background-color: #F8E8CF;">
+    <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #F8E8CF;">
+        <tr>
+            <td style="padding: 40px 20px;">
+                <!-- Main Container -->
+                <table role="presentation" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 28px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); overflow: hidden;">
+                    
+                    <!-- Header with gradient border -->
+                    <tr>
+                        <td style="background: linear-gradient(90deg, #CD2B14, #31809F); height: 4px; padding: 0;"></td>
+                    </tr>
+                    
+                    <!-- Logo/Brand Header -->
+                    <tr>
+                        <td style="background-color: #00334D; padding: 30px 40px; text-align: center;">
+                            <h1 style="margin: 0; font-size: 36px; font-weight: 300; color: #F8E8CF; letter-spacing: 1px;">
+                                Айболит
+                            </h1>
+                            <p style="margin: 8px 0 0 0; font-size: 14px; color: #31809F;">Ваша онлайн-аптека</p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Main Content -->
+                    <tr>
+                        <td style="padding: 40px 40px 30px 40px;">
+                            <!-- Greeting -->
+                            <p style="margin: 0 0 20px 0; font-size: 16px; color: #00334D; line-height: 1.5;">
+                                Здравствуйте, <strong th:text="${firstName} + ' ' + ${lastName}">Иван Иванов</strong>!
+                            </p>
+                            
+                            <!-- Main Message -->
+                            <div style="background-color: #F8E8CF; border-radius: 16px; padding: 24px; margin-bottom: 30px; border-left: 4px solid #CD2B14;">
+                                <h2 style="margin: 0 0 12px 0; font-size: 24px; font-weight: 300; color: #00334D; letter-spacing: 0.5px;">
+                                    ✅ Ваш заказ готов к выдаче!
+                                </h2>
+                                <p style="margin: 0; font-size: 16px; color: #00334D; line-height: 1.6;">
+                                    Заказ <strong style="color: #CD2B14; font-size: 18px;" th:text="'№' + ${orderNumber}">№12345</strong> собран и ожидает вас в аптеке.
+                                </p>
+                            </div>
+                            
+                            <!-- Pickup Information -->
+                            <div style="background-color: #ffffff; border: 2px solid #9FBECF; border-radius: 16px; padding: 24px; margin-bottom: 30px;">
+                                <h3 style="margin: 0 0 16px 0; font-size: 18px; color: #00334D; font-weight: 600;">
+                                    📍 Место получения
+                                </h3>
+                                <p style="margin: 0; font-size: 16px; color: #00334D; line-height: 1.6;">
+                                    <strong style="color: #31809F;" th:text="${pharmacyName}">Аптека на Ленина</strong>
+                                </p>
+                                <p style="margin: 8px 0 0 0; font-size: 14px; color: #475569; line-height: 1.5;" th:if="${pharmacyAddress}">
+                                    <span th:text="${pharmacyAddress}">ул. Ленина, д. 10</span>
+                                </p>
+                            </div>
+                            
+                            <!-- Pickup Code -->
+                            <div style="background-color: #F8E8CF; border-radius: 16px; padding: 24px; margin-bottom: 20px; text-align: center; border: 2px solid #CD2B14;">
+                                <p style="margin: 0 0 12px 0; font-size: 14px; color: #00334D; font-weight: 600;">
+                                    🔑 Код для получения заказа
+                                </p>
+                                <div style="background-color: #ffffff; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+                                    <p style="margin: 0; font-size: 32px; font-weight: bold; color: #CD2B14; letter-spacing: 4px;" th:text="${pickupCode}">
+                                        A1B2C3
+                                    </p>
+                                </div>
+                                <p style="margin: 0; font-size: 13px; color: #475569; line-height: 1.5;">
+                                    Назовите код сотруднику для выдачи заказа
+                                </p>
+                            </div>
+                            
+                            <!-- Important Note -->
+                            <div style="background-color: #fff8f0; border-radius: 12px; padding: 16px; margin-bottom: 30px; border: 1px solid #9FBECF;">
+                                <p style="margin: 0; font-size: 14px; color: #00334D; line-height: 1.5;">
+                                    💡 <strong>Важно:</strong> Пожалуйста, возьмите с собой документ, удостоверяющий личность. Заказ будет храниться в аптеке в течение 3 дней.
+                                </p>
+                            </div>
+                            
+                            <!-- CTA Button -->
+                            <table role="presentation" style="width: 100%; margin-bottom: 20px;">
+                                <tr>
+                                    <td style="text-align: center;">
+                                        <a href="#" style="display: inline-block; background-color: #CD2B14; color: #F8E8CF; text-decoration: none; padding: 14px 32px; border-radius: 40px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
+                                            Посмотреть детали заказа
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            <!-- Closing -->
+                            <p style="margin: 20px 0 0 0; font-size: 14px; color: #475569; line-height: 1.6;">
+                                Спасибо, что выбрали нас! Будем рады видеть вас снова.
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #F8E8CF; padding: 30px 40px; text-align: center; border-top: 2px solid #9FBECF;">
+                            <p style="margin: 0 0 12px 0; font-size: 14px; color: #00334D; font-weight: 600;">
+                                Аптека Айболит
+                            </p>
+                            <p style="margin: 0; font-size: 13px; color: #31809F;">
+                                <a href="https://example.aibolit.ru" style="color: #31809F; text-decoration: none;">example.aibolit.ru</a>
+                            </p>
+                        </td>
+                    </tr>
+                    
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
