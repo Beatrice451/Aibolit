@@ -35,8 +35,8 @@ axiosInstance.interceptors.response.use(
     const originalRequest = error.config;
     const status = error.response?.status;
     
-    // Handle 401 (unauthorized) or 418 (as some backends use this for invalid tokens)
-    if ((status === 401 || status === 418) && !originalRequest._retry) {
+    // Handle 401 (unauthorized), 403 (forbidden - could be expired token), or 418 (custom invalid token)
+    if ((status === 401 || status === 403 || status === 418) && !originalRequest._retry) {
       if (isRefreshing) {
         return new Promise(resolve => {
           subscribeTokenRefresh((newToken) => {
