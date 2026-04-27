@@ -2,6 +2,7 @@ package org.beatrice.diploma_new_pharmacy.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.beatrice.diploma_new_pharmacy.domain.auth.exception.*;
+import org.beatrice.diploma_new_pharmacy.domain.order.exception.OrderCannotBeModified;
 import org.beatrice.diploma_new_pharmacy.domain.product.exception.CategoryAlreadyExistsException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -77,6 +78,12 @@ public class GlobalExceptionHandler {
         return generateResponse(ex, request, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({
+            OrderCannotBeModified.class
+    })
+    public ResponseEntity<ErrorResponse> handleOrderCannotBeModifiedException(OrderCannotBeModified ex, HttpServletRequest request) {
+        return generateResponse(ex, request, HttpStatus.UNPROCESSABLE_CONTENT);
+    }
 
     // COMMON EXCEPTION HANLDER (FOR EVERYTHING THAT WAS NOT CAUGHT BY THE HANDLERS ABOVE)
     @ExceptionHandler(Exception.class)
