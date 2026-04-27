@@ -8,9 +8,14 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Integer> {
     List<Order> getOrdersByOrderOwner(OrderOwner orderOwner);
 
     Page<Order> findAll(Specification<Order> spec, Pageable pageable);
+
+    boolean existsByPickupCode(String pickupCode);
+
+    Optional<Order> findByPickupCode(String pickupCode);
 }

@@ -4,6 +4,7 @@ package org.beatrice.diploma_new_pharmacy.domain.order.service;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.beatrice.diploma_new_pharmacy.domain.cart.model.Cart;
 import org.beatrice.diploma_new_pharmacy.domain.cart.model.CartItem;
 import org.beatrice.diploma_new_pharmacy.domain.cart.service.CartService;
@@ -12,6 +13,7 @@ import org.beatrice.diploma_new_pharmacy.domain.order.dto.OrderReadyForPickupEve
 import org.beatrice.diploma_new_pharmacy.domain.order.dto.command.CreateOrderCommand;
 import org.beatrice.diploma_new_pharmacy.domain.order.dto.request.UpdateOrderStatusRequest;
 import org.beatrice.diploma_new_pharmacy.domain.order.dto.response.OrderResponse;
+import org.beatrice.diploma_new_pharmacy.domain.order.exception.OrderCannotBeModified;
 import org.beatrice.diploma_new_pharmacy.domain.order.mapper.OrderMapper;
 import org.beatrice.diploma_new_pharmacy.domain.order.model.Order;
 import org.beatrice.diploma_new_pharmacy.domain.order.model.OrderItem;
@@ -33,11 +35,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderService {
+
+    private static final List<OrderStatus> TERMINAL_STATUSES = List.of(
+            OrderStatus.COMPLETED,
+            OrderStatus.CANCELLED_USER,
+            OrderStatus.CANCELLED_SYSTEM,
+            OrderStatus.EXPIRED
+    );
 
     private final OrderOwnerService orderOwnerService;
     private final OrderRepository orderRepository;
@@ -45,6 +56,7 @@ public class OrderService {
     private final CartService cartService;
     private final PharmacyService pharmacyService;
     private final UserService userService;
+    private final PickupCodeService pickupCodeService;
     private final ApplicationEventPublisher applicationEventPublisher;
     @PersistenceContext
     private EntityManager em;
@@ -74,6 +86,22 @@ public class OrderService {
     public OrderResponse updateOrderStatus(Integer id, UpdateOrderStatusRequest request) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Order with id " + id + " not found"));
+
+        if (TERMINAL_STATUSES.contains(order.getOrderStatus())) {
+            throw new OrderCannotBeModified("Order with id " + id + " is in terminal status: " + order.getOrderStatus());
+        }
+
+
+        if (request.status() == OrderStatus.READY && order.getOrderStatus() != OrderStatus.READY) {
+            order.setPickupCode(pickupCodeService.generateUniqueCode());
+            order.setPickupCodeGeneratedAt(Instant.now());
+        }
+
+        if (request.status() == OrderStatus.COMPLETED) {
+            order.setPickupCode(null);
+            order.setPickupCodeGeneratedAt(null);
+        }
+
         orderMapper.updateFromRequest(request, order);
 
         orderRepository.save(order);
@@ -82,8 +110,13 @@ public class OrderService {
             applicationEventPublisher.publishEvent(new OrderReadyForPickupEvent(
                     order.getId(),
                     order.getEmail(),
-                    "REPLACE WITH ACTUAL NAME FROM THE ORDER" // TODO
+                    order.getFirstName() + " " + order.getLastName(),
+                    order.getPickupCode(),
+                    order.getPharmacy().getName(),
+                    order.getPharmacy().getAddress()
+
             ));
+
         }
 
         return orderMapper.toDto(order);
