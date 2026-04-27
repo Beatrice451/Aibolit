@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.beatrice.diploma_new_pharmacy.domain.cart.resolver.CartIdentityResolver;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -18,6 +19,8 @@ import java.util.List;
 public class WebConfig implements WebMvcConfigurer {
     private final CartIdentityResolver cartIdentityResolver;
 
+    @Value("${app.cors.allowed-origins:http://localhost:3000,http://localhost:8080}")
+    private String allowedOrigins;
 
     public WebConfig(CartIdentityResolver cartIdentityResolver) {
         this.cartIdentityResolver = cartIdentityResolver;
@@ -39,6 +42,7 @@ public class WebConfig implements WebMvcConfigurer {
                                   X-Forwarded-For: {}
                                   X-Real-IP: {}
                                   Host: {}
+                                  Origin: {}
                                   User-Agent: {}
                                   URI: {}
                                   Method: {}
@@ -47,6 +51,7 @@ public class WebConfig implements WebMvcConfigurer {
                         request.getHeader("X-Forwarded-For"),
                         request.getHeader("X-Real-IP"),
                         request.getHeader("Host"),
+                        request.getHeader("Origin"),
                         request.getHeader("User-Agent"),
                         request.getRequestURI(),
                         request.getMethod());
@@ -57,8 +62,11 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
+        String[] origins = allowedOrigins.split(",");
+        log.info("Configuring CORS with allowed origins: {}", (Object) origins);
+        
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000", "http://localhost:8080", "http://frontend:80")
+                .allowedOrigins(origins)
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
