@@ -38,10 +38,13 @@ class SecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter) {
+    public SecurityFilterChain filterChain(HttpSecurity http, 
+                                          JwtAuthenticationFilter jwtFilter,
+                                          JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
         http.
                 csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .authorizeHttpRequests(
                         auth -> auth
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
