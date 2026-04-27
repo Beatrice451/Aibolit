@@ -70,6 +70,12 @@ public class Order {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
+    @Column(name = "pickup_code", length = 6)
+    private String pickupCode;
+
+    @Column(name = "pickup_code_generated_at")
+    private Instant pickupCodeGeneratedAt;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;
 
