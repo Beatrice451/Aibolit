@@ -103,8 +103,18 @@ const adminApi = {
     return response.data;
   },
 
+  getOrderById: async (id) => {
+    const response = await axiosInstance.get(`/api/orders/${id}`);
+    return response.data;
+  },
+
   updateOrderStatus: async (id, status) => {
     const response = await axiosInstance.patch(`/api/admin/order/${id}`, { status });
+    return response.data;
+  },
+
+  verifyPickupCode: async (pickupCode) => {
+    const response = await axiosInstance.post('/api/admin/order/verify-pickup-code', { pickupCode });
     return response.data;
   },
 

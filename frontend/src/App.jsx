@@ -9,6 +9,8 @@ import Profile from './pages/Profile';
 import Cart from './pages/Cart';
 import MainPage from './pages/MainPage';
 import AdminPage from './pages/AdminPage';
+import Checkout from './pages/Checkout';
+import OrderConfirmation from './pages/OrderConfirmation';
 
 function App() {
   useEffect(() => {
@@ -23,6 +25,8 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/order-confirmation/:orderId" element={<OrderConfirmation />} />
         <Route path="/admin" element={<AdminPage />} />
       </Routes>
     </Router>

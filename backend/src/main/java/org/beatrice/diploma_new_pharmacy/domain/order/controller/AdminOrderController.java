@@ -25,11 +25,6 @@ class AdminOrderController {
         return ResponseEntity.ok(orderService.getOrders(filter, pageable));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<OrderResponse> getOrderById(@PathVariable Integer id) {
-        return ResponseEntity.ok(orderService.getOrderById(id));
-    }
-
     @PatchMapping("/{id}")
     public ResponseEntity<OrderResponse> updateOrderStatus(@PathVariable Integer id, @RequestBody UpdateOrderStatusRequest request) {
         return ResponseEntity.ok(orderService.updateOrderStatus(id, request));

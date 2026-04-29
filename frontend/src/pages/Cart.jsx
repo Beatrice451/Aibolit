@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import cartApi from '../api/cartService';
 
@@ -33,6 +33,7 @@ const showGlobalNotification = (message, type = 'success') => {
 };
 
 const Cart = () => {
+  const navigate = useNavigate();
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -205,7 +206,10 @@ const Cart = () => {
                 <span>Сумма:</span>
                 <span className="cart-summary__price">{cart.totalPrice} ₽</span>
               </div>
-              <button className="cart-summary__checkout">
+              <button 
+                className="cart-summary__checkout"
+                onClick={() => navigate('/checkout')}
+              >
                 Оформить заказ
               </button>
               <button className="cart-summary__clear" onClick={clearCart}>

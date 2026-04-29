@@ -16,7 +16,14 @@ export const useProducts = () => {
     price: '',
     description: '',
     manufacturer: '',
-    imageUrl: ''
+    imageUrl: '',
+    // Product type
+    isMedicine: false,
+    // Medicine-specific fields
+    dosage: '',
+    requiresPrescription: false,
+    form: '',
+    quantity: ''
   });
   const [uploading, setUploading] = useState(false);
 
@@ -72,6 +79,14 @@ export const useProducts = () => {
         imageUrl: form.imageUrl
       };
 
+      // Add medicine-specific fields if it's a medicine
+      if (form.isMedicine) {
+        data.dosage = parseInt(form.dosage);
+        data.requiresPrescription = form.requiresPrescription;
+        data.form = form.form;
+        data.quantity = parseInt(form.quantity);
+      }
+
       if (editingProduct) {
         await adminApi.updateProduct(editingProduct.id, data);
       } else {
@@ -80,7 +95,19 @@ export const useProducts = () => {
 
       setShowForm(false);
       setEditingProduct(null);
-      setForm({ name: '', categoryId: '', price: '', description: '', manufacturer: '', imageUrl: '' });
+      setForm({ 
+        name: '', 
+        categoryId: '', 
+        price: '', 
+        description: '', 
+        manufacturer: '', 
+        imageUrl: '',
+        isMedicine: false,
+        dosage: '',
+        requiresPrescription: false,
+        form: '',
+        quantity: ''
+      });
       await loadData();
     } catch (err) {
       setError('Ошибка сохранения товара');
@@ -102,7 +129,19 @@ export const useProducts = () => {
 
   const openCreate = () => {
     setEditingProduct(null);
-    setForm({ name: '', categoryId: '', price: '', description: '', manufacturer: '', imageUrl: '' });
+    setForm({ 
+      name: '', 
+      categoryId: '', 
+      price: '', 
+      description: '', 
+      manufacturer: '', 
+      imageUrl: '',
+      isMedicine: false,
+      dosage: '',
+      requiresPrescription: false,
+      form: '',
+      quantity: ''
+    });
     setShowForm(true);
   };
 
@@ -114,7 +153,12 @@ export const useProducts = () => {
       price: product.price?.toString() || '',
       description: product.description || '',
       manufacturer: product.manufacturer || '',
-      imageUrl: product.imageUrl || ''
+      imageUrl: product.imageUrl || '',
+      isMedicine: product.isMedicine || false,
+      dosage: product.dosage?.toString() || '',
+      requiresPrescription: product.requiresPrescription || false,
+      form: product.form || '',
+      quantity: product.quantity?.toString() || ''
     });
     setShowForm(true);
   };

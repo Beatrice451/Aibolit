@@ -37,6 +37,15 @@ axiosInstance.interceptors.response.use(
     
     // Handle 401 (unauthorized), 403 (forbidden - could be expired token), or 418 (custom invalid token)
     if ((status === 401 || status === 403 || status === 418) && !originalRequest._retry) {
+      // Check if user has a token - if not, they're a guest and shouldn't try to refresh
+      const token = localStorage.getItem('accessToken');
+      
+      if (!token) {
+        // Guest user - just reject the error without redirecting
+        console.error('API Error (guest):', error.response?.data || error.message);
+        return Promise.reject(error);
+      }
+      
       if (isRefreshing) {
         return new Promise(resolve => {
           subscribeTokenRefresh((newToken) => {

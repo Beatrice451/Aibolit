@@ -69,10 +69,44 @@ const MainPage = () => {
     setSearchQuery(e.target.value);
   };
 
+  if (loading && products.length === 0) {
+    return (
+      <div className="wrapper">
+        <Header />
+        <div className="content">
+          <div className="container">
+            <div className="loading-state">
+              <div className="loading-spinner"></div>
+              <p>Загрузка товаров...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (error) {
     return (
       <div className="wrapper">
-        <div className="container">{error}</div>
+        <Header />
+        <div className="content">
+          <div className="container">
+            <div className="error-state">
+              <div className="error-icon">⚠️</div>
+              <h3>Не удалось загрузить товары</h3>
+              <p>Проверьте подключение к серверу и попробуйте снова</p>
+              <button 
+                className="retry-button"
+                onClick={() => {
+                  setError(null);
+                  fetchProducts(currentPage);
+                }}
+              >
+                Попробовать снова
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

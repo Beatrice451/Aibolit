@@ -50,7 +50,7 @@ class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                                 .requestMatchers("/api/auth/**", "/api/products/**", "/api/cart/",
                                                  "/api/cart/**", "/api/categories", "/api/categories/**").permitAll()
-                                .requestMatchers("/api/orders").permitAll()
+                                .requestMatchers("/api/orders", "/api/orders/**", "/api/pharmacies", "/api/pharmacies/**").permitAll()
                                 .requestMatchers("/actuator/", "/actuator/**").permitAll() // TODO remove
                                 .requestMatchers("/api/files/**").authenticated()
                                 .requestMatchers(HttpMethod.GET, "/media/**").permitAll()

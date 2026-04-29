@@ -25,6 +25,11 @@ class OrderController {
         return ResponseEntity.ok(orders);
     }
 
+        @GetMapping("/{id}")
+    public ResponseEntity<OrderResponse> getOrderById(@PathVariable Integer id) {
+        return ResponseEntity.ok(orderService.getOrderById(id));
+    }
+
     @PostMapping
     public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody CreateOrderRequest request, OrderIdentity identity) {
         var cmd = new CreateOrderCommand(identity, request.pharmacyId(), request.phone(), request.email(), request.firstName(), request.lastName());

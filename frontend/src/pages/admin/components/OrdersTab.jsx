@@ -3,6 +3,8 @@ import { useOrders } from '../hooks';
 import axiosInstance from '../../../api/axiosInstance';
 import adminApi from '../../../api/adminService';
 import Modal from '../../../components/Modal';
+import PickupCodeModal from './PickupCodeModal';
+import { showNotification } from '../../../components/NotificationSystem';
 
 const STATUS_LABELS = {
   NEW: 'Новый',
@@ -35,6 +37,9 @@ const OrdersTab = () => {
 
   // Модальное окно подтверждения смены статуса
   const [confirmModal, setConfirmModal] = useState({ open: false, orderId: null, newStatus: null });
+
+  // Модальное окно выдачи по коду
+  const [pickupCodeModalOpen, setPickupCodeModalOpen] = useState(false);
 
   const handleStatusChange = (orderId, newStatus) => {
     setConfirmModal({ open: true, orderId, newStatus });
@@ -98,6 +103,7 @@ const OrdersTab = () => {
             <option value="DELIVERY_DELAYED">Доставка задерживается</option>
             <option value="COMPLETED">Выдан</option>
             <option value="CANCELLED_USER">Отменён пользователем</option>
+            <option value="CANCELLED_SYSTEM">Отменён системой</option>
             <option value="EXPIRED">Истёк</option>
           </select>
 
@@ -117,6 +123,13 @@ const OrdersTab = () => {
 
           <button className="admin-btn" onClick={() => loadOrders(0)}>Найти</button>
           <button className="admin-btn" onClick={resetFilters}>Сбросить</button>
+          <button 
+            className="admin-btn admin-btn--success" 
+            onClick={() => setPickupCodeModalOpen(true)}
+            style={{ marginLeft: 'auto' }}
+          >
+            🔑 Выдать по коду
+          </button>
         </div>
 
         <div className="orders-filters__switches">
@@ -180,25 +193,36 @@ const OrdersTab = () => {
                       <td>{order.phone}</td>
                       <td>{order.amount?.total || 0} ₽</td>
                       <td>
-                        <select
-                          className={`order-status-select order-status-select--${(order.orderStatus || '').toLowerCase()}`}
-                          value={order.orderStatus || ''}
-                          onChange={(e) => {
-                            const newStatus = e.target.value;
-                            if (newStatus !== order.orderStatus) {
-                              handleStatusChange(order.id, newStatus);
+                        <div 
+                          onClick={(e) => {
+                            if (['COMPLETED', 'CANCELLED_USER', 'CANCELLED_SYSTEM', 'EXPIRED'].includes(order.orderStatus)) {
+                              e.preventDefault();
+                              showNotification('Невозможно изменить статус заказа в терминальном состоянии', 'warning');
                             }
                           }}
                         >
-                          <option value="NEW">Новый</option>
-                          <option value="ASSEMBLING">Сборка</option>
-                          <option value="READY">Готов к выдаче</option>
-                          <option value="DELIVERY_PENDING">Ожидает доставки</option>
-                          <option value="DELIVERY_DELAYED">Доставка задерживается</option>
-                          <option value="COMPLETED">Выдан</option>
-                          <option value="CANCELLED_USER">Отменён пользователем</option>
-                          <option value="EXPIRED">Истёк</option>
-                        </select>
+                          <select
+                            className={`order-status-select order-status-select--${(order.orderStatus || '').toLowerCase()}`}
+                            value={order.orderStatus || ''}
+                            onChange={(e) => {
+                              const newStatus = e.target.value;
+                              if (newStatus !== order.orderStatus) {
+                                handleStatusChange(order.id, newStatus);
+                              }
+                            }}
+                            disabled={['COMPLETED', 'CANCELLED_USER', 'CANCELLED_SYSTEM', 'EXPIRED'].includes(order.orderStatus)}
+                          >
+                            <option value="NEW">Новый</option>
+                            <option value="ASSEMBLING">Сборка</option>
+                            <option value="READY">Готов к выдаче</option>
+                            <option value="DELIVERY_PENDING">Ожидает доставки</option>
+                            <option value="DELIVERY_DELAYED">Доставка задерживается</option>
+                            <option value="COMPLETED">Выдан</option>
+                            <option value="CANCELLED_USER">Отменён пользователем</option>
+                            <option value="CANCELLED_SYSTEM">Отменён системой</option>
+                            <option value="EXPIRED">Истёк</option>
+                          </select>
+                        </div>
                       </td>
                     </tr>
                     {expandedOrders[order.id] && order.items && order.items.length > 0 && (
@@ -271,6 +295,15 @@ const OrdersTab = () => {
           <button className="admin-btn admin-btn--primary" onClick={confirmStatusChange}>Подтвердить</button>
         </div>
       </Modal>
+
+      <PickupCodeModal
+        isOpen={pickupCodeModalOpen}
+        onClose={() => setPickupCodeModalOpen(false)}
+        onOrderCompleted={() => {
+          loadOrders(page);
+          alert('Заказ успешно выдан!');
+        }}
+      />
     </div>
   );
 };

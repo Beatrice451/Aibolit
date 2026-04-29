@@ -1,0 +1,24 @@
+// ========== SCSS VARIABLES ==========
+// Colors
+$red: #CD2B14;
+$dark-blue: #00334D;
+$blue: #31809F;
+$light-blue: #9FBECF;
+$beige: #F8E8CF;
+$white: #ffffff;
+$black: #1e293b;
+$gray: #e2e8f0;
+$gray-dark: #475569;
+
+// Transitions
+$duration: 0.15s;
+
+// ========== MIXINS ==========
+@mixin noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}

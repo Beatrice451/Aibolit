@@ -158,11 +158,28 @@
   padding: 30px;
   min-width: 400px;
   max-width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+
+  &--compact {
+    max-width: 800px;
+  }
 
   h3 {
     font-family: 'Orelega One', sans-serif;
     margin-bottom: 20px;
     color: var(--color-dark-blue);
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
   }
 
   &__group {
@@ -173,11 +190,12 @@
       font-family: 'Orelega One', sans-serif;
       margin-bottom: 5px;
       color: var(--color-dark-blue);
+      font-size: 13px;
     }
 
     input, textarea {
       width: 100%;
-      padding: 10px;
+      padding: 8px 10px;
       border: 2px solid var(--color-light-blue);
       border-radius: 8px;
       font-family: 'Orelega One', sans-serif;
@@ -190,13 +208,13 @@
     }
 
     textarea {
-      min-height: 80px;
+      min-height: 60px;
       resize: vertical;
     }
 
     select {
       width: 100%;
-      padding: 10px;
+      padding: 8px 10px;
       border: 2px solid var(--color-light-blue);
       border-radius: 8px;
       font-family: 'Orelega One', sans-serif;
@@ -514,10 +532,22 @@
   font-size: 12px;
   background: var(--color-white);
   cursor: pointer;
+  width: 220px;
 
   &:focus {
     outline: none;
     border-color: var(--color-red);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    background: #f5f5f5;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: none;
+    pointer-events: none;
   }
 }
 
@@ -923,5 +953,289 @@
   &--deleted {
     background: #f5f5f5;
     color: #757575;
+  }
+}
+
+// ========== PICKUP CODE MODAL ==========
+.pickup-code-modal {
+  min-width: 400px;
+
+  .pickup-code-input-group {
+    margin-bottom: 20px;
+
+    label {
+      display: block;
+      font-size: 14px;
+      color: var(--color-dark-blue);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .pickup-code-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--color-light-blue);
+      border-radius: 8px;
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      font-family: monospace;
+      color: var(--color-dark-blue);
+
+      &:focus {
+        outline: none;
+        border-color: var(--color-red);
+      }
+
+      &:disabled {
+        background: #f5f5f5;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .pickup-code-error {
+    background: #fee;
+    border: 1px solid var(--color-red);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 20px;
+    color: var(--color-red);
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .pickup-code-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  .pickup-code-result {
+    text-align: center;
+
+    &__icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      margin: 0 auto 20px;
+      font-weight: bold;
+    }
+
+    h3 {
+      font-size: 24px;
+      margin-bottom: 12px;
+      color: var(--color-dark-blue);
+    }
+
+    p {
+      font-size: 14px;
+      color: var(--color-gray-dark);
+      margin-bottom: 20px;
+    }
+
+    &--success {
+      .pickup-code-result__icon {
+        background: #4ade80;
+        color: white;
+      }
+    }
+
+    &--error {
+      .pickup-code-result__icon {
+        background: #ef4444;
+        color: white;
+      }
+    }
+  }
+
+  .pickup-code-order-info {
+    background: var(--color-beige);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: left;
+  }
+
+  .pickup-code-order-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 14px;
+    border-bottom: 1px solid var(--color-light-blue);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    span {
+      color: var(--color-gray-dark);
+    }
+
+    strong {
+      color: var(--color-dark-blue);
+    }
+
+    .status-ready {
+      color: #22c55e;
+      font-weight: 600;
+    }
+  }
+}
+
+.pickup-code-order-items {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 20px;
+  border: 2px solid var(--color-light-blue);
+
+  h4 {
+    font-size: 16px;
+    color: var(--color-dark-blue);
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+}
+
+.pickup-code-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.pickup-code-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: var(--color-beige);
+  border-radius: 8px;
+  font-size: 13px;
+
+  &__name {
+    flex: 1;
+    color: var(--color-dark-blue);
+  }
+
+  &__quantity {
+    color: var(--color-gray-dark);
+    min-width: 40px;
+    text-align: center;
+  }
+
+  &__price {
+    color: var(--color-red);
+    font-weight: 600;
+    min-width: 80px;
+    text-align: right;
+  }
+}
+
+.pickup-code-total {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 2px solid var(--color-dark-blue);
+  font-size: 16px;
+
+  span {
+    color: var(--color-dark-blue);
+  }
+
+  strong {
+    color: var(--color-red);
+    font-size: 18px;
+  }
+}
+
+.admin-btn--success {
+  background: var(--color-red);
+  color: var(--color-beige);
+
+  &:hover {
+    background: #b32410;
+  }
+}
+
+// ========== SEGMENTED CONTROL ==========
+.segmented-control {
+  display: flex;
+  background: var(--color-beige);
+  border-radius: 8px;
+  padding: 4px;
+  gap: 4px;
+
+  &__button {
+    flex: 1;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--color-dark-blue);
+    font-family: 'Orelega One', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      background: rgba(0, 51, 77, 0.1);
+    }
+
+    &--active {
+      background: var(--color-white);
+      color: var(--color-red);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
+// ========== FORM DIVIDER ==========
+.admin-form__divider {
+  margin: 24px 0 16px 0;
+  padding: 12px 0;
+  border-top: 2px solid var(--color-light-blue);
+  border-bottom: 2px solid var(--color-light-blue);
+  text-align: center;
+
+  span {
+    font-family: 'Orelega One', sans-serif;
+    font-size: 14px;
+    color: var(--color-dark-blue);
+    font-weight: 600;
+  }
+}
+
+// ========== CHECKBOX LABEL ==========
+.admin-form__checkbox-label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important; // Gap between checkbox and text
+  cursor: pointer;
+  padding-top: 28px; // Align with other inputs in the row
+
+  input[type="checkbox"] {
+    width: 18px !important;
+    height: 18px !important;
+    cursor: pointer;
+    margin: 0 !important;
+    flex-shrink: 0;
+    vertical-align: middle;
+  }
+
+  span {
+    font-family: 'Orelega One', sans-serif;
+    font-size: 13px;
+    color: var(--color-dark-blue);
+    line-height: 18px; // Match checkbox height
+    vertical-align: middle;
   }
 }

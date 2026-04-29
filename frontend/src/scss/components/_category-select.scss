@@ -1,0 +1,93 @@
+.category-select {
+  position: relative;
+  width: 100%;
+
+  &__trigger {
+    width: 100%;
+    padding: 8px 10px;
+    border: 2px solid var(--color-light-blue);
+    border-radius: 8px;
+    font-family: 'Orelega One', sans-serif;
+    font-size: 14px;
+    background: var(--color-white);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: border-color 0.2s;
+
+    &:hover {
+      border-color: var(--color-blue);
+    }
+
+    &--placeholder {
+      color: #999;
+    }
+  }
+
+  &__arrow {
+    font-size: 10px;
+    color: var(--color-dark-blue);
+  }
+
+  &__dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 4px;
+    background: var(--color-white);
+    border: 2px solid var(--color-light-blue);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    max-height: 300px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__search {
+    padding: 8px 10px;
+    border: none;
+    border-bottom: 2px solid var(--color-light-blue);
+    font-family: 'Orelega One', sans-serif;
+    font-size: 13px;
+    outline: none;
+
+    &:focus {
+      border-bottom-color: var(--color-red);
+    }
+  }
+
+  &__list {
+    overflow-y: auto;
+    max-height: 250px;
+  }
+
+  &__item {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-family: 'Orelega One', sans-serif;
+    font-size: 13px;
+    color: var(--color-dark-blue);
+    transition: background 0.2s;
+
+    &:hover {
+      background: var(--color-beige);
+    }
+
+    &--selected {
+      background: var(--color-light-blue);
+      color: var(--color-red);
+      font-weight: 600;
+    }
+  }
+
+  &__empty {
+    padding: 16px;
+    text-align: center;
+    color: #999;
+    font-family: 'Orelega One', sans-serif;
+    font-size: 13px;
+  }
+}

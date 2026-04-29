@@ -1,0 +1,85 @@
+.notification-container {
+  position: fixed;
+  top: 0;
+  right: 20px;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.notification {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 300px;
+  max-width: 400px;
+  position: absolute;
+  right: 0;
+  pointer-events: auto;
+  font-family: 'Orelega One', sans-serif;
+  animation: slideDown 0.3s ease-out;
+  transition: top 0.3s ease-out, opacity 0.3s ease-out;
+
+  &.notification--removing {
+    animation: slideUp 0.3s ease-in forwards;
+  }
+
+  &__icon {
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  &__message {
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  &--error {
+    background: #fee;
+    border: 2px solid #ef4444;
+    color: #991b1b;
+  }
+
+  &--success {
+    background: #d1fae5;
+    border: 2px solid #22c55e;
+    color: #065f46;
+  }
+
+  &--info {
+    background: #dbeafe;
+    border: 2px solid #3b82f6;
+    color: #1e40af;
+  }
+
+  &--warning {
+    background: #fef3c7;
+    border: 2px solid #f59e0b;
+    color: #92400e;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-150%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-150%);
+    opacity: 0;
+  }
+}

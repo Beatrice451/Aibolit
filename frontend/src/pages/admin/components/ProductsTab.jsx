@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useProducts } from '../hooks';
+import CategorySelect from '../../../components/CategorySelect';
 
 const CategoryTreeItem = ({ category, expanded, onToggle, depth }) => {
   const hasChildren = category.children && category.children.length > 0;
@@ -36,42 +37,76 @@ const CategoryTreeItem = ({ category, expanded, onToggle, depth }) => {
   );
 };
 
-const ProductForm = ({ form, setForm, onSubmit, onCancel, loading, uploading, onUpload, isEditing }) => {
+const ProductForm = ({ form, setForm, onSubmit, onCancel, loading, uploading, onUpload, isEditing, categories }) => {
   return (
     <div className="admin-form-overlay">
-      <form className="admin-form" onSubmit={onSubmit}>
+      <form className="admin-form admin-form--compact" onSubmit={onSubmit}>
         <h3>{isEditing ? 'Редактировать' : 'Добавить'} товар</h3>
 
+        {/* Segmented Control for Product Type */}
         <div className="admin-form__group">
-          <label>Название *</label>
-          <input
-            type="text"
-            value={form.name}
-            onChange={e => setForm({ ...form, name: e.target.value })}
-            required
-          />
+          <label>Тип товара *</label>
+          <div className="segmented-control">
+            <button
+              type="button"
+              className={`segmented-control__button ${!form.isMedicine ? 'segmented-control__button--active' : ''}`}
+              onClick={() => setForm({ ...form, isMedicine: false })}
+            >
+              Обычный товар
+            </button>
+            <button
+              type="button"
+              className={`segmented-control__button ${form.isMedicine ? 'segmented-control__button--active' : ''}`}
+              onClick={() => setForm({ ...form, isMedicine: true })}
+            >
+              Лекарственное средство
+            </button>
+          </div>
         </div>
 
-        <div className="admin-form__group">
-          <label>Категория *</label>
-          <select
-            value={form.categoryId}
-            onChange={e => setForm({ ...form, categoryId: e.target.value })}
-            required
-          >
-            <option value="">Выберите категорию</option>
-          </select>
+        {/* Two-column layout for basic fields */}
+        <div className="admin-form__row">
+          <div className="admin-form__group">
+            <label>Название *</label>
+            <input
+              type="text"
+              value={form.name}
+              onChange={e => setForm({ ...form, name: e.target.value })}
+              required
+            />
+          </div>
+
+          <div className="admin-form__group">
+            <label>Категория *</label>
+            <CategorySelect
+              categories={categories || []}
+              value={form.categoryId}
+              onChange={(categoryId) => setForm({ ...form, categoryId: categoryId.toString() })}
+              required
+            />
+          </div>
         </div>
 
-        <div className="admin-form__group">
-          <label>Цена *</label>
-          <input
-            type="number"
-            step="0.01"
-            value={form.price}
-            onChange={e => setForm({ ...form, price: e.target.value })}
-            required
-          />
+        <div className="admin-form__row">
+          <div className="admin-form__group">
+            <label>Цена *</label>
+            <input
+              type="number"
+              step="0.01"
+              value={form.price}
+              onChange={e => setForm({ ...form, price: e.target.value })}
+              required
+            />
+          </div>
+
+          <div className="admin-form__group">
+            <label>Производитель</label>
+            <input
+              type="text"
+              value={form.manufacturer}
+              onChange={e => setForm({ ...form, manufacturer: e.target.value })}
+            />
+          </div>
         </div>
 
         <div className="admin-form__group">
@@ -79,17 +114,66 @@ const ProductForm = ({ form, setForm, onSubmit, onCancel, loading, uploading, on
           <textarea
             value={form.description}
             onChange={e => setForm({ ...form, description: e.target.value })}
+            rows="2"
           />
         </div>
 
-        <div className="admin-form__group">
-          <label>Производитель</label>
-          <input
-            type="text"
-            value={form.manufacturer}
-            onChange={e => setForm({ ...form, manufacturer: e.target.value })}
-          />
-        </div>
+        {/* Medicine-specific fields */}
+        {form.isMedicine && (
+          <>
+            <div className="admin-form__divider">
+              <span>Дополнительные поля для лекарственного средства</span>
+            </div>
+
+            <div className="admin-form__row">
+              <div className="admin-form__group">
+                <label>Дозировка (мг) *</label>
+                <input
+                  type="number"
+                  value={form.dosage}
+                  onChange={e => setForm({ ...form, dosage: e.target.value })}
+                  required={form.isMedicine}
+                  placeholder="500"
+                />
+              </div>
+
+              <div className="admin-form__group">
+                <label>Форма выпуска *</label>
+                <input
+                  type="text"
+                  value={form.form}
+                  onChange={e => setForm({ ...form, form: e.target.value })}
+                  required={form.isMedicine}
+                  placeholder="таблетки"
+                />
+              </div>
+            </div>
+
+            <div className="admin-form__row">
+              <div className="admin-form__group">
+                <label>Количество в упаковке *</label>
+                <input
+                  type="number"
+                  value={form.quantity}
+                  onChange={e => setForm({ ...form, quantity: e.target.value })}
+                  required={form.isMedicine}
+                  placeholder="20"
+                />
+              </div>
+
+              <div className="admin-form__group">
+                <label className="admin-form__checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={form.requiresPrescription}
+                    onChange={e => setForm({ ...form, requiresPrescription: e.target.checked })}
+                  />
+                  <span>Требуется рецепт</span>
+                </label>
+              </div>
+            </div>
+          </>
+        )}
 
         <div className="admin-form__group">
           <label>Изображение</label>
@@ -178,6 +262,7 @@ const ProductsTab = () => {
           uploading={uploading}
           onUpload={handleImageUpload}
           isEditing={editingProduct}
+          categories={flatCategories}
         />
       )}
 

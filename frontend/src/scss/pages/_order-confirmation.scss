@@ -1,0 +1,280 @@
+.order-confirmation {
+  padding: 40px 0;
+  min-height: calc(100vh - 80px);
+  background-color: #F8E8CF;
+
+  &__success {
+    text-align: center;
+    margin-bottom: 40px;
+
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      background: #4ade80;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      color: white;
+      margin: 0 auto 20px;
+      font-weight: bold;
+    }
+  }
+
+  &__title {
+    font-size: 32px;
+    color: #00334D;
+    margin-bottom: 10px;
+  }
+
+  &__subtitle {
+    font-size: 18px;
+    color: #475569;
+
+    strong {
+      color: #CD2B14;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 40px;
+
+    .btn {
+      padding: 14px 32px;
+      border-radius: 40px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+
+      &--primary {
+        background: #CD2B14;
+        color: #F8E8CF;
+
+        &:hover {
+          background: #b02410;
+        }
+      }
+
+      &--secondary {
+        background: #9FBECF;
+        color: #00334D;
+
+        &:hover {
+          background: #8aa9bd;
+        }
+      }
+    }
+  }
+
+  &__info {
+    text-align: center;
+    margin-top: 30px;
+    padding: 20px;
+    background: #fff8f0;
+    border-radius: 12px;
+    color: #475569;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+}
+
+.order-details {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  max-width: 800px;
+  margin: 0 auto;
+
+  &__section {
+    margin-bottom: 32px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &--highlight {
+      background: #F8E8CF;
+      border-radius: 12px;
+      padding: 20px;
+      border: 2px solid #CD2B14;
+    }
+  }
+
+  &__heading {
+    font-size: 18px;
+    color: #00334D;
+    margin-bottom: 16px;
+    font-weight: 600;
+    border-bottom: 2px solid #9FBECF;
+    padding-bottom: 8px;
+  }
+}
+
+.order-status {
+  &__badge {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+
+    &--new {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    &--assembling {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    &--ready {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    &--completed {
+      background: #e0e7ff;
+      color: #3730a3;
+    }
+
+    &--cancelled_user,
+    &--cancelled_system,
+    &--expired {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+  }
+}
+
+.order-pharmacy {
+  &__name {
+    font-size: 16px;
+    color: #31809F;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  &__address {
+    font-size: 14px;
+    color: #475569;
+  }
+}
+
+.pickup-code {
+  text-align: center;
+
+  &__value {
+    font-size: 36px;
+    font-weight: bold;
+    color: #CD2B14;
+    letter-spacing: 8px;
+    margin-bottom: 12px;
+    background: #ffffff;
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  &__hint {
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.5;
+  }
+}
+
+.order-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #F8E8CF;
+  border-radius: 8px;
+
+  &__name {
+    flex: 1;
+    font-size: 14px;
+    color: #00334D;
+  }
+
+  &__quantity {
+    font-size: 14px;
+    color: #475569;
+    margin: 0 16px;
+  }
+
+  &__price {
+    font-size: 16px;
+    font-weight: 600;
+    color: #CD2B14;
+  }
+}
+
+.order-total {
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 14px;
+    color: #475569;
+
+    &--discount {
+      color: #4ade80;
+    }
+
+    &--final {
+      border-top: 2px solid #00334D;
+      margin-top: 8px;
+      padding-top: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #00334D;
+    }
+  }
+
+  &__final-price {
+    font-size: 24px;
+    color: #CD2B14;
+  }
+}
+
+.order-contact {
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 14px;
+
+    span:first-child {
+      color: #475569;
+    }
+
+    span:last-child {
+      color: #00334D;
+      font-weight: 500;
+    }
+  }
+}
+
+.error-message {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+  color: #CD2B14;
+  background: #fee;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
