@@ -2,7 +2,6 @@ package org.beatrice.diploma_new_pharmacy.domain.product.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.beatrice.diploma_new_pharmacy.domain.product.specification.ProductFilter;
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.request.AddProductRequest;
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.request.UpdateProductRequest;
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.MedicineResponse;
@@ -13,6 +12,7 @@ import org.beatrice.diploma_new_pharmacy.domain.product.model.Medicine;
 import org.beatrice.diploma_new_pharmacy.domain.product.model.Product;
 import org.beatrice.diploma_new_pharmacy.domain.product.repository.MedicineRepository;
 import org.beatrice.diploma_new_pharmacy.domain.product.repository.ProductRepository;
+import org.beatrice.diploma_new_pharmacy.domain.product.specification.ProductFilter;
 import org.beatrice.diploma_new_pharmacy.domain.product.specification.ProductSpecifications;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -87,6 +87,11 @@ public class ProductService {
     public ProductResponse getProductById(Integer id) {
         return productMapper.toDto(productRepository.findProductById(id)
                                            .orElseThrow(() -> new ProductNotFoundException("Product not found")));
+    }
+
+    public Product getProductEntityById(Integer id) {
+        return productRepository.findProductById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
     }
 
 

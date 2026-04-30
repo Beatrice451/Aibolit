@@ -4,11 +4,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.beatrice.diploma_new_pharmacy.domain.auth.exception.*;
 import org.beatrice.diploma_new_pharmacy.domain.order.exception.OrderCannotBeModified;
 import org.beatrice.diploma_new_pharmacy.domain.product.exception.CategoryAlreadyExistsException;
+import org.beatrice.diploma_new_pharmacy.domain.product.exception.ReviewAlreadyExistsException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -33,11 +35,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({
             UserAlreadyExistsException.class,
             PhoneAlreadyExistsException.class,
-            CategoryAlreadyExistsException.class
+            CategoryAlreadyExistsException.class,
+            ReviewAlreadyExistsException.class
     })
     public ResponseEntity<ErrorResponse> handleConflictExceptions(Exception ex, HttpServletRequest request) {
         return generateResponse(ex, request, HttpStatus.CONFLICT);
+    }
 
+    @ExceptionHandler({
+            AccessDeniedException.class
+    })
+    public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex, HttpServletRequest request) {
+        return generateResponse(ex, request, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler({
