@@ -1,14 +1,18 @@
 package org.beatrice.diploma_new_pharmacy.domain.pharmacy.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
-@Setter
-@Getter
 @Entity
 @Table(name = "pharmacies", schema = "pharmacy")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Pharmacy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +30,12 @@ public class Pharmacy {
 
     @ColumnDefault("true")
     @Column(name = "is_active", nullable = false)
-    private Boolean isActive = false;
+    private Boolean isActive = true;
 
+
+    public Pharmacy(String phone, String address, String name) {
+        this.phone = phone;
+        this.address = address;
+        this.name = name;
+    }
 }

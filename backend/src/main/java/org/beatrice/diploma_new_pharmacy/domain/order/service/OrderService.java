@@ -170,7 +170,7 @@ public class OrderService {
         List<CartItem> cartItems = cart.getItems();
         if (cartItems.isEmpty()) throw new IllegalArgumentException("Cart is empty, cannot create an order");
 
-        Pharmacy pharmacy = pharmacyService.getPharmacyById(cmd.pharmacyId());
+        Pharmacy pharmacy = pharmacyService.getPharmacyEntityById(cmd.pharmacyId());
         var totalAmount = cartService.countTotalCartAmount(cart);
         var discount = getDiscount();
 

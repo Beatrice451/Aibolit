@@ -1,10 +1,9 @@
 package org.beatrice.diploma_new_pharmacy.domain.pharmacy.dto;
 
-public record PharmacyResponse(
-        Integer id,
+public record PharmacyRequest(
         String name,
         String address,
-        String phone,
+        String phoneNumber,
         Boolean isActive
 ) {
 }
