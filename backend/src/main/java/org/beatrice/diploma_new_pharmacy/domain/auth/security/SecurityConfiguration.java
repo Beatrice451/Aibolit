@@ -42,11 +42,14 @@ class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, 
                                           JwtAuthenticationFilter jwtFilter,
-                                          JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+                                          JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
+                                          JwtAccessDeniedHandler jwtAccessDeniedHandler) {
         http.
                 csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                        .accessDeniedHandler(jwtAccessDeniedHandler))
                 .authorizeHttpRequests(
                         auth -> auth
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -59,6 +62,7 @@ class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.GET, "/media/**").permitAll()
                                 .requestMatchers("/swagger-ui/**", "/v3/**", "/swagger-ui.html").permitAll() // TODO remove
                                 .requestMatchers("/api/users/whoami").permitAll()
+                                .requestMatchers("/error").permitAll()
                                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )
