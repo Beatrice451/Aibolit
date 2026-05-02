@@ -37,6 +37,9 @@ public class RegistrationService {
         user.setEmail(cmd.email());
         user.setPhone(normalizedPhone);
         user.setPasswordHash(passwordEncoder.encode(cmd.password()));
+        user.setFirstName(cmd.firstName());
+        user.setLastName(cmd.lastName());
+
         try {
             userRepository.save(user);
         } catch (DataIntegrityViolationException e) {

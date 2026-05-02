@@ -29,7 +29,7 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<AccessTokenResponse> login(@RequestBody AuthRequest request) {
+    public ResponseEntity<AccessTokenResponse> login(@Valid @RequestBody AuthRequest request) {
         TokenPair tokenPairResponse = authenticationService.login(new LoginCommand(request.email(), request.password()));
 
         ResponseCookie cookie = refreshCookieFactory.create(tokenPairResponse.refreshToken());
@@ -59,17 +59,22 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody UserRegistrationRequest request) {
         registrationService.registerUser(new RegistrationCommand(
-                request.name(),
                 request.email(),
                 request.phone(),
-                request.password()
+                request.password(),
+                request.firstName(),
+                request.lastName()
         ));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
 
     @PostMapping("/refresh")
-    public ResponseEntity<AccessTokenResponse> refresh(@CookieValue("refreshToken") String refreshToken) {
+    public ResponseEntity<AccessTokenResponse> refresh(@CookieValue(value = "refreshToken", required = false) String refreshToken) {
+        if (refreshToken == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        
         TokenPair token = authenticationService.refresh(refreshToken);
 
         ResponseCookie cookie = refreshCookieFactory.create(token.refreshToken());
