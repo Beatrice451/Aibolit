@@ -1,133 +1,279 @@
-# Реализация отправки писем
+# План реализации подтверждения аккаунта по email
 
-(ЭТО Я ПИШУ САМ, НЕ НЕЙРОСЕТИ, ЧЕССЛОВО)
+## 1. Изменения в базе данных
 
-> Задача: Отправлять письмо пользователю при смене статуса заказа на READY_FOR_PICKUP (иликакевотам).
+### Миграция V17: Добавление полей верификации в таблицу users
+- [ ] Добавить поле `email_verified BOOLEAN NOT NULL DEFAULT FALSE`
+- [ ] Добавить поле `email_verified_at TIMESTAMP NULL`
+- [ ] Проставить всем существующим пользователям `email_verified = TRUE` и `email_verified_at = CURRENT_TIMESTAMP`
 
-## Архитектура
-Использовать **Spring Application Events** + `@TransactionalEventListener(phase = AFTER_COMMIT)` + `@Async`.  
+### Миграция V18: Создание таблицы email_verification_tokens
+- [ ] Создать таблицу с полями:
+  - `id` (PK, IDENTITY)
+  - `user_id` (FK на users с ON DELETE CASCADE)
+  - `token` (VARCHAR(255), UNIQUE, NOT NULL)
+  - `expires_at` (TIMESTAMP, NOT NULL)
+  - `created_at` (TIMESTAMP, NOT NULL, DEFAULT CURRENT_TIMESTAMP)
+  - `verified_at` (TIMESTAMP, NULL)
+  - `is_used` (BOOLEAN, NOT NULL, DEFAULT FALSE)
+- [ ] Создать индекс на `token` с условием `WHERE is_used = FALSE`
+- [ ] Создать индекс на `expires_at` с условием `WHERE is_used = FALSE`
+- [ ] Создать индекс на `user_id`
 
-Почему:
+---
 
-- **Декаплинг**: Сервис заказов не знает про почту.
-- **Транзакционная** целостность: Письмо отправится только если транзакция БД успешно закоммитилась.
-- **Производительность**: Отправка почты вынесена в отдельный поток, не блокирует ответ API.
-___
+## 2. Модели и сущности
 
-## Реализация
+- [ ] **Обновить User.java**
+  - Добавить поле `emailVerified` (Boolean, default false)
+  - Добавить поле `emailVerifiedAt` (Instant, nullable)
 
-### Создание события
+- [ ] **Создать EmailVerificationToken.java**
+  - Entity с маппингом на таблицу `email_verification_tokens`
+  - ManyToOne связь с User (LAZY)
+  - Методы `isExpired()` и `isValid()`
 
-Легковесный record, содержащий только необходимые данные. Не передавать целые сущности!
+---
 
-```java
-public record OrderReadyForPickupEvent(
-    Integer orderId,
-    String userEmail,
-    String userName
-) {}
-```
+## 3. Репозитории
 
-### Публикация события
-В методе изменения статуса публикуем событие (код примерный, копировать свой сервис в лом):
+- [ ] **Создать EmailVerificationTokenRepository.java**
+  - Метод `findByTokenAndIsUsedFalse(String token)`
+  - Метод `findFirstByUserAndIsUsedFalseOrderByCreatedAtDesc(User user)`
+  - Метод `deleteExpiredTokens(@Param("now") Instant now)` с @Modifying
+  - Метод `invalidateAllUserTokens(@Param("user") User user)` с @Modifying
 
-```java
-@Service
-@RequiredArgsConstructor
-public class OrderService {
-    private final OrderRepository orderRepository;
-    private final ApplicationEventPublisher eventPublisher;
+---
 
-    @Transactional
-    public void updateStatus(Integer orderId, OrderStatus newStatus) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new NotFoundException("Order not found"));
-        
-        order.setStatus(newStatus);
-        // Hibernate dirty checking сохранит изменения при коммите
+## 4. Сервисы
 
-        if (newStatus == OrderStatus.READY_FOR_PICKUP) {
-            eventPublisher.publishEvent(new OrderReadyForPickupEvent(
-                order.getId(),
-                order.getUser().getEmail(),
-                order.getUser().getName()
-            ));
-        }
-    }
-}
-```
+- [ ] **Создать EmailVerificationService.java**
+  - Метод `sendVerificationEmail(User user)`:
+    - Инвалидировать все старые токены пользователя
+    - Сгенерировать криптографически стойкий токен (SecureRandom + Base64, 32 байта)
+    - Создать запись в БД с expiration = 1 час
+    - Отправить email через EmailService
+  - Метод `verifyEmail(String token)`:
+    - Найти токен, проверить что не использован и не истек
+    - Проверить что email еще не верифицирован
+    - Установить `emailVerified = true`, `emailVerifiedAt = now()`
+    - Пометить токен как использованный
+  - Метод `resendVerificationEmail(String email)`:
+    - Найти пользователя по email
+    - Проверить что email не верифицирован
+    - Проверить rate limit: последняя отправка была не менее 1 минуты назад
+    - Вызвать `sendVerificationEmail(user)`
+  - Метод `cleanupExpiredTokens()` с @Scheduled (cron: каждый день в 2:00 AM)
+  - Конфигурация: `token-validity-hours = 1`, `base-url` из properties
 
-### Обработчик события (Listener)
+- [ ] **Обновить RegistrationService.java**
+  - В методе `registerUser()` после сохранения пользователя:
+    - Установить `emailVerified = false` (явно)
+    - Вызвать `emailVerificationService.sendVerificationEmail(user)`
 
-Важно: `phase = TransactionPhase.AFTER_COMMIT`  
-Так слушатель сработает ТОЛЬКО после успешного коммита транзакции. Чтобы не получилось так, что письмо ушло, а транзакция упала и откатилась
-```java
-@Component
-@RequiredArgsConstructor
-public class OrderEventListener {
-    private final EmailService emailService;
+- [ ] **Обновить EmailService.java**
+  - Добавить метод `sendVerificationEmail(String to, String firstName, String verificationUrl, int validityHours)`:
+    - Асинхронный (@Async)
+    - Использовать Thymeleaf шаблон "email-verification"
+    - Передать в контекст: firstName, verificationUrl, validityHours
+    - Обработать ошибки с логированием
 
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void onOrderReadyForPickup(OrderReadyForPickupEvent event) {
-        emailService.sendReadyForPickupEmail(event);
-    }
-}
-```
+---
 
-### Асинхронная отправка письма 
-Выносим отправку в другой поток, чтоб не тормозить весь бэк.  
-Код примерный!
+## 5. Контроллеры
 
-```java
-@Service
-@Slf4j
-public class EmailService {
-    
-    @Async("emailTaskExecutor")
-    public void sendReadyForPickupEmail(OrderReadyForPickupEvent event) {
-        try {
-            // Логика формирования и отправки письма
-            log.info("Email sent to {} for order {}", event.userEmail(), event.orderId());
-        } catch (Exception e) {
-            log.error("Failed to send email for order {}: {}", event.orderId(), e.getMessage());
-            // сюда ретраи
-        }
-    }
-}
-```
+- [ ] **Обновить AuthController.java**
+  - Добавить эндпоинт `GET /api/auth/verify-email?token={token}`:
+    - Вызвать `emailVerificationService.verifyEmail(token)`
+    - Вернуть 200 OK с сообщением об успехе
+    - Swagger документация
+  - Добавить эндпоинт `POST /api/auth/resend-verification`:
+    - Принимать DTO с email
+    - Вызвать `emailVerificationService.resendVerificationEmail(email)`
+    - Вернуть 200 OK с сообщением
+    - Swagger документация
 
-### Конфигурация Async Executor
+---
 
-> \- "Зачем? Ведь есть SimpleAsyncTaskExecutor"  
+## 6. DTO
 
-Так надо (вроде `SimpleAsyncTaskExecutor` на каждую задачу новый поток создаёт).
+- [ ] **Создать ResendVerificationRequest.java**
+  - Record с полем `email` (String)
+  - Валидация: @NotBlank, @Email
 
-```java
-@Configuration
-@EnableAsync
-public class AsyncConfig {
+---
 
-    @Bean(name = "emailTaskExecutor")
-    public Executor emailTaskExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(2);      // Минимальное кол-во потоков
-        executor.setMaxPoolSize(5);       // Максимальное кол-во потоков
-        executor.setQueueCapacity(100);   // Очередь задач
-        executor.setThreadNamePrefix("email-sender-");
-        executor.initialize();
-        return executor;
-    }
-}
-```
+## 7. Исключения
 
-## Нюансики
-1. Обработка ошибок в `@Async`:
-   - Исключения в асинхронных методах не пробрасываются вызывающему потоку.
-   - Обязательно оборачивать логику в try-catch внутри асинхронного метода и логировать ошибки.
-   - Для глобальной обработки реализовать `AsyncUncaughtExceptionHandler`.
-2. Гарантии доставки:
-   - Если приложение упадет сразу после коммита БД, но до отправки письма — письмо будет потеряно.
-   - Решение: Либо использовать брокер сообщений (RabbitMQ/Kafka) с persistence, либо писать запись о необходимости отправки в отдельную таблицу БД (outbox pattern) и иметь джобу-отправщик.
-3. Идемпотентность:  
-   - При использовании механизмов retry одно письмо может уйти дважды.
-   - Решение: Генерировать уникальный messageId или проверять флаг `is_email_sent` в БД перед отправкой.
+- [ ] **Создать в пакете domain/auth/exception:**
+  - `InvalidVerificationTokenException` - токен не найден, истек или использован
+  - `EmailAlreadyVerifiedException` - email уже подтвержден
+  - `TooManyRequestsException` - слишком частые запросы на повторную отправку
+  - `EmailSendingException` - ошибка отправки email
+  - `EmailNotVerifiedException` - email не подтвержден (для блокировки заказов)
+
+---
+
+## 8. Обработка ошибок
+
+- [ ] **Обновить глобальный ExceptionHandler**
+  - Добавить обработчик `InvalidVerificationTokenException` → 400 Bad Request
+  - Добавить обработчик `EmailAlreadyVerifiedException` → 409 Conflict
+  - Добавить обработчик `TooManyRequestsException` → 429 Too Many Requests
+  - Добавить обработчик `EmailSendingException` → 500 Internal Server Error
+  - Добавить обработчик `EmailNotVerifiedException` → 403 Forbidden
+
+---
+
+## 9. Email шаблон
+
+- [ ] **Создать email-verification.html в resources/templates**
+  - Использовать стиль существующего шаблона order-ready-email.html
+  - Брендинг "Айболит" с градиентом и цветовой схемой
+  - Кнопка "Подтвердить email" с ссылкой на verificationUrl
+  - Альтернативная текстовая ссылка (если кнопка не работает)
+  - Указать срок действия: "Ссылка действительна в течение 1 часа"
+  - Предупреждение: "Если вы не регистрировались, проигнорируйте письмо"
+
+---
+
+## 10. Конфигурация
+
+- [ ] **Обновить application.yaml**
+  - Добавить секцию `app.email-verification`:
+    - `token-validity-hours: 1`
+    - `base-url: ${APP_BASE_URL:http://localhost:8080}`
+
+- [ ] **Обновить .env.example**
+  - Добавить переменную `APP_BASE_URL=http://localhost:8080`
+
+- [ ] **Включить @EnableScheduling**
+  - Добавить аннотацию в `AsyncConfig.java` или главный класс приложения
+
+---
+
+## 11. Ограничение функционала для неверифицированных пользователей
+
+- [ ] **Обновить OrderService.java**
+  - В методе создания заказа (для авторизованных пользователей):
+    - Проверить `user.getEmailVerified()`
+    - Если false → выбросить `EmailNotVerifiedException`
+    - Для гостей (неавторизованных) проверка не нужна
+
+---
+
+## 12. API для фронтенда
+
+- [ ] **Обновить UserController.java или создать эндпоинт**
+  - Добавить в DTO `UserResponse` поле `emailVerified` (boolean)
+  - Фронтенд сможет получать статус верификации через GET /api/users/me или аналогичный эндпоинт
+
+---
+
+## 13. Тестирование
+
+- [ ] **Unit тесты**
+  - `EmailVerificationServiceTest`:
+    - Тест генерации и отправки токена
+    - Тест успешной верификации
+    - Тест с истекшим токеном
+    - Тест с использованным токеном
+    - Тест повторной отправки с rate limiting (1 минута)
+    - Тест попытки верификации уже верифицированного email
+
+- [ ] **Integration тесты**
+  - Тест полного flow: регистрация → получение токена → верификация
+  - Тест эндпоинтов `/verify-email` и `/resend-verification`
+  - Тест блокировки создания заказа для неверифицированного пользователя
+
+---
+
+## 14. Документация
+
+- [ ] **Обновить Swagger/OpenAPI**
+  - Документировать новые эндпоинты с примерами запросов/ответов
+  - Указать все возможные коды ответов и их значения
+
+---
+
+## Итоговый чеклист файлов
+
+### Новые файлы (13):
+- [ ] `V17__add_email_verification_fields.sql`
+- [ ] `V18__create_email_verification_tokens_table.sql`
+- [ ] `EmailVerificationToken.java` (model)
+- [ ] `EmailVerificationTokenRepository.java`
+- [ ] `EmailVerificationService.java`
+- [ ] `ResendVerificationRequest.java` (DTO)
+- [ ] `InvalidVerificationTokenException.java`
+- [ ] `EmailAlreadyVerifiedException.java`
+- [ ] `TooManyRequestsException.java`
+- [ ] `EmailSendingException.java`
+- [ ] `EmailNotVerifiedException.java`
+- [ ] `email-verification.html` (template)
+- [ ] `EmailVerificationServiceTest.java`
+
+### Изменяемые файлы (9):
+- [ ] `User.java` - добавить 2 поля
+- [ ] `RegistrationService.java` - вызов отправки email
+- [ ] `EmailService.java` - новый метод отправки
+- [ ] `AuthController.java` - 2 новых эндпоинта
+- [ ] `OrderService.java` - проверка верификации при создании заказа
+- [ ] `GlobalExceptionHandler.java` - обработчики новых исключений
+- [ ] `application.yaml` - конфигурация верификации
+- [ ] `.env.example` - APP_BASE_URL
+- [ ] `AsyncConfig.java` или главный класс - @EnableScheduling
+
+---
+
+## Требования
+
+### Поведение системы:
+- ✅ Разрешить вход неверифицированным пользователям
+- ✅ Ограничить возможность оформления заказов для неверифицированных
+- ✅ На фронте в ЛК отображать плашку о том, что аккаунт не подтвержден
+- ✅ Срок действия токена: 1 час (отражено в письме)
+- ✅ Rate limiting для повторной отправки: 1 минута
+- ✅ Email используется как логин (изменение email не реализуется)
+- ✅ Существующим пользователям проставить верификацию автоматически
+
+### Текст ошибки при попытке создать заказ:
+**"Для оформления заказа необходимо подтвердить email адрес"**
+
+---
+
+## Production best practices
+
+✅ **Безопасность:**
+- Криптографически стойкие токены (SecureRandom + Base64)
+- Токены с ограниченным сроком действия (1 час)
+- Одноразовые токены (флаг `is_used`)
+- Инвалидация старых токенов при генерации новых
+
+✅ **Производительность:**
+- Индексы на часто запрашиваемые поля
+- Асинхронная отправка email
+- Scheduled задача для очистки истекших токенов
+
+✅ **Надежность:**
+- Транзакционность операций
+- Обработка ошибок отправки email
+- Rate limiting для повторной отправки (1 минута)
+- Логирование всех операций
+
+✅ **Масштабируемость:**
+- Отдельная таблица для токенов
+- Возможность горизонтального масштабирования
+- Stateless подход
+
+✅ **UX:**
+- Понятные сообщения об ошибках
+- Красивый HTML email шаблон
+- Возможность повторной отправки
+- Информация о сроке действия ссылки
+
+✅ **Maintainability:**
+- Чистая архитектура
+- Разделение ответственности
+- Документация через Swagger
+- Миграции БД через Flyway
