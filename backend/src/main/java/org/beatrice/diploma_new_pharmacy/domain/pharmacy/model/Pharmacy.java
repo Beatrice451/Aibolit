@@ -1,7 +1,7 @@
 package org.beatrice.diploma_new_pharmacy.domain.pharmacy.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,8 +11,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Table(name = "pharmacies", schema = "pharmacy")
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Pharmacy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,10 +31,10 @@ public class Pharmacy {
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
 
-
-    public Pharmacy(String phone, String address, String name) {
-        this.phone = phone;
-        this.address = address;
+    public Pharmacy(String name, String address, String phone) {
         this.name = name;
+        this.address = address;
+        this.phone = phone;
     }
+
 }

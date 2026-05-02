@@ -12,6 +12,7 @@ import org.beatrice.diploma_new_pharmacy.domain.order.model.OrderOwner;
 import org.beatrice.diploma_new_pharmacy.domain.order.service.OrderOwnerService;
 import org.beatrice.diploma_new_pharmacy.domain.product.model.Product;
 import org.beatrice.diploma_new_pharmacy.domain.product.repository.ProductRepository;
+import org.beatrice.diploma_new_pharmacy.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +42,7 @@ public class CartService {
     private void updateCartItemQuantity(OrderIdentity identity, Integer productId, Short quantity, boolean isAddition) {
         Cart cart = getOrCreateCart(identity);
         Product product = productRepository.findProductById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("Product does not exist"));
+                .orElseThrow(() -> new NotFoundException("Product does not exist"));
         CartItem cartItem = cartItemRepository.findCartItemByProductAndCart(product, cart)
                 .map(existingItem -> {
                     if (isAddition) {

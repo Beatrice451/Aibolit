@@ -17,6 +17,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Slf4j
@@ -36,6 +37,7 @@ public class JwtService {
 
     public String generateAccessToken(User user) {
         return Jwts.builder()
+                .id(UUID.randomUUID().toString())
                 .subject(user.getEmail())
                 .issuedAt(new Date())
                 .expiration(Date.from(

@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
+
 @Component
 @RequiredArgsConstructor
 public class AdminBootstrap implements ApplicationRunner {
@@ -38,6 +40,10 @@ public class AdminBootstrap implements ApplicationRunner {
         admin.setEmail(adminEmail);
         admin.setPasswordHash(passwordEncoder.encode(adminPassword));
         admin.setPhone("88005553535");
+        admin.setFirstName("Admin");
+        admin.setLastName("Admin");
+        admin.setUserRoles(new HashSet<>());
+        admin.setIsDeleted(false);
 
         Role adminRole = roleRepository.findByRoleName("ADMIN")
                 .orElseThrow();

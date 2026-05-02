@@ -1,0 +1,44 @@
+# Test profile configuration
+spring:
+  datasource:
+    # Configured dynamically by Testcontainers in BaseIntegrationTest
+    driver-class-name: org.postgresql.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+  mail:
+    # Disable email sending in tests
+    host: localhost
+    port: 3025
+    username: test
+    password: test
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
+jwt:
+  secret: test-secret-key-for-testing-purposes-only-do-not-use-in-production
+  access-token-ttl: 15
+  refresh-token-ttl: 30
+
+logging:
+  level:
+    org.springframework: WARN
+    org.hibernate: WARN
+    org.testcontainers: INFO
+    org.beatrice.diploma_new_pharmacy: DEBUG
