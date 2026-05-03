@@ -11,6 +11,7 @@ import MainPage from './pages/MainPage';
 import AdminPage from './pages/AdminPage';
 import Checkout from './pages/Checkout';
 import OrderConfirmation from './pages/OrderConfirmation';
+import EmailVerification from './pages/EmailVerification';
 
 function App() {
   useEffect(() => {
@@ -27,6 +28,7 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/order-confirmation/:orderId" element={<OrderConfirmation />} />
+        <Route path="/verify-email" element={<EmailVerification />} />
         <Route path="/admin" element={<AdminPage />} />
       </Routes>
     </Router>

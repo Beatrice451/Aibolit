@@ -64,8 +64,8 @@ const Register = () => {
         email: formData.email,
         password: formData.password
       });
-      alert(`Поздравляем, ${formData.name}! Регистрация успешна.`);
-      navigate('/login');
+      alert(`Поздравляем, ${formData.name}! Регистрация успешна. На email отправлено письмо для подтверждения.`);
+      navigate('/');
     } catch (err) {
       const message = err.response?.data?.message || 'Ошибка при регистрации.';
       setError(message);

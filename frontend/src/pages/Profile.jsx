@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
+import NotificationSystem, { showNotification } from '../components/NotificationSystem';
 import authApi from '../api/authService';
 import axiosInstance from '../api/axiosInstance';
 
@@ -111,6 +112,16 @@ const Profile = () => {
     }
   };
 
+  const handleResendVerification = async () => {
+    if (!user?.email) return;
+    try {
+      await authApi.resendVerification(user.email);
+      showNotification('Письмо отправлено. Проверьте почту.', 'success');
+    } catch (err) {
+      showNotification(err.response?.data?.message || 'Ошибка отправки', 'error');
+    }
+  };
+
   const getStatusLabel = (status) => {
     const labels = {
       NEW: 'Новый',
@@ -156,8 +167,23 @@ const Profile = () => {
   return (
     <>
       <Header />
+      <NotificationSystem />
       <div className="profile-page">
         <div className="container">
+          {!user.emailVerified && (
+            <div className="email-verification-banner">
+              <div className="email-verification-banner__content">
+                <span className="email-verification-banner__icon">⚠️</span>
+                <div className="email-verification-banner__text">
+                  <strong>Аккаунт не подтверждён</strong>
+                  <p>Не пришло письмо? Проверьте спам или запросите новый код.</p>
+                </div>
+                <button className="email-verification-banner__btn" onClick={handleResendVerification}>
+                  Запросить повторный код
+                </button>
+              </div>
+            </div>
+          )}
           <div className="profile-layout">
             <div className="profile-sidebar">
               <div className="profile-sidebar__user">

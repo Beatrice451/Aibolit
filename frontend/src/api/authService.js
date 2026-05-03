@@ -55,6 +55,18 @@ const authApi = {
 
   initAuth: () => {
     initAuth();
+  },
+
+  verifyEmail: async (token) => {
+    const response = await axiosInstance.get('/api/auth/verify-email', {
+      params: { token }
+    });
+    return response.data;
+  },
+
+  resendVerification: async (email) => {
+    const response = await axiosInstance.post('/api/auth/resend-verification', { email });
+    return response.data;
   }
 };
 
