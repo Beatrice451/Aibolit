@@ -63,6 +63,10 @@ app:
     password: ${SPRING_ADMIN_PASSWORD}
   cors:
     allowed-origins: ${ALLOWED_ORIGINS:http://localhost:3000,http://localhost:8080}
+  email-verification:
+    token-validity-hours: 1
+    base-url: ${APP_BASE_URL:http://localhost:8080}
+
 
 media:
   path: ${MEDIA_PATH:media}

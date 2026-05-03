@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.beatrice.diploma_new_pharmacy.domain.auth.security.SecurityUser;
-import org.beatrice.diploma_new_pharmacy.domain.user.dto.UserResponse;
+import org.beatrice.diploma_new_pharmacy.domain.user.dto.response.UserResponse;
 import org.beatrice.diploma_new_pharmacy.domain.user.service.UserService;
 import org.beatrice.diploma_new_pharmacy.exception.ErrorResponse;
 import org.springframework.http.HttpStatus;

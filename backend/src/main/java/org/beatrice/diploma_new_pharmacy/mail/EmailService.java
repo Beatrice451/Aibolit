@@ -50,6 +50,33 @@ public class EmailService {
         }
     }
 
+    @Async("emailTaskExecutor")
+    public void sendVerificationEmail(
+            String email,
+            String userFirstName,
+            String verificationUrl,
+            int tokenValidityHours
+    ) {
+        try {
+            Context context = new Context();
+            context.setVariable("firstName", userFirstName);
+            context.setVariable("verificationUrl", verificationUrl);
+            context.setVariable("tokenValidityHours", tokenValidityHours);
+
+            String htmlContent = templateEngine.process("verification-email", context);
+
+            sendHtmlEmail(
+                    email,
+                    "Подтверждение аккаунта",
+                    htmlContent
+            );
+
+            log.info("Email sent to {} for verification", email);
+        } catch (Exception e) {
+            log.error("Failed to send email for verification {}", email, e);
+        }
+    }
+
     private void sendHtmlEmail(String to, String subject, String htmlContent) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");

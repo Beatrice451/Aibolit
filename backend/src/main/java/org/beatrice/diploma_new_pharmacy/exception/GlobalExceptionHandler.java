@@ -5,6 +5,10 @@ import org.beatrice.diploma_new_pharmacy.domain.auth.exception.*;
 import org.beatrice.diploma_new_pharmacy.domain.order.exception.OrderCannotBeModified;
 import org.beatrice.diploma_new_pharmacy.domain.product.exception.CategoryAlreadyExistsException;
 import org.beatrice.diploma_new_pharmacy.domain.product.exception.ReviewAlreadyExistsException;
+import org.beatrice.diploma_new_pharmacy.domain.user.exception.EmailAlreadyVerifiedException;
+import org.beatrice.diploma_new_pharmacy.domain.user.exception.EmailNotVerifiedException;
+import org.beatrice.diploma_new_pharmacy.domain.user.exception.InvalidVerificationTokenException;
+import org.beatrice.diploma_new_pharmacy.domain.user.exception.TooManyRequestsException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -36,16 +40,18 @@ public class GlobalExceptionHandler {
             UserAlreadyExistsException.class,
             PhoneAlreadyExistsException.class,
             CategoryAlreadyExistsException.class,
-            ReviewAlreadyExistsException.class
+            ReviewAlreadyExistsException.class,
+            EmailAlreadyVerifiedException.class
     })
     public ResponseEntity<ErrorResponse> handleConflictExceptions(Exception ex, HttpServletRequest request) {
         return generateResponse(ex, request, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler({
-            AccessDeniedException.class
+            AccessDeniedException.class,
+            EmailNotVerifiedException.class
     })
-    public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex, HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> handleAccessDeniedException(Exception ex, HttpServletRequest request) {
         return generateResponse(ex, request, HttpStatus.FORBIDDEN);
     }
 
@@ -62,7 +68,9 @@ public class GlobalExceptionHandler {
     }
 
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler({
+            MethodArgumentNotValidException.class
+    })
     public ResponseEntity<ErrorResponse> handleValidationException(
             MethodArgumentNotValidException ex,
             HttpServletRequest request
@@ -81,7 +89,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({
             IllegalArgumentException.class,
-            HttpMessageNotReadableException.class
+            HttpMessageNotReadableException.class,
+            InvalidVerificationTokenException.class
     })
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(Exception ex, HttpServletRequest request) {
         return generateResponse(ex, request, HttpStatus.BAD_REQUEST);
@@ -92,6 +101,11 @@ public class GlobalExceptionHandler {
     })
     public ResponseEntity<ErrorResponse> handleOrderCannotBeModifiedException(OrderCannotBeModified ex, HttpServletRequest request) {
         return generateResponse(ex, request, HttpStatus.UNPROCESSABLE_CONTENT);
+    }
+
+    @ExceptionHandler(TooManyRequestsException.class)
+    public ResponseEntity<ErrorResponse> handleTooManyRequestsException(TooManyRequestsException ex, HttpServletRequest request) {
+        return generateResponse(ex, request, HttpStatus.TOO_MANY_REQUESTS);
     }
 
     // COMMON EXCEPTION HANLDER (FOR EVERYTHING THAT WAS NOT CAUGHT BY THE HANDLERS ABOVE)

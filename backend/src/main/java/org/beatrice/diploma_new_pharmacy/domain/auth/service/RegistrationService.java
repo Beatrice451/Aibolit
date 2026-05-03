@@ -9,6 +9,7 @@ import org.beatrice.diploma_new_pharmacy.domain.user.model.Role;
 import org.beatrice.diploma_new_pharmacy.domain.user.model.User;
 import org.beatrice.diploma_new_pharmacy.domain.user.repository.RoleRepository;
 import org.beatrice.diploma_new_pharmacy.domain.user.repository.UserRepository;
+import org.beatrice.diploma_new_pharmacy.domain.user.service.EmailVerificationService;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ public class RegistrationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final EmailVerificationService emailVerificationService;
 
 
     @Transactional
@@ -33,23 +35,29 @@ public class RegistrationService {
         if (userRepository.existsUserByPhone(normalizedPhone)) {
             throw new PhoneAlreadyExistsException("User with stated phone already exists: " + cmd.phone());
         }
-        User user = new User();
-        user.setEmail(cmd.email());
-        user.setPhone(normalizedPhone);
-        user.setPasswordHash(passwordEncoder.encode(cmd.password()));
-        user.setFirstName(cmd.firstName());
-        user.setLastName(cmd.lastName());
+
+        User user = User.builder()
+                .email(cmd.email())
+                .phone(cmd.phone())
+                .passwordHash(passwordEncoder.encode(cmd.password()))
+                .firstName(cmd.firstName())
+                .lastName(cmd.lastName())
+                .build();
+
+        Role role = roleRepository.findByRoleName("USER").orElseThrow(
+                () -> new IllegalStateException("Role USER not found")
+        );
+
+        user.addRole(role);
+
+        userRepository.save(user);
+
+        emailVerificationService.sendVerificationEmail(user);
 
         try {
             userRepository.save(user);
         } catch (DataIntegrityViolationException e) {
             throw new UserAlreadyExistsException("User with stated email/phone already exists: " + cmd.email());
         }
-        Role role = roleRepository.findByRoleName("USER").orElseThrow(
-                () -> new IllegalStateException("Role USER not found")
-        );
-
-        user.getUserRoles().add(role);
-        userRepository.save(user);
     }
 }
