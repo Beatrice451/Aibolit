@@ -4,7 +4,7 @@ import Category from '../components/Category';
 import Sort from '../components/Sort';
 import Tabletblock from '../components/Tabletblock';
 import Pagination from '../components/Pagination';
-import NotificationSystem, { showNotification } from '../components/NotificationSystem';
+import { showNotification } from '../components/NotificationSystem';
 import productApi from '../api/productService';
 import authApi from '../api/authService';
 
@@ -50,26 +50,6 @@ const MainPage = () => {
     fetchProducts(currentPage);
   }, []);
 
-  useEffect(() => {
-    const checkUserVerification = async () => {
-      const token = localStorage.getItem('accessToken');
-      if (!token) return;
-
-      try {
-        authApi.setAuthHeader(token);
-        const userData = await authApi.getCurrentUser();
-        setUser(userData);
-        if (!userData.emailVerified) {
-          showNotification('Подтвердите email для полного доступа к сервису', 'warning');
-        }
-      } catch (err) {
-        console.error('Failed to get user:', err);
-      }
-    };
-
-    checkUserVerification();
-  }, []);
-
   const handlePageChange = (newPage) => {
     if (newPage >= 0 && newPage < totalPages) {
       fetchProducts(newPage, pageSize, selectedCategoryId);
@@ -96,7 +76,6 @@ if (loading && products.length === 0) {
     return (
       <div className="wrapper">
         <Header />
-        <NotificationSystem />
         <div className="content">
           <div className="container">
             <div className="loading-state">
@@ -113,7 +92,6 @@ if (loading && products.length === 0) {
     return (
       <div className="wrapper">
         <Header />
-        <NotificationSystem />
         <div className="content">
           <div className="container">
             <div className="error-state">
@@ -139,7 +117,6 @@ if (loading && products.length === 0) {
   return (
     <div className="wrapper">
       <Header />
-      <NotificationSystem />
       <div className="content">
         <div className="container">
           <div className="content__top">
