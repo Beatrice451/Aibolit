@@ -26,7 +26,7 @@ spring:
 
   mail:
     host: ${SPRING_MAIL_HOST}
-    port: 25 # SMTP, заменить на 587 в проде TODO
+    port: 587
     username: ${SPRING_MAIL_USERNAME}
     password: ${SPRING_MAIL_PASSWORD}
     properties:
@@ -34,10 +34,9 @@ spring:
         smtp:
           auth: true
           starttls:
-            enable: false # ТУТ ТОЖЕ ЗАМЕНИТЬ В ПРОДЕ НА TRUE
-            required: false
-          ssl:
-            trust: '*' # TODO убрать в проде
+            enable: true
+            required: true
+
 
 jwt:
   secret: ${JWT_SECRET_KEY}
@@ -63,6 +62,10 @@ app:
     password: ${SPRING_ADMIN_PASSWORD}
   cors:
     allowed-origins: ${ALLOWED_ORIGINS:http://localhost:3000,http://localhost:8080}
+  email-verification:
+    token-validity-hours: 1
+    base-url: ${APP_FRONTEND_BASE_URL:http://localhost:3000}
+
 
 media:
   path: ${MEDIA_PATH:media}
