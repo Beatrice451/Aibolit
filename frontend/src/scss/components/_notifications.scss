@@ -1,9 +1,12 @@
 .notification-container {
   position: fixed;
-  top: 0;
+  bottom: 40px;
   right: 20px;
   z-index: 9999;
   pointer-events: none;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 10px;
 }
 
 .notification {
@@ -15,15 +18,14 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   min-width: 300px;
   max-width: 400px;
-  position: absolute;
-  right: 0;
+  position: relative;
   pointer-events: auto;
   font-family: 'Orelega One', sans-serif;
-  animation: slideDown 0.3s ease-out;
-  transition: top 0.3s ease-out, opacity 0.3s ease-out;
+  animation: slideUp 0.3s ease-out;
+  transition: all 0.3s ease-out;
 
   &.notification--removing {
-    animation: slideUp 0.3s ease-in forwards;
+    animation: slideRight 0.3s ease-in forwards;
   }
 
   &__icon {
@@ -62,9 +64,9 @@
   }
 }
 
-@keyframes slideDown {
+@keyframes slideUp {
   from {
-    transform: translateY(-150%);
+    transform: translateY(100%);
     opacity: 0;
   }
   to {
@@ -73,13 +75,13 @@
   }
 }
 
-@keyframes slideUp {
+@keyframes slideRight {
   from {
-    transform: translateY(0);
+    transform: translateX(0);
     opacity: 1;
   }
   to {
-    transform: translateY(-150%);
+    transform: translateX(150%);
     opacity: 0;
   }
 }

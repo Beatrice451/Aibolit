@@ -1,9 +1,7 @@
 package org.beatrice.diploma_new_pharmacy.domain.user.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.beatrice.diploma_new_pharmacy.domain.pharmacy.model.Pharmacy;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
@@ -12,11 +10,14 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
+@Entity
+@Table(name = "users", schema = "pharmacy")
 @Getter
 @Setter
 @ToString
-@Entity
-@Table(name = "users", schema = "pharmacy")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,11 +55,24 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
+    @Builder.Default
     private Set<Role> userRoles = new HashSet<>();
 
     @Column(name = "is_deleted", nullable = false)
+    @Builder.Default
     private Boolean isDeleted = false;
 
     @Column(name = "deleted_at")
     private Instant deletedAt;
+
+    @Column(name = "email_verified", nullable = false)
+    @Builder.Default
+    private Boolean emailVerified = false;
+
+    @Column(name = "email_verified_at")
+    private Instant emailVerifiedAt;
+
+    public void addRole(Role role) {
+        userRoles.add(role);
+    }
 }

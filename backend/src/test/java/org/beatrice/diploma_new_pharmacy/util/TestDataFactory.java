@@ -55,15 +55,16 @@ public class TestDataFactory {
      * Creates a User entity for database seeding.
      */
     public static User createUser(String email, String phone, String passwordHash) {
-        User user = new User();
-        user.setEmail(email);
-        user.setPhone(phone);
-        user.setPasswordHash(passwordHash);
-        user.setFirstName("Test");
-        user.setLastName("User");
-        user.setIsDeleted(false);
-        user.setUserRoles(new HashSet<>());
-        return user;
+        return User.builder()
+                .email(email)
+                .phone(phone)
+                .passwordHash(passwordHash)
+                .firstName("Test")
+                .lastName("User")
+                .isDeleted(false)
+                .userRoles(new HashSet<>())
+                .emailVerified(true)
+                .build();
     }
 
     /**

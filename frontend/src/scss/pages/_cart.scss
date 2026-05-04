@@ -2,7 +2,9 @@
 
 // ========== СТРАНИЦА КОРЗИНЫ (CART) ==========
 .cart-page {
-  min-height: 100vh;
+  background: var(--color-beige);
+  padding: 40px 20px;
+  min-height: calc(100vh - 100px);
   background: var(--color-beige);
   padding: 40px 20px;
 
@@ -252,6 +254,17 @@
 
     &:active {
       transform: translateY(0);
+    }
+
+    &--disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      
+      &:hover {
+        background: var(--color-red);
+        transform: none;
+        box-shadow: none;
+      }
     }
   }
 

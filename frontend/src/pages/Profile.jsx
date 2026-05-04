@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Header from '../components/Header';
+import { showNotification } from '../components/NotificationSystem';
 import authApi from '../api/authService';
 import axiosInstance from '../api/axiosInstance';
 
@@ -35,6 +36,7 @@ const Profile = () => {
   const [ordersLoading, setOrdersLoading] = useState(false);
   const [deleteModal, setDeleteModal] = useState({ open: false, timer: 0 });
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -60,6 +62,21 @@ const Profile = () => {
 
     fetchUser();
   }, [navigate]);
+
+  // Show verification notifications based on navigation state
+  useEffect(() => {
+    if (location.state?.verificationSuccess) {
+      showNotification('Почта успешно подтверждена', 'success');
+      // Clear the state to prevent showing notification on refresh
+      navigate(location.pathname, { replace: true, state: {} });
+    } else if (location.state?.verificationAlreadyDone) {
+      showNotification('Почта была подтверждена ранее, повторное подтверждение не требуется', 'info');
+      navigate(location.pathname, { replace: true, state: {} });
+    } else if (location.state?.verificationError) {
+      showNotification(location.state.errorMessage || 'Ошибка подтверждения email', 'error');
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, location.pathname, navigate]);
 
   useEffect(() => {
     if (activeTab === 'orders' && orders.length === 0) {
@@ -111,6 +128,16 @@ const Profile = () => {
     }
   };
 
+  const handleResendVerification = async () => {
+    if (!user?.email) return;
+    try {
+      await authApi.resendVerification(user.email);
+      showNotification('Письмо отправлено. Проверьте почту.', 'success');
+    } catch (err) {
+      showNotification(err.response?.data?.message || 'Ошибка отправки', 'error');
+    }
+  };
+
   const getStatusLabel = (status) => {
     const labels = {
       NEW: 'Новый',
@@ -158,6 +185,20 @@ const Profile = () => {
       <Header />
       <div className="profile-page">
         <div className="container">
+          {!user.emailVerified && (
+            <div className="email-verification-banner">
+              <div className="email-verification-banner__content">
+                <span className="email-verification-banner__icon">⚠️</span>
+                <div className="email-verification-banner__text">
+                  <strong>Аккаунт не подтверждён</strong>
+                  <p>Не пришло письмо? Проверьте спам или запросите новый код.</p>
+                </div>
+                <button className="email-verification-banner__btn" onClick={handleResendVerification}>
+                  Запросить повторный код
+                </button>
+              </div>
+            </div>
+          )}
           <div className="profile-layout">
             <div className="profile-sidebar">
               <div className="profile-sidebar__user">

@@ -2,8 +2,8 @@ package org.beatrice.diploma_new_pharmacy.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.beatrice.diploma_new_pharmacy.domain.auth.security.SecurityUser;
-import org.beatrice.diploma_new_pharmacy.domain.user.dto.RoleResponse;
-import org.beatrice.diploma_new_pharmacy.domain.user.dto.UserResponse;
+import org.beatrice.diploma_new_pharmacy.domain.user.dto.response.RoleResponse;
+import org.beatrice.diploma_new_pharmacy.domain.user.dto.response.UserResponse;
 import org.beatrice.diploma_new_pharmacy.domain.user.mapper.RoleMapper;
 import org.beatrice.diploma_new_pharmacy.domain.user.mapper.UserMapper;
 import org.beatrice.diploma_new_pharmacy.domain.user.model.Role;

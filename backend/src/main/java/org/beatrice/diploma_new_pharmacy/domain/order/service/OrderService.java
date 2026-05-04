@@ -23,6 +23,7 @@ import org.beatrice.diploma_new_pharmacy.domain.order.specification.OrderFilter;
 import org.beatrice.diploma_new_pharmacy.domain.order.specification.OrderSpecifications;
 import org.beatrice.diploma_new_pharmacy.domain.pharmacy.model.Pharmacy;
 import org.beatrice.diploma_new_pharmacy.domain.pharmacy.service.PharmacyService;
+import org.beatrice.diploma_new_pharmacy.domain.user.exception.EmailNotVerifiedException;
 import org.beatrice.diploma_new_pharmacy.domain.user.model.User;
 import org.beatrice.diploma_new_pharmacy.domain.user.service.UserService;
 import org.beatrice.diploma_new_pharmacy.exception.NotFoundException;
@@ -139,6 +140,8 @@ public class OrderService {
 
         if (cmd.identity().isUser()) {
             User user = userService.getUserById(cmd.identity().userId());
+            if (!user.getEmailVerified())
+                throw new EmailNotVerifiedException("Email verification is required for order placement");
             phone = user.getPhone();
             email = user.getEmail();
             firstName = user.getFirstName();

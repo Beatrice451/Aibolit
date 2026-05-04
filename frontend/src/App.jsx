@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './scss/app.scss';
 import { useEffect } from 'react';
 import authApi from './api/authService';
+import NotificationSystem from './components/NotificationSystem';
 
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -11,6 +12,7 @@ import MainPage from './pages/MainPage';
 import AdminPage from './pages/AdminPage';
 import Checkout from './pages/Checkout';
 import OrderConfirmation from './pages/OrderConfirmation';
+import EmailVerification from './pages/EmailVerification';
 
 function App() {
   useEffect(() => {
@@ -19,6 +21,7 @@ function App() {
 
   return (
     <Router>
+      <NotificationSystem />
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/login" element={<Login />} />
@@ -27,6 +30,7 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/order-confirmation/:orderId" element={<OrderConfirmation />} />
+        <Route path="/verify-email" element={<EmailVerification />} />
         <Route path="/admin" element={<AdminPage />} />
       </Routes>
     </Router>

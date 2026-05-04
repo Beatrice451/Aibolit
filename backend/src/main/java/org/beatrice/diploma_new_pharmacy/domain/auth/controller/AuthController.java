@@ -11,6 +11,8 @@ import org.beatrice.diploma_new_pharmacy.domain.auth.service.model.LoginCommand;
 import org.beatrice.diploma_new_pharmacy.domain.auth.service.model.RegistrationCommand;
 import org.beatrice.diploma_new_pharmacy.domain.auth.service.model.TokenPair;
 import org.beatrice.diploma_new_pharmacy.domain.auth.util.RefreshCookieFactory;
+import org.beatrice.diploma_new_pharmacy.domain.user.dto.request.ResendVerificationRequest;
+import org.beatrice.diploma_new_pharmacy.domain.user.service.EmailVerificationService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -26,11 +28,15 @@ public class AuthController {
     private final AuthenticationService authenticationService;
     private final RefreshCookieFactory refreshCookieFactory;
     private final RegistrationService registrationService;
+    private final EmailVerificationService emailVerificationService;
 
 
     @PostMapping("/login")
     public ResponseEntity<AccessTokenResponse> login(@Valid @RequestBody AuthRequest request) {
-        TokenPair tokenPairResponse = authenticationService.login(new LoginCommand(request.email(), request.password()));
+        TokenPair tokenPairResponse = authenticationService.login(new LoginCommand(
+                request.email(),
+                request.password()
+        ));
 
         ResponseCookie cookie = refreshCookieFactory.create(tokenPairResponse.refreshToken());
 
@@ -74,7 +80,7 @@ public class AuthController {
         if (refreshToken == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        
+
         TokenPair token = authenticationService.refresh(refreshToken);
 
         ResponseCookie cookie = refreshCookieFactory.create(token.refreshToken());
@@ -93,5 +99,17 @@ public class AuthController {
         return ResponseEntity.noContent()
                 .header(HttpHeaders.SET_COOKIE, refreshCookieFactory.delete().toString())
                 .build();
+    }
+
+    @GetMapping("/verify-email")
+    public ResponseEntity<Void> verifyEmail(@RequestParam String token) {
+        emailVerificationService.verifyEmail(token);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/resend-verification")
+    public ResponseEntity<?> resendVerification(@RequestBody ResendVerificationRequest request) {
+        emailVerificationService.resendVerificationEmail(request.email());
+        return ResponseEntity.noContent().build();
     }
 }

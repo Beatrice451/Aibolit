@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подтверждение аккаунта</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', 'Roboto', Arial, sans-serif; background-color: #F8E8CF;">
+    <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #F8E8CF;">
+        <tr>
+            <td style="padding: 20px;">
+                <!-- Main Container -->
+                <table role="presentation" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 20px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); overflow: hidden;">
+
+                    <!-- Header with gradient border -->
+                    <tr>
+                        <td style="background: linear-gradient(90deg, #CD2B14, #31809F); height: 4px; padding: 0;"></td>
+                    </tr>
+
+                    <!-- Logo/Brand Header -->
+                    <tr>
+                        <td style="background-color: #00334D; padding: 20px 30px; text-align: center;">
+                            <h1 style="margin: 0; font-size: 28px; font-weight: 300; color: #F8E8CF; letter-spacing: 1px;">
+                                Айболит
+                            </h1>
+                            <p style="margin: 5px 0 0 0; font-size: 12px; color: #31809F;">Ваша онлайн-аптека</p>
+                        </td>
+                    </tr>
+
+                    <!-- Main Content -->
+                    <tr>
+                        <td style="padding: 25px 30px 20px 30px;">
+                            <!-- Greeting -->
+                            <p style="margin: 0 0 15px 0; font-size: 15px; color: #00334D; line-height: 1.4;">
+                                Здравствуйте, <strong th:text="${firstName}">Иван</strong>!
+                            </p>
+
+                            <!-- Main Message -->
+                            <div style="background-color: #F8E8CF; border-radius: 12px; padding: 18px; margin-bottom: 20px; border-left: 4px solid #CD2B14;">
+                                <h2 style="margin: 0 0 8px 0; font-size: 20px; font-weight: 300; color: #00334D; letter-spacing: 0.5px;">
+                                    Добро пожаловать в Айболит!
+                                </h2>
+                                <p style="margin: 0; font-size: 14px; color: #00334D; line-height: 1.5;">
+                                    Для завершения регистрации подтвердите ваш email адрес.
+                                </p>
+                            </div>
+
+                            <!-- CTA Button -->
+                            <div style="text-align: center; margin: 25px 0;">
+                                <a th:href="${verificationUrl}"
+                                   style="display: inline-block; background-color: #CD2B14; color: #ffffff; text-decoration: none; padding: 14px 35px; border-radius: 8px; font-size: 16px; font-weight: 600; letter-spacing: 0.5px;">
+                                    Подтвердить email
+                                </a>
+                            </div>
+
+                            <!-- Alternative Link -->
+                            <div style="background-color: #fff8f0; border-radius: 10px; padding: 15px; margin-bottom: 15px; border: 1px solid #9FBECF;">
+                                <p style="margin: 0 0 8px 0; font-size: 12px; color: #00334D; line-height: 1.4;">
+                                    <strong>Если кнопка не работает, скопируйте ссылку:</strong>
+                                </p>
+                                <p style="margin: 0; font-size: 11px; color: #31809F; word-break: break-all; line-height: 1.4;">
+                                    <a th:href="${verificationUrl}" th:text="${verificationUrl}" style="color: #31809F;">https://example.aibolit.ru/api/auth/verify-email?token=xxx</a>
+                                </p>
+                            </div>
+
+                            <!-- Validity Note -->
+                            <div style="background-color: #F8E8CF; border-radius: 10px; padding: 12px; margin-bottom: 15px;">
+                                <p style="margin: 0; font-size: 12px; color: #00334D; line-height: 1.4;">
+                                    ⏱️ Ссылка действительна в течение <strong th:text="${tokenValidityHours}">1</strong> <span th:text="${tokenValidityHours == 1 ? 'часа' : 'часов'}">часа</span>.
+                                </p>
+                            </div>
+
+                            <!-- Important Note -->
+                            <div style="background-color: #fff8f0; border-radius: 10px; padding: 12px; margin-bottom: 15px; border: 1px solid #9FBECF;">
+                                <p style="margin: 0; font-size: 12px; color: #00334D; line-height: 1.4;">
+                                    💡 <strong>Важно:</strong> Если вы не регистрировались в Айболит, просто проигнорируйте это письмо.
+                                </p>
+                            </div>
+
+                            <!-- Closing -->
+                            <p style="margin: 15px 0 0 0; font-size: 13px; color: #475569; line-height: 1.4;">
+                                Спасибо, что выбрали нас!
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #F8E8CF; padding: 15px 30px; text-align: center; border-top: 2px solid #9FBECF;">
+                            <p style="margin: 0 0 5px 0; font-size: 13px; color: #00334D; font-weight: 600;">
+                                Аптека Айболит
+                            </p>
+                            <p style="margin: 0; font-size: 12px; color: #31809F;">
+                                <a href="https://example.aibolit.ru" style="color: #31809F; text-decoration: none;">example.aibolit.ru</a>
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

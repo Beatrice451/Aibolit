@@ -4,7 +4,9 @@ import Category from '../components/Category';
 import Sort from '../components/Sort';
 import Tabletblock from '../components/Tabletblock';
 import Pagination from '../components/Pagination';
+import { showNotification } from '../components/NotificationSystem';
 import productApi from '../api/productService';
+import authApi from '../api/authService';
 
 const API_BASE_URL = '';
 
@@ -12,7 +14,8 @@ const MainPage = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+  const [user, setUser] = useState(null);
+
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize] = useState(20);
   const [totalPages, setTotalPages] = useState(0);
@@ -69,7 +72,7 @@ const MainPage = () => {
     setSearchQuery(e.target.value);
   };
 
-  if (loading && products.length === 0) {
+if (loading && products.length === 0) {
     return (
       <div className="wrapper">
         <Header />
@@ -95,7 +98,7 @@ const MainPage = () => {
               <div className="error-icon">⚠️</div>
               <h3>Не удалось загрузить товары</h3>
               <p>Проверьте подключение к серверу и попробуйте снова</p>
-              <button 
+              <button
                 className="retry-button"
                 onClick={() => {
                   setError(null);

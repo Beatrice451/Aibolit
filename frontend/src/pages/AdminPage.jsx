@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
-import NotificationSystem from '../components/NotificationSystem';
 import authApi from '../api/authService';
 import adminApi from '../api/adminService';
 import '../scss/pages/_admin.scss';
@@ -94,7 +93,6 @@ const AdminPage = () => {
   return (
     <>
       <Header />
-      <NotificationSystem />
       <div className="admin-page">
         <div className="container">
           <h1>Админ-панель</h1>

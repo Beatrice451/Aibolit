@@ -1,0 +1,168 @@
+// ========== EMAIL VERIFICATION PAGE ==========
+
+.verification-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--color-beige) 0%, var(--color-light-blue) 100%);
+  padding: 40px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.verification-block {
+  max-width: 520px;
+  width: 100%;
+  margin: 0 auto;
+  background: var(--color-white);
+  border-radius: 32px;
+  padding: 48px 40px;
+  box-shadow: var(--shadow-xl);
+  text-align: center;
+  animation: slideUp 0.5s ease;
+
+  &__icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-family: 'Oi', cursive;
+    font-size: 28px;
+    color: var(--color-dark-blue);
+    margin-bottom: 16px;
+  }
+
+  &__text {
+    color: var(--color-blue);
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+
+    &--error {
+      color: var(--color-red);
+      background: rgba(205, 43, 20, 0.1);
+      padding: 16px;
+      border-radius: 12px;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  &__btn {
+    padding: 14px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    font-family: 'Orelega One', sans-serif;
+    background: var(--color-red);
+    color: var(--color-white);
+
+    &:hover {
+      background: #b32410;
+      transform: translateY(-2px);
+    }
+
+    &--secondary {
+      background: var(--color-white);
+      color: var(--color-dark-blue);
+      border: 2px solid var(--color-light-blue);
+
+      &:hover {
+        background: var(--color-beige);
+      }
+    }
+  }
+}
+
+.email-verification-banner {
+  background: rgba(205, 43, 20, 0.1);
+  border: 1px solid var(--color-red);
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin: 0 auto 20px;
+  max-width: 1200px;
+
+  &__content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  &__icon {
+    font-size: 24px;
+  }
+
+  &__text {
+    flex: 1;
+    min-width: 200px;
+
+    strong {
+      color: var(--color-red);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    p {
+      font-size: 13px;
+      color: var(--color-blue);
+      margin: 0;
+    }
+  }
+
+  &__btn {
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px solid var(--color-red);
+    background: var(--color-white);
+    color: var(--color-red);
+    font-family: 'Orelega One', sans-serif;
+
+    &:hover {
+      background: var(--color-red);
+      color: var(--color-white);
+    }
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .verification-block {
+    padding: 32px 24px;
+  }
+
+  .verification-block h1 {
+    font-size: 24px;
+  }
+
+  .email-verification-banner__content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .email-verification-banner__text {
+    min-width: auto;
+  }
+}

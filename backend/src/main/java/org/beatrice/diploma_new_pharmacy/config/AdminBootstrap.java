@@ -12,13 +12,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-
 @Component
 @RequiredArgsConstructor
 public class AdminBootstrap implements ApplicationRunner {
 
-   private final UserRepository userRepository;
+    private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -36,19 +34,19 @@ public class AdminBootstrap implements ApplicationRunner {
             return;
         }
 
-        User admin = new User();
-        admin.setEmail(adminEmail);
-        admin.setPasswordHash(passwordEncoder.encode(adminPassword));
-        admin.setPhone("88005553535");
-        admin.setFirstName("Admin");
-        admin.setLastName("Admin");
-        admin.setUserRoles(new HashSet<>());
-        admin.setIsDeleted(false);
+        User admin = User.builder()
+                .email(adminEmail)
+                .passwordHash(passwordEncoder.encode(adminPassword))
+                .phone("+78005553535")
+                .firstName("Администратор")
+                .lastName("1")
+                .build();
+
 
         Role adminRole = roleRepository.findByRoleName("ADMIN")
                 .orElseThrow();
 
-        admin.getUserRoles().add(adminRole);
+        admin.addRole(adminRole);
         userRepository.save(admin);
     }
 }

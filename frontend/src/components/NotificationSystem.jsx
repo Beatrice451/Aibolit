@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import '../scss/components/_notifications.scss';
 
 let notificationId = 0;
 let addNotificationCallback = null;
@@ -30,10 +29,10 @@ const NotificationSystem = () => {
       );
     }, 4700);
 
-    // Actually remove after animation completes (5 seconds total)
+    // Actually remove after animation completes (300ms animation + 300ms for flexbox transition)
     setTimeout(() => {
       setNotifications(prev => prev.filter(n => n.id !== id));
-    }, 5000);
+    }, 5300);
   }, []);
 
   useEffect(() => {
@@ -45,11 +44,10 @@ const NotificationSystem = () => {
 
   return (
     <div className="notification-container">
-      {notifications.map((notification, index) => (
+      {notifications.map((notification) => (
         <div
           key={notification.id}
           className={`notification notification--${notification.type} ${notification.removing ? 'notification--removing' : ''}`}
-          style={{ top: `${20 + index * 70}px` }}
         >
           <div className="notification__icon">
             {notification.type === 'error' && '⚠️'}

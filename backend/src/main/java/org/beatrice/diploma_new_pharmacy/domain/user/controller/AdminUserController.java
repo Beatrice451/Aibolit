@@ -1,9 +1,8 @@
 package org.beatrice.diploma_new_pharmacy.domain.user.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.beatrice.diploma_new_pharmacy.domain.user.dto.RoleResponse;
-import org.beatrice.diploma_new_pharmacy.domain.user.dto.UserResponse;
-import org.beatrice.diploma_new_pharmacy.domain.user.model.Role;
+import org.beatrice.diploma_new_pharmacy.domain.user.dto.response.RoleResponse;
+import org.beatrice.diploma_new_pharmacy.domain.user.dto.response.UserResponse;
 import org.beatrice.diploma_new_pharmacy.domain.user.service.UserService;
 import org.beatrice.diploma_new_pharmacy.domain.user.specification.UserFilter;
 import org.springframework.data.domain.Page;
