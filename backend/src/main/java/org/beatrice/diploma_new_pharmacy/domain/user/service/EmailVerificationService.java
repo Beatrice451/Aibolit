@@ -47,7 +47,7 @@ public class EmailVerificationService {
         emailVerificationTokenRepository.save(emailVerificationToken);
 
 
-        String verificationUrl = baseUrl + "/api/auth/verify-email?token=" + token;
+        String verificationUrl = baseUrl + "/verify-email?token=" + token;
         emailService.sendVerificationEmail(user.getEmail(), user.getFirstName(), verificationUrl, tokenValidityHours);
     }
 
