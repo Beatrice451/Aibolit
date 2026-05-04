@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './scss/app.scss';
 import { useEffect } from 'react';
 import authApi from './api/authService';
+import NotificationSystem from './components/NotificationSystem';
 
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -20,6 +21,7 @@ function App() {
 
   return (
     <Router>
+      <NotificationSystem />
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/login" element={<Login />} />
