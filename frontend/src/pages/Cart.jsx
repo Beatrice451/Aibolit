@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import cartApi from '../api/cartService';
+import authApi from '../api/authService';
+import { showNotification } from '../components/NotificationSystem';
 
 const getImageUrl = (imagePath) => {
   if (!imagePath) return null;
@@ -36,6 +38,7 @@ const Cart = () => {
   const navigate = useNavigate();
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
 
   const fetchCart = useCallback(async () => {
     try {
@@ -50,8 +53,19 @@ const Cart = () => {
     }
   }, []);
 
+  const fetchUser = async () => {
+    try {
+      const userData = await authApi.getCurrentUser();
+      setUser(userData);
+    } catch (err) {
+      // User is not logged in (guest)
+      setUser(null);
+    }
+  };
+
   useEffect(() => {
     fetchCart();
+    fetchUser();
   }, [fetchCart]);
 
   const updateQuantity = async (productId, newQuantity) => {
@@ -117,6 +131,15 @@ const Cart = () => {
       console.error('Error clearing cart:', err);
       setCart(oldCart);
     }
+  };
+
+  const handleCheckout = () => {
+    // Check if user is logged in and email is verified
+    if (user && !user.emailVerified) {
+      showNotification('Подтвердите email в личном кабинете перед оформлением заказа', 'warning');
+      return;
+    }
+    navigate('/checkout');
   };
 
   if (loading) {
@@ -207,8 +230,8 @@ const Cart = () => {
                 <span className="cart-summary__price">{cart.totalPrice} ₽</span>
               </div>
               <button 
-                className="cart-summary__checkout"
-                onClick={() => navigate('/checkout')}
+                className={`cart-summary__checkout ${user && !user.emailVerified ? 'cart-summary__checkout--disabled' : ''}`}
+                onClick={handleCheckout}
               >
                 Оформить заказ
               </button>
