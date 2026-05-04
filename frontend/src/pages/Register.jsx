@@ -26,10 +26,12 @@ const formatPhoneForApi = (value) => {
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     phone: '',
     email: '',
-    password: ''
+    password: '',
+    confirmPassword: ''
   });
   const [phoneDisplay, setPhoneDisplay] = useState('');
   const [error, setError] = useState('');
@@ -54,17 +56,24 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    
+    // Validate password confirmation
+    if (formData.password !== formData.confirmPassword) {
+      setError('Пароли не совпадают');
+      return;
+    }
+    
     setLoading(true);
 
     try {
       const phoneForApi = formatPhoneForApi(phoneDisplay);
       await authApi.register({
-        name: formData.name,
+        name: `${formData.firstName} ${formData.lastName}`.trim(),
         phone: phoneForApi,
         email: formData.email,
         password: formData.password
       });
-      alert(`Поздравляем, ${formData.name}! Регистрация успешна. На email отправлено письмо для подтверждения.`);
+      alert(`Поздравляем, ${formData.firstName}! Регистрация успешна. На email отправлено письмо для подтверждения.`);
       navigate('/');
     } catch (err) {
       const message = err.response?.data?.message || 'Ошибка при регистрации.';
@@ -89,7 +98,12 @@ const Register = () => {
             <form onSubmit={handleSubmit} className="register-form">
               <div className="register-form__group">
                 <label className="register-form__label">👤 Имя</label>
-                <input type="text" name="name" className="register-form__input" placeholder="Иванова Анна" value={formData.name} onChange={handleChange} required />
+                <input type="text" name="firstName" className="register-form__input" placeholder="Анна" value={formData.firstName} onChange={handleChange} required />
+              </div>
+
+              <div className="register-form__group">
+                <label className="register-form__label">👤 Фамилия</label>
+                <input type="text" name="lastName" className="register-form__input" placeholder="Иванова" value={formData.lastName} onChange={handleChange} required />
               </div>
 
               <div className="register-form__group">
@@ -104,7 +118,12 @@ const Register = () => {
 
               <div className="register-form__group">
                 <label className="register-form__label">🔑 Пароль</label>
-                <input type="password" name="password" className="register-form__input" placeholder="Минимум 6 символов" value={formData.password} onChange={handleChange} required />
+                <input type="password" name="password" className="register-form__input" placeholder="Минимум 8 символов" value={formData.password} onChange={handleChange} required />
+              </div>
+
+              <div className="register-form__group">
+                <label className="register-form__label">🔑 Подтверждение пароля</label>
+                <input type="password" name="confirmPassword" className="register-form__input" placeholder="Повторите пароль" value={formData.confirmPassword} onChange={handleChange} required />
               </div>
 
               {error && <div className="register-form__error">{error}</div>}
