@@ -43,7 +43,6 @@ services:
       SPRING_ADMIN_LOGIN: ${SPRING_ADMIN_LOGIN:?SPRING_ADMIN_LOGIN var is required in .env file}
       SPRING_ADMIN_PASSWORD: ${SPRING_ADMIN_PASSWORD:?SPRING_ADMIN_PASSWORD var is required in .env file}
       MEDIA_PATH: /app/media/
-      ALLOWED_ORIGINS: http://localhost:8080
 
 
   frontend:

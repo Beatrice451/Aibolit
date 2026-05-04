@@ -1,4 +1,3 @@
-
 FROM eclipse-temurin:25-jdk AS builder
 
 WORKDIR /build
