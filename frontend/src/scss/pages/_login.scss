@@ -2,7 +2,7 @@
 
 // ========== СТРАНИЦА ВХОДА (LOGIN) ==========
 .login-page {
-  min-height: 100vh;
+  min-height: calc(100vh - 100px);
   background: linear-gradient(135deg, var(--color-beige) 0%, var(--color-light-blue) 100%);
   padding: 40px 20px;
   display: flex;

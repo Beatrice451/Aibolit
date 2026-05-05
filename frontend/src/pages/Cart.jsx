@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import cartApi from '../api/cartService';
 import authApi from '../api/authService';
 import { showNotification } from '../components/NotificationSystem';
+import { FaShoppingCart, FaPills, FaTrash } from 'react-icons/fa';
 
 const getImageUrl = (imagePath) => {
   if (!imagePath) return null;
@@ -160,7 +161,7 @@ const Cart = () => {
         <div className="cart-page">
           <div className="container">
             <div className="cart-empty">
-              <div className="cart-empty__icon">🛒</div>
+              <div className="cart-empty__icon"><FaShoppingCart /></div>
               <h2 className="cart-empty__title">Корзина пуста</h2>
               <p className="cart-empty__text">Добавьте товары в корзину, чтобы оформить заказ</p>
               <Link to="/" className="cart-empty__btn">
@@ -192,7 +193,7 @@ const Cart = () => {
                         onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
                       />
                     ) : null}
-                    <span className="cart-item__placeholder" style={item.productImage ? { display: 'none' } : {}}>💊</span>
+                    <span className="cart-item__placeholder" style={item.productImage ? { display: 'none' } : {}}><FaPills /></span>
                   </div>
                   <div className="cart-item__info">
                     <h3 className="cart-item__title">{item.productName}</h3>
@@ -216,7 +217,7 @@ const Cart = () => {
                       className="cart-item__remove"
                       onClick={() => removeItem(item.productId)}
                     >
-                      🗑️
+                      <FaTrash />
                     </button>
                   </div>
                 </div>

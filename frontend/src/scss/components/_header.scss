@@ -53,6 +53,13 @@
     font-weight: 500;
     transition: all 0.3s;
     font-family: 'Orelega One', sans-serif;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    
+    svg {
+      vertical-align: middle;
+    }
   }
 
   &__cart {
@@ -117,6 +124,13 @@
     font-weight: 500;
     transition: all 0.3s;
     font-family: 'Orelega One', sans-serif;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    
+    svg {
+      vertical-align: middle;
+    }
     
     &:hover {
       color: var(--color-blue);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import authApi from '../api/authService';
+import { FaShoppingCart, FaUser, FaCog } from 'react-icons/fa';
 
 const Header = () => {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -25,18 +26,18 @@ const Header = () => {
           
           <div className="header__links">
             <Link to="/cart" className="header__cart">
-              🛒 Корзина
+              <FaShoppingCart /> Корзина
             </Link>
             
             {token ? (
               <>
                 {isAdmin && (
                   <Link to="/admin" className="header__admin">
-                    ⚙️ Админ
+                    <FaCog /> Админ
                   </Link>
                 )}
                 <Link to="/profile" className="header__profile">
-                  👤 Профиль
+                  <FaUser /> Профиль
                 </Link>
               </>
             ) : (

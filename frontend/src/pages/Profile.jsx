@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import { showNotification } from '../components/NotificationSystem';
 import authApi from '../api/authService';
 import axiosInstance from '../api/axiosInstance';
+import { FaUserMd, FaUser, FaBox, FaCog, FaSignOutAlt, FaEnvelope, FaPhone, FaExclamationTriangle, FaTrash } from 'react-icons/fa';
 
 const globalNotifications = [];
 let globalNotificationId = 0;
@@ -188,7 +189,7 @@ const Profile = () => {
           {!user.emailVerified && (
             <div className="email-verification-banner">
               <div className="email-verification-banner__content">
-                <span className="email-verification-banner__icon">⚠️</span>
+                <span className="email-verification-banner__icon"><FaExclamationTriangle /></span>
                 <div className="email-verification-banner__text">
                   <strong>Аккаунт не подтверждён</strong>
                   <p>Не пришло письмо? Проверьте спам или запросите новый код.</p>
@@ -202,7 +203,7 @@ const Profile = () => {
           <div className="profile-layout">
             <div className="profile-sidebar">
               <div className="profile-sidebar__user">
-                <div className="profile-sidebar__avatar">🧑‍⚕️</div>
+                <div className="profile-sidebar__avatar"><FaUserMd /></div>
                 <div className="profile-sidebar__name">
                   {user.firstName && user.lastName
                     ? `${user.firstName} ${user.lastName}`
@@ -215,24 +216,24 @@ const Profile = () => {
                   className={`profile-sidebar__item ${activeTab === 'info' ? 'active' : ''}`}
                   onClick={() => setActiveTab('info')}
                 >
-                  👤 Личная информация
+                  <FaUser /> Личная информация
                 </button>
                 <button
                   className={`profile-sidebar__item ${activeTab === 'orders' ? 'active' : ''}`}
                   onClick={() => setActiveTab('orders')}
                 >
-                  📦 Мои заказы
+                  <FaBox /> Мои заказы
                 </button>
                 <button
                   className={`profile-sidebar__item ${activeTab === 'settings' ? 'active' : ''}`}
                   onClick={() => setActiveTab('settings')}
                 >
-                  ⚙️ Настройки
+                  <FaCog /> Настройки
                 </button>
               </nav>
 
               <button onClick={handleLogout} className="profile-sidebar__logout">
-                🚪 Выйти из аккаунта
+                <FaSignOutAlt /> Выйти из аккаунта
               </button>
             </div>
 
@@ -242,12 +243,12 @@ const Profile = () => {
                   <h3 className="profile-card__title">Личная информация</h3>
 
                   <div className="profile-card__row">
-                    <span className="profile-card__label">📧 Электронная почта</span>
+                    <span className="profile-card__label"><FaEnvelope /> Электронная почта</span>
                     <span className="profile-card__value">{user.email}</span>
                   </div>
 
                   <div className="profile-card__row">
-                    <span className="profile-card__label">📞 Контактный телефон</span>
+                    <span className="profile-card__label"><FaPhone /> Контактный телефон</span>
                     <span className="profile-card__value">{user.phone || 'Не указан'}</span>
                   </div>
                 </div>
@@ -319,7 +320,7 @@ const Profile = () => {
                       className="profile-settings__delete-btn"
                       onClick={() => setDeleteModal({ open: true, timer: 10 })}
                     >
-                      🗑️ Удалить аккаунт
+                      <FaTrash /> Удалить аккаунт
                     </button>
                   </div>
                 </div>
@@ -332,7 +333,7 @@ const Profile = () => {
       {deleteModal.open && (
         <div className="delete-modal-overlay" onClick={() => setDeleteModal({ open: false, timer: 0 })}>
           <div className="delete-modal" onClick={e => e.stopPropagation()}>
-            <h3>⚠️ Удаление аккаунта</h3>
+            <h3><FaExclamationTriangle /> Удаление аккаунта</h3>
             <p className="delete-modal__warning">
               Вы уверены, что хотите удалить аккаунт? Восстановить его будет невозможно!
             </p>

@@ -87,55 +87,60 @@ const Register = () => {
     <>
       <Header />
       <div className="register-page">
-        <div className="container">
-          <div className="register-block">
-            <div className="register-block__header">
-              <div className="register-block__icon">💊✨</div>
-              <h1 className="register-block__title">Добро пожаловать!</h1>
-              <p className="register-block__subtitle">Создайте аккаунт</p>
+        <div className="register-layout">
+          <div className="register-image">
+            <img src="/reg_scr.png" alt="Регистрация" />
+          </div>
+          
+          <div className="register-form-wrapper">
+            <div className="register-block">
+              <div className="register-block__header">
+                <h1 className="register-block__title">Добро пожаловать!</h1>
+                <p className="register-block__subtitle">Создайте аккаунт</p>
+              </div>
+
+              <form onSubmit={handleSubmit} className="register-form">
+                <div className="register-form__group">
+                  <label className="register-form__label">Имя</label>
+                  <input type="text" name="firstName" className="register-form__input" placeholder="Анна" value={formData.firstName} onChange={handleChange} required />
+                </div>
+
+                <div className="register-form__group">
+                  <label className="register-form__label">Фамилия</label>
+                  <input type="text" name="lastName" className="register-form__input" placeholder="Иванова" value={formData.lastName} onChange={handleChange} required />
+                </div>
+
+                <div className="register-form__group">
+                  <label className="register-form__label">Телефон</label>
+                  <input type="tel" name="phone" className="register-form__input" placeholder="+7 (777) 777-77-77" value={phoneDisplay} onChange={handlePhoneChange} required />
+                </div>
+
+                <div className="register-form__group">
+                  <label className="register-form__label">Email</label>
+                  <input type="email" name="email" className="register-form__input" placeholder="mail@mail.com" value={formData.email} onChange={handleChange} required />
+                </div>
+
+                <div className="register-form__group">
+                  <label className="register-form__label">Пароль</label>
+                  <input type="password" name="password" className="register-form__input" placeholder="Минимум 8 символов" value={formData.password} onChange={handleChange} required />
+                </div>
+
+                <div className="register-form__group">
+                  <label className="register-form__label">Подтверждение пароля</label>
+                  <input type="password" name="confirmPassword" className="register-form__input" placeholder="Повторите пароль" value={formData.confirmPassword} onChange={handleChange} required />
+                </div>
+
+                {error && <div className="register-form__error">{error}</div>}
+
+                <button type="submit" className="register-form__btn register-form__btn--primary" disabled={loading}>
+                  {loading ? 'Регистрация...' : 'Зарегистрироваться'}
+                </button>
+
+                <div className="register-form__footer">
+                  Уже есть аккаунт? <Link to="/login">Войти</Link>
+                </div>
+              </form>
             </div>
-
-            <form onSubmit={handleSubmit} className="register-form">
-              <div className="register-form__group">
-                <label className="register-form__label">👤 Имя</label>
-                <input type="text" name="firstName" className="register-form__input" placeholder="Анна" value={formData.firstName} onChange={handleChange} required />
-              </div>
-
-              <div className="register-form__group">
-                <label className="register-form__label">👤 Фамилия</label>
-                <input type="text" name="lastName" className="register-form__input" placeholder="Иванова" value={formData.lastName} onChange={handleChange} required />
-              </div>
-
-              <div className="register-form__group">
-                <label className="register-form__label">📞 Телефон</label>
-                <input type="tel" name="phone" className="register-form__input" placeholder="+7 (777) 777-77-77" value={phoneDisplay} onChange={handlePhoneChange} required />
-              </div>
-
-              <div className="register-form__group">
-                <label className="register-form__label">📧 Email</label>
-                <input type="email" name="email" className="register-form__input" placeholder="mail@mail.com" value={formData.email} onChange={handleChange} required />
-              </div>
-
-              <div className="register-form__group">
-                <label className="register-form__label">🔑 Пароль</label>
-                <input type="password" name="password" className="register-form__input" placeholder="Минимум 8 символов" value={formData.password} onChange={handleChange} required />
-              </div>
-
-              <div className="register-form__group">
-                <label className="register-form__label">🔑 Подтверждение пароля</label>
-                <input type="password" name="confirmPassword" className="register-form__input" placeholder="Повторите пароль" value={formData.confirmPassword} onChange={handleChange} required />
-              </div>
-
-              {error && <div className="register-form__error">{error}</div>}
-
-              <button type="submit" className="register-form__btn register-form__btn--primary" disabled={loading}>
-                {loading ? 'Регистрация...' : 'Зарегистрироваться'}
-              </button>
-
-              <div className="register-form__footer">
-                Уже есть аккаунт? <Link to="/login">Войти</Link>
-              </div>
-            </form>
           </div>
         </div>
       </div>

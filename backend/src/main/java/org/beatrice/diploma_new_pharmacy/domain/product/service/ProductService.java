@@ -63,6 +63,12 @@ public class ProductService {
         log.debug("Product update request received: {}", request);
         Product product = productRepository.findProductById(productId)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
+        
+        // Update category manually before mapping other fields
+        if (request.categoryId() != null) {
+            product.setCategory(categoryService.getCategoryEntityById(request.categoryId()));
+        }
+        
         productMapper.updateFromRequest(request, product);
 
         log.debug("Product updated: {}", product);

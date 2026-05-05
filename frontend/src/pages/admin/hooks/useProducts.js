@@ -72,7 +72,7 @@ export const useProducts = () => {
     try {
       const data = {
         name: form.name,
-        categoryId: parseInt(form.categoryId),
+        categoryId: form.categoryId ? parseInt(form.categoryId) : null,
         price: parseFloat(form.price),
         description: form.description,
         manufacturer: form.manufacturer,

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import productApi from '../api/productService'; // или свой путь к API
 import '../scss/components/_category.scss';
 import { flattenCategories } from '../utils/flattenCategories';
+import { FaTimes } from 'react-icons/fa';
 
 function Category({ onSelectCategory, selectedCategoryId }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -135,7 +136,7 @@ function Category({ onSelectCategory, selectedCategoryId }) {
                 className="category-slider__close"
                 onClick={() => setIsOpen(false)}
               >
-                ✕
+                <FaTimes />
               </button>
             </div>
             {renderCategoryButtons()}

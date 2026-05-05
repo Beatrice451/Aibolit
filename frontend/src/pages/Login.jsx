@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import authApi from '../api/authService';
+import { FaStethoscope, FaEnvelope, FaLock } from 'react-icons/fa';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -46,7 +47,7 @@ const Login = () => {
         <div className="container">
           <div className="login-block">
             <div className="login-block__header">
-              <div className="login-block__icon">💊⚕️</div>
+              <div className="login-block__icon"><FaStethoscope /></div>
               <h1 className="login-block__title">
                 Аптека <span>Айболит</span>
               </h1>
@@ -55,7 +56,7 @@ const Login = () => {
 
             <form onSubmit={handleSubmit} className="login-form">
               <div className="login-form__group">
-                <label className="login-form__label">📧 Email</label>
+                <label className="login-form__label"><FaEnvelope /> Email</label>
                 <input
                   type="email"
                   className="login-form__input"
@@ -67,7 +68,7 @@ const Login = () => {
               </div>
 
               <div className="login-form__group">
-                <label className="login-form__label">🔒 Пароль</label>
+                <label className="login-form__label"><FaLock /> Пароль</label>
                 <input
                   type="password"
                   className="login-form__input"

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useProducts } from '../hooks';
 import CategorySelect from '../../../components/CategorySelect';
+import { FaPills } from 'react-icons/fa';
 
 const CategoryTreeItem = ({ category, expanded, onToggle, depth }) => {
   const hasChildren = category.children && category.children.length > 0;
@@ -283,7 +284,7 @@ const ProductsTab = () => {
                 <td>
                   {product.imageUrl ? (
                     <img src={getImageUrl(product.imageUrl)} alt={product.name} className="admin-table__img" />
-                  ) : '💊'}
+                  ) : <FaPills />}
                 </td>
                 <td>{product.name}</td>
                 <td>{product.price} ₽</td>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { FaExclamationTriangle, FaCheckCircle, FaInfoCircle } from 'react-icons/fa';
 
 let notificationId = 0;
 let addNotificationCallback = null;
@@ -50,10 +51,10 @@ const NotificationSystem = () => {
           className={`notification notification--${notification.type} ${notification.removing ? 'notification--removing' : ''}`}
         >
           <div className="notification__icon">
-            {notification.type === 'error' && '⚠️'}
-            {notification.type === 'success' && '✓'}
-            {notification.type === 'info' && 'ℹ️'}
-            {notification.type === 'warning' && '⚠️'}
+            {notification.type === 'error' && <FaExclamationTriangle />}
+            {notification.type === 'success' && <FaCheckCircle />}
+            {notification.type === 'info' && <FaInfoCircle />}
+            {notification.type === 'warning' && <FaExclamationTriangle />}
           </div>
           <div className="notification__message">{notification.message}</div>
         </div>

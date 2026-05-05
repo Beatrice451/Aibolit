@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import Header from '../components/Header';
 import orderApi from '../api/orderService';
+import { FaCheckCircle } from 'react-icons/fa';
 
 const OrderConfirmation = () => {
   const { orderId } = useParams();
@@ -81,7 +82,7 @@ const OrderConfirmation = () => {
       <div className="order-confirmation">
         <div className="container">
           <div className="order-confirmation__success">
-            <div className="success-icon">✓</div>
+            <div className="success-icon"><FaCheckCircle /></div>
             <h2 className="order-confirmation__title">Заказ успешно оформлен!</h2>
             <p className="order-confirmation__subtitle">
               Номер заказа: <strong>#{order.id}</strong>

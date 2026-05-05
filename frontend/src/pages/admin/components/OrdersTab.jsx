@@ -5,6 +5,7 @@ import adminApi from '../../../api/adminService';
 import Modal from '../../../components/Modal';
 import PickupCodeModal from './PickupCodeModal';
 import { showNotification } from '../../../components/NotificationSystem';
+import { FaKey, FaPills } from 'react-icons/fa';
 
 const STATUS_LABELS = {
   NEW: 'Новый',
@@ -128,7 +129,7 @@ const OrdersTab = () => {
             onClick={() => setPickupCodeModalOpen(true)}
             style={{ marginLeft: 'auto' }}
           >
-            🔑 Выдать по коду
+            <FaKey /> Выдать по коду
           </button>
         </div>
 
@@ -237,7 +238,7 @@ const OrdersTab = () => {
                                     {imageUrl ? (
                                       <img src={imageUrl} alt={item.name} />
                                     ) : (
-                                      <span className="order-item__placeholder">💊</span>
+                                      <span className="order-item__placeholder"><FaPills /></span>
                                     )}
                                   </div>
                                   <div className="order-item__info">

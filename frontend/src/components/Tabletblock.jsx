@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import cartApi from '../api/cartService';
+import { FaPills } from 'react-icons/fa';
 
 const globalNotifications = [];
 let globalNotificationId = 0;
@@ -61,7 +62,7 @@ const Tabletblock = ({ title, price, id, imageUrl }) => {
             style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
           />
         ) : (
-          <span>💊</span>
+          <span><FaPills /></span>
         )}
       </div>
       <h4 className="tablet-block__title">{title}</h4>

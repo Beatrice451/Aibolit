@@ -51,6 +51,13 @@
   background: var(--color-dark-blue);
   color: var(--color-beige);
   transition: all 0.3s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  svg {
+    vertical-align: middle;
+  }
 
   &:hover {
     background: var(--color-blue);
@@ -1239,3 +1246,4 @@
     vertical-align: middle;
   }
 }
+

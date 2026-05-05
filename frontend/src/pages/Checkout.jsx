@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import cartApi from '../api/cartService';
 import pharmacyApi from '../api/pharmacyService';
 import orderApi from '../api/orderService';
+import { FaPills } from 'react-icons/fa';
 
 const getImageUrl = (imagePath) => {
   if (!imagePath) return null;
@@ -165,7 +166,7 @@ const Checkout = () => {
                           onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
                         />
                       ) : null}
-                      <span className="checkout-item__placeholder" style={item.productImage ? { display: 'none' } : {}}>💊</span>
+                      <span className="checkout-item__placeholder" style={item.productImage ? { display: 'none' } : {}}><FaPills /></span>
                     </div>
                     <div className="checkout-item__info">
                       <div className="checkout-item__name">{item.productName}</div>

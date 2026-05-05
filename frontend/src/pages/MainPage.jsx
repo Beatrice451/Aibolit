@@ -7,6 +7,7 @@ import Pagination from '../components/Pagination';
 import { showNotification } from '../components/NotificationSystem';
 import productApi from '../api/productService';
 import authApi from '../api/authService';
+import { FaExclamationTriangle } from 'react-icons/fa';
 
 const API_BASE_URL = '';
 
@@ -95,7 +96,7 @@ if (loading && products.length === 0) {
         <div className="content">
           <div className="container">
             <div className="error-state">
-              <div className="error-icon">⚠️</div>
+              <div className="error-icon"><FaExclamationTriangle /></div>
               <h3>Не удалось загрузить товары</h3>
               <p>Проверьте подключение к серверу и попробуйте снова</p>
               <button
