@@ -2,6 +2,9 @@ package org.beatrice.diploma_new_pharmacy.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.beatrice.diploma_new_pharmacy.domain.auth.security.SecurityUser;
+import org.beatrice.diploma_new_pharmacy.domain.pharmacy.model.Pharmacy;
+import org.beatrice.diploma_new_pharmacy.domain.pharmacy.service.PharmacyService;
+import org.beatrice.diploma_new_pharmacy.domain.user.dto.request.UpdateUserRequest;
 import org.beatrice.diploma_new_pharmacy.domain.user.dto.response.RoleResponse;
 import org.beatrice.diploma_new_pharmacy.domain.user.dto.response.UserResponse;
 import org.beatrice.diploma_new_pharmacy.domain.user.mapper.RoleMapper;
@@ -31,6 +34,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
+    private final PharmacyService pharmacyService;
 
     public @Nullable UserResponse whoami(SecurityUser user) {
         if (user != null) {
@@ -83,6 +87,30 @@ public class UserService {
         user.setIsDeleted(true);
         user.setDeletedAt(Instant.now());
         userRepository.save(user);
+    }
+
+    @Transactional
+    public UserResponse updateUser(Integer userId, UpdateUserRequest request) {
+        User user = getUserById(userId);
+
+        if (request.firstName() != null && !request.firstName().isBlank()) {
+            user.setFirstName(request.firstName());
+        }
+
+        if (request.lastName() != null && !request.lastName().isBlank()) {
+            user.setLastName(request.lastName());
+        }
+
+        if (request.phone() != null && !request.phone().isBlank()) {
+            user.setPhone(request.phone());
+        }
+
+        if (request.preferredPharmacyId() != null) {
+            Pharmacy pharmacy = pharmacyService.getPharmacyEntityById(request.preferredPharmacyId());
+            user.setPharmacy(pharmacy);
+        }
+
+        return userMapper.toDto(user);
     }
 
     @Transactional

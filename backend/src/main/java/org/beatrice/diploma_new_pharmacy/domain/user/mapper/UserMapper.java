@@ -10,6 +10,7 @@ import org.mapstruct.Mapping;
 public interface UserMapper {
     @Mapping(target = "roles", source = "userRoles")
     @Mapping(target = "emailVerified", source = "emailVerified")
+    @Mapping(target = "pharmacyId", source = "pharmacy.id")
     UserResponse toDto(User user);
 
 }

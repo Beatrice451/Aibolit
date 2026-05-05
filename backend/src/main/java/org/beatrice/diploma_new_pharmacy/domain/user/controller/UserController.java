@@ -6,8 +6,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.beatrice.diploma_new_pharmacy.domain.auth.security.SecurityUser;
+import org.beatrice.diploma_new_pharmacy.domain.user.dto.request.UpdateUserRequest;
 import org.beatrice.diploma_new_pharmacy.domain.user.dto.response.UserResponse;
 import org.beatrice.diploma_new_pharmacy.domain.user.service.UserService;
 import org.beatrice.diploma_new_pharmacy.exception.ErrorResponse;
@@ -39,6 +41,24 @@ class UserController {
         if (response == null) {
             return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).build(); // why not?
         }
+        return ResponseEntity.ok(response);
+    }
+
+
+    @Operation(
+            summary = "Обновить данные текущего пользователя",
+            description = "Обновляет имя, фамилию, телефон и предпочитаемую аптеку текущего пользователя."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Данные пользователя обновлены", content = @Content(schema = @Schema(implementation = UserResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Невалидный запрос", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Пользователь или аптека не найдены", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PatchMapping("/me")
+    public ResponseEntity<UserResponse> updateCurrentUser(
+            @AuthenticationPrincipal SecurityUser user,
+            @Valid @RequestBody UpdateUserRequest request) {
+        UserResponse response = userService.updateUser(user.user().getId(), request);
         return ResponseEntity.ok(response);
     }
 

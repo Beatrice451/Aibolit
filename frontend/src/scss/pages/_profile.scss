@@ -92,15 +92,70 @@
     transform: translateY(-3px);
   }
 
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
   &__title {
     font-family: 'Oi', cursive;
     font-size: 22px;
     font-weight: normal;
     color: var(--color-dark-blue);
-    margin-bottom: 20px;
+    margin-bottom: 0;
     display: flex;
     align-items: center;
     gap: 10px;
+  }
+
+  &__edit-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    background: var(--color-blue);
+    color: var(--color-white);
+    font-family: 'Orelega One', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      background: var(--color-dark-blue);
+    }
+  }
+
+  &__input {
+    width: 100%;
+    max-width: 280px;
+    padding: 10px 14px;
+    border: 2px solid var(--color-light-blue);
+    border-radius: 10px;
+    font-family: 'Orelega One', sans-serif;
+    font-size: 14px;
+    color: var(--color-dark-blue);
+    transition: all 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-blue);
+    }
+
+    &::placeholder {
+      color: #999;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-light-blue);
   }
 
   &__row {
@@ -549,6 +604,44 @@
 }
 
 .profile-settings {
+  &__section {
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--color-light-blue);
+  }
+
+  &__subtitle {
+    font-family: 'Orelega One', sans-serif;
+    font-size: 16px;
+    color: var(--color-dark-blue);
+    margin-bottom: 8px;
+  }
+
+  &__desc {
+    font-family: 'Orelega One', sans-serif;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 16px;
+  }
+
+  &__select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--color-light-blue);
+    border-radius: 10px;
+    font-family: 'Orelega One', sans-serif;
+    font-size: 14px;
+    color: var(--color-dark-blue);
+    background: var(--color-white);
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-blue);
+    }
+  }
+
   &__danger {
     border: 2px solid #dc3545;
     border-radius: 16px;

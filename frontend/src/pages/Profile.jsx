@@ -3,8 +3,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 import { showNotification } from '../components/NotificationSystem';
 import authApi from '../api/authService';
+import pharmacyApi from '../api/pharmacyService';
 import axiosInstance from '../api/axiosInstance';
-import { FaUserMd, FaUser, FaBox, FaCog, FaSignOutAlt, FaEnvelope, FaPhone, FaExclamationTriangle, FaTrash } from 'react-icons/fa';
+import { FaUserMd, FaUser, FaBox, FaCog, FaSignOutAlt, FaEnvelope, FaPhone, FaExclamationTriangle, FaTrash, FaEdit, FaSave, FaTimes } from 'react-icons/fa';
 
 const globalNotifications = [];
 let globalNotificationId = 0;
@@ -36,6 +37,11 @@ const Profile = () => {
   const [orders, setOrders] = useState([]);
   const [ordersLoading, setOrdersLoading] = useState(false);
   const [deleteModal, setDeleteModal] = useState({ open: false, timer: 0 });
+  const [editingInfo, setEditingInfo] = useState(false);
+  const [infoForm, setInfoForm] = useState({ firstName: '', lastName: '', phone: '' });
+  const [savingInfo, setSavingInfo] = useState(false);
+  const [pharmacies, setPharmacies] = useState([]);
+  const [loadingPharmacies, setLoadingPharmacies] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -100,6 +106,24 @@ const Profile = () => {
     }
   }, [deleteModal.open, deleteModal.timer]);
 
+  useEffect(() => {
+    if (activeTab === 'settings' && pharmacies.length === 0) {
+      fetchPharmacies();
+    }
+  }, [activeTab]);
+
+  const fetchPharmacies = async () => {
+    setLoadingPharmacies(true);
+    try {
+      const data = await pharmacyApi.getPharmacies();
+      setPharmacies(data || []);
+    } catch (err) {
+      console.error('Failed to fetch pharmacies:', err);
+    } finally {
+      setLoadingPharmacies(false);
+    }
+  };
+
   const fetchOrders = async () => {
     setOrdersLoading(true);
     try {
@@ -136,6 +160,39 @@ const Profile = () => {
       showNotification('Письмо отправлено. Проверьте почту.', 'success');
     } catch (err) {
       showNotification(err.response?.data?.message || 'Ошибка отправки', 'error');
+    }
+  };
+
+  const handleStartEditInfo = () => {
+    setInfoForm({
+      firstName: user.firstName || '',
+      lastName: user.lastName || '',
+      phone: user.phone || ''
+    });
+    setEditingInfo(true);
+  };
+
+  const handleCancelEditInfo = () => {
+    setEditingInfo(false);
+    setInfoForm({ firstName: '', lastName: '', phone: '' });
+  };
+
+  const handleSaveInfo = async () => {
+    setSavingInfo(true);
+    try {
+      const updatedUser = await authApi.updateUser({
+        firstName: infoForm.firstName,
+        lastName: infoForm.lastName,
+        phone: infoForm.phone
+      });
+      setUser(updatedUser);
+      setEditingInfo(false);
+      showGlobalNotification('Данные сохранены', 'success');
+    } catch (err) {
+      console.error('Failed to update user:', err);
+      showGlobalNotification('Ошибка сохранения', 'error');
+    } finally {
+      setSavingInfo(false);
     }
   };
 
@@ -240,17 +297,90 @@ const Profile = () => {
             <div className="profile-content">
               {activeTab === 'info' && (
                 <div className="profile-card">
-                  <h3 className="profile-card__title">Личная информация</h3>
-
-                  <div className="profile-card__row">
-                    <span className="profile-card__label"><FaEnvelope /> Электронная почта</span>
-                    <span className="profile-card__value">{user.email}</span>
+                  <div className="profile-card__header">
+                    <h3 className="profile-card__title">Личная информация</h3>
+                    {!editingInfo && (
+                      <button className="profile-card__edit-btn" onClick={handleStartEditInfo}>
+                        <FaEdit /> Изменить
+                      </button>
+                    )}
                   </div>
 
-                  <div className="profile-card__row">
-                    <span className="profile-card__label"><FaPhone /> Контактный телефон</span>
-                    <span className="profile-card__value">{user.phone || 'Не указан'}</span>
-                  </div>
+                  {editingInfo ? (
+                    <>
+                      <div className="profile-card__row">
+                        <span className="profile-card__label"><FaUser /> Имя</span>
+                        <input
+                          type="text"
+                          className="profile-card__input"
+                          value={infoForm.firstName}
+                          onChange={(e) => setInfoForm({ ...infoForm, firstName: e.target.value })}
+                          placeholder="Ваше имя"
+                        />
+                      </div>
+
+                      <div className="profile-card__row">
+                        <span className="profile-card__label"><FaUser /> Фамилия</span>
+                        <input
+                          type="text"
+                          className="profile-card__input"
+                          value={infoForm.lastName}
+                          onChange={(e) => setInfoForm({ ...infoForm, lastName: e.target.value })}
+                          placeholder="Ваша фамилия"
+                        />
+                      </div>
+
+                      <div className="profile-card__row">
+                        <span className="profile-card__label"><FaPhone /> Телефон</span>
+                        <input
+                          type="tel"
+                          className="profile-card__input"
+                          value={infoForm.phone}
+                          onChange={(e) => setInfoForm({ ...infoForm, phone: e.target.value })}
+                          placeholder="+79001234567"
+                        />
+                      </div>
+
+                      <div className="profile-card__actions">
+                        <button
+                          className="admin-btn"
+                          onClick={handleCancelEditInfo}
+                          disabled={savingInfo}
+                        >
+                          <FaTimes /> Отмена
+                        </button>
+                        <button
+                          className="admin-btn admin-btn--primary"
+                          onClick={handleSaveInfo}
+                          disabled={savingInfo}
+                        >
+                          <FaSave /> {savingInfo ? 'Сохранение...' : 'Сохранить'}
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="profile-card__row">
+                        <span className="profile-card__label"><FaUser /> Имя</span>
+                        <span className="profile-card__value">{user.firstName || 'Не указано'}</span>
+                      </div>
+
+                      <div className="profile-card__row">
+                        <span className="profile-card__label"><FaUser /> Фамилия</span>
+                        <span className="profile-card__value">{user.lastName || 'Не указана'}</span>
+                      </div>
+
+                      <div className="profile-card__row">
+                        <span className="profile-card__label"><FaEnvelope /> Электронная почта</span>
+                        <span className="profile-card__value">{user.email}</span>
+                      </div>
+
+                      <div className="profile-card__row">
+                        <span className="profile-card__label"><FaPhone /> Контактный телефон</span>
+                        <span className="profile-card__value">{user.phone || 'Не указан'}</span>
+                      </div>
+                    </>
+                  )}
                 </div>
               )}
 
@@ -307,9 +437,47 @@ const Profile = () => {
                 </div>
               )}
 
-              {activeTab === 'settings' && (
+{activeTab === 'settings' && (
                 <div className="profile-settings">
                   <h3 className="profile-card__title">Настройки аккаунта</h3>
+
+                  <div className="profile-settings__section">
+                    <h4 className="profile-settings__subtitle">Предпочитаемая аптека</h4>
+                    <p className="profile-settings__desc">
+                      Выберите аптеку, которая будет использоваться по умолчанию при оформлении заказов.
+                    </p>
+                    {loadingPharmacies ? (
+                      <div className="loading">Загрузка аптек...</div>
+                    ) : (
+                      <select
+                        className="profile-settings__select"
+                        value={user.pharmacyId || ''}
+                        onChange={async (e) => {
+                          const pharmacyId = e.target.value ? Number(e.target.value) : null;
+                          try {
+                            await authApi.updateUser({
+                              firstName: user.firstName,
+                              lastName: user.lastName,
+                              phone: user.phone,
+                              preferredPharmacyId: pharmacyId
+                            });
+                            setUser({ ...user, pharmacyId: pharmacyId });
+                            showGlobalNotification('Аптека сохранена', 'success');
+                          } catch (err) {
+                            console.error('Failed to update pharmacy:', err);
+                            showGlobalNotification('Ошибка сохранения', 'error');
+                          }
+                        }}
+                      >
+                        <option value="">Не выбрана</option>
+                        {pharmacies.map(pharmacy => (
+                          <option key={pharmacy.id} value={pharmacy.id}>
+                            {pharmacy.name} - {pharmacy.address}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
 
                   <div className="profile-settings__danger">
                     <div className="profile-settings__danger-title">Опасная зона</div>

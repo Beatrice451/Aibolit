@@ -67,6 +67,11 @@ const authApi = {
   resendVerification: async (email) => {
     const response = await axiosInstance.post('/api/auth/resend-verification', { email });
     return response.data;
+  },
+
+  updateUser: async (userData) => {
+    const response = await axiosInstance.patch('/api/users/me', userData);
+    return response.data;
   }
 };
 

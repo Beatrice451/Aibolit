@@ -10,6 +10,7 @@ public record UserResponse(
         String firstName,
         String lastName,
         Boolean isDeleted,
-        Boolean emailVerified
+        Boolean emailVerified,
+        Integer pharmacyId
 ) {
 }
