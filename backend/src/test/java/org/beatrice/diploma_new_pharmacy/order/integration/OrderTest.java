@@ -5,7 +5,11 @@ import org.beatrice.diploma_new_pharmacy.domain.auth.dto.AuthRequest;
 import org.beatrice.diploma_new_pharmacy.domain.cart.dto.request.AddProductToCartRequest;
 import org.beatrice.diploma_new_pharmacy.domain.order.dto.request.CreateOrderRequest;
 import org.beatrice.diploma_new_pharmacy.domain.pharmacy.model.Pharmacy;
+import org.beatrice.diploma_new_pharmacy.domain.pharmacy.model.Stock;
+import org.beatrice.diploma_new_pharmacy.domain.pharmacy.model.Warehouse;
 import org.beatrice.diploma_new_pharmacy.domain.pharmacy.repository.PharmacyRepository;
+import org.beatrice.diploma_new_pharmacy.domain.pharmacy.repository.StockRepository;
+import org.beatrice.diploma_new_pharmacy.domain.pharmacy.repository.WarehouseRepository;
 import org.beatrice.diploma_new_pharmacy.domain.product.model.Category;
 import org.beatrice.diploma_new_pharmacy.domain.product.model.Product;
 import org.beatrice.diploma_new_pharmacy.domain.product.repository.CategoryRepository;
@@ -62,6 +66,12 @@ class OrderTest extends BaseIntegrationTest {
     @Autowired
     private PharmacyRepository pharmacyRepository;
 
+    @Autowired
+    private WarehouseRepository warehouseRepository;
+
+    @Autowired
+    private StockRepository stockRepository;
+
     @BeforeEach
     void setUp() {
         cleanDatabase();
@@ -94,6 +104,20 @@ class OrderTest extends BaseIntegrationTest {
         Pharmacy testPharmacy = new Pharmacy("Test Pharmacy", "Test Address", "+79001111111");
         testPharmacy = pharmacyRepository.save(testPharmacy);
         testPharmacyId = testPharmacy.getId();
+
+        Warehouse warehouse = new Warehouse();
+        warehouse.setName("Test Warehouse");
+        warehouse.setAddress("Test Address");
+        warehouse.setPharmacy(testPharmacy);
+        warehouse = warehouseRepository.save(warehouse);
+
+        Stock stock = new Stock();
+        stock.getId().setProductId(testProductId);
+        stock.getId().setWarehouseId(warehouse.getId());
+        stock.setProduct(testProduct);
+        stock.setWarehouse(warehouse);
+        stock.setQuantity(100);
+        stockRepository.save(stock);
 
         AuthRequest loginRequest = new AuthRequest(TEST_EMAIL, TEST_PASSWORD);
         

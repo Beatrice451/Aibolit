@@ -43,6 +43,15 @@ public class CartService {
         Cart cart = getOrCreateCart(identity);
         Product product = productRepository.findProductById(productId)
                 .orElseThrow(() -> new NotFoundException("Product does not exist"));
+
+        int totalQuantityInCart = quantity;
+        if (isAddition) {
+            CartItem existing = cartItemRepository.findCartItemByProductAndCart(product, cart).orElse(null);
+            if (existing != null) {
+                totalQuantityInCart += existing.getQuantity();
+            }
+        }
+
         CartItem cartItem = cartItemRepository.findCartItemByProductAndCart(product, cart)
                 .map(existingItem -> {
                     if (isAddition) {

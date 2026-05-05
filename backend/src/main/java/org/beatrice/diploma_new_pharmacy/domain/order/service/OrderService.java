@@ -23,6 +23,7 @@ import org.beatrice.diploma_new_pharmacy.domain.order.specification.OrderFilter;
 import org.beatrice.diploma_new_pharmacy.domain.order.specification.OrderSpecifications;
 import org.beatrice.diploma_new_pharmacy.domain.pharmacy.model.Pharmacy;
 import org.beatrice.diploma_new_pharmacy.domain.pharmacy.service.PharmacyService;
+import org.beatrice.diploma_new_pharmacy.domain.pharmacy.service.StockService;
 import org.beatrice.diploma_new_pharmacy.domain.user.exception.EmailNotVerifiedException;
 import org.beatrice.diploma_new_pharmacy.domain.user.model.User;
 import org.beatrice.diploma_new_pharmacy.domain.user.service.UserService;
@@ -57,6 +58,7 @@ public class OrderService {
     private final CartService cartService;
     private final PharmacyService pharmacyService;
     private final UserService userService;
+    private final StockService stockService;
     private final PickupCodeService pickupCodeService;
     private final ApplicationEventPublisher applicationEventPublisher;
     @PersistenceContext
@@ -101,6 +103,13 @@ public class OrderService {
         if (request.status() == OrderStatus.COMPLETED) {
             order.setPickupCode(null);
             order.setPickupCodeGeneratedAt(null);
+            stockService.completeReservation(order);
+        }
+
+        if (request.status() == OrderStatus.CANCELLED_USER
+                || request.status() == OrderStatus.CANCELLED_SYSTEM
+                || request.status() == OrderStatus.EXPIRED) {
+            stockService.releaseReservation(order);
         }
 
         orderMapper.updateFromRequest(request, order);
@@ -194,11 +203,13 @@ public class OrderService {
 
         order.setOrderItems(orderItems);
 
+        order = orderRepository.saveAndFlush(order);
+
+        reserveStock(order, cartItems);
+
         cartService.truncateCart(cart);
-        return orderRepository.saveAndFlush(order);
-
+        return order;
     }
-
 
     private OrderItem mapCartItem(CartItem cartItem, Order order) {
         return OrderItem.builder()
@@ -220,6 +231,18 @@ public class OrderService {
 
     private BigDecimal getDiscount() { // TODO I DONT KNOW WHAT TO DO WITH THIS SHIT
         return BigDecimal.ZERO;
+    }
+
+    private void reserveStock(Order order, List<CartItem> cartItems) {
+        Integer pharmacyId = order.getPharmacy().getId();
+        for (CartItem item : cartItems) {
+            stockService.reserveStockWithFallback(
+                    item.getProduct().getId(),
+                    pharmacyId,
+                    Integer.valueOf(item.getQuantity()),
+                    order
+            );
+        }
     }
 
     private Specification<Order> buildSpecification(OrderFilter filter) {

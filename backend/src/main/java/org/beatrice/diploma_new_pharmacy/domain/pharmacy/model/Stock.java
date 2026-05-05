@@ -11,7 +11,7 @@ import org.beatrice.diploma_new_pharmacy.domain.product.model.Product;
 @Table(name = "stocks", schema = "pharmacy")
 public class Stock {
     @EmbeddedId
-    private StockId id;
+    private StockId id = new StockId();
 
     @MapsId("productId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

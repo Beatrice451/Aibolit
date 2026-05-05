@@ -3,6 +3,7 @@ package org.beatrice.diploma_new_pharmacy.domain.order.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.beatrice.diploma_new_pharmacy.domain.pharmacy.model.Pharmacy;
+import org.beatrice.diploma_new_pharmacy.domain.pharmacy.model.Warehouse;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -75,6 +76,10 @@ public class Order {
 
     @Column(name = "pickup_code_generated_at")
     private Instant pickupCodeGeneratedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "warehouse_id")
+    private Warehouse warehouse;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;
