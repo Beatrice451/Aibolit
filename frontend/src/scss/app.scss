@@ -18,6 +18,7 @@
 // ========== ЦВЕТОВАЯ ПАЛИТРА ==========
 html {
   overflow-y: auto;
+  min-height: 100vh;
 }
 
 :root {
@@ -50,6 +51,7 @@ body {
   background: var(--color-beige);
   color: var(--color-dark-blue);
   line-height: 1.5;
+  min-height: 100vh;
 }
 
 .container {
@@ -90,14 +92,13 @@ h1, h2, h3, h4, .logo-text, .accent-text {
 // ========== ОБЩИЕ СТИЛИ ДЛЯ КАТАЛОГА ==========
 .content__top {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   margin: 40px 0 30px;
-  gap: 20px;
+  gap: 16px;
 }
 
-.content__top .category {
-  flex: 1 1 calc(100% - 160px);
+.content__top .category-dropdown {
+  flex-shrink: 0;
 }
 
 .content__top .sort {
@@ -106,14 +107,15 @@ h1, h2, h3, h4, .logo-text, .accent-text {
 
 .catalog-search {
   display: flex;
+  flex: 1;
   gap: 10px;
-  margin-bottom: 20px;
 
   input {
     flex: 1;
-    padding: 12px 20px;
+    height: 43px;
+    padding: 0 20px;
     border: 2px solid var(--color-light-blue);
-    border-radius: 30px;
+    border-radius: 40px;
     font-family: 'Orelega One', sans-serif;
     font-size: 14px;
 
@@ -124,17 +126,20 @@ h1, h2, h3, h4, .logo-text, .accent-text {
   }
 
   button {
-    padding: 12px 24px;
-    border: none;
-    border-radius: 30px;
+    height: 43px;
+    padding: 0 24px;
+    border: 2px solid var(--color-red);
+    border-radius: 40px;
     background: var(--color-red);
     color: var(--color-white);
     font-family: 'Orelega One', sans-serif;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: all 0.3s;
 
     &:hover {
       background: #b32410;
+      border-color: #b32410;
+      transform: translateY(-2px);
     }
   }
 }

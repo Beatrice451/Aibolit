@@ -1,36 +1,29 @@
 import React, { useState, useEffect, useRef } from 'react';
-import productApi from '../api/productService'; // или свой путь к API
+import productApi from '../api/productService';
 import '../scss/components/_category.scss';
-import { flattenCategories } from '../utils/flattenCategories';
-import { FaTimes } from 'react-icons/fa';
+import { FaTimes, FaChevronDown, FaChevronRight } from 'react-icons/fa';
 
 function Category({ onSelectCategory, selectedCategoryId }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const [categories, setCategories] = useState([]); // плоский массив { id, name }
+  const [categoriesTree, setCategoriesTree] = useState([]);
+  const [rootCategories, setRootCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const sidebarRef = useRef(null);
+  const [activeSubmenu, setActiveSubmenu] = useState(null);
+  const [activeRootCategory, setActiveRootCategory] = useState(null);
+  const dropdownRef = useRef(null);
 
-  // Используем selectedCategoryId из пропсов как активный
   const activeCategoryId = selectedCategoryId;
 
-  // Загрузка и разворачивание дерева
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         setLoading(true);
         const tree = await productApi.getCategoriesTree();
-        let flat = flattenCategories(tree);
-        
-        // Преобразуем id в числа
-        flat = flat.map(cat => ({
-          ...cat,
-          id: cat.id != null ? Number(cat.id) : null
-        }));
-        
-        flat.unshift({ id: null, name: 'Все' });
-        setCategories(flat);
+        console.log('Categories tree:', JSON.stringify(tree));
+        setCategoriesTree(tree);
+        setRootCategories(tree);
       } catch (err) {
         setError('Не удалось загрузить категории');
         console.error(err);
@@ -41,7 +34,6 @@ function Category({ onSelectCategory, selectedCategoryId }) {
     fetchCategories();
   }, []);
 
-  // Обработчик ресайза (оставляем как было)
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -53,18 +45,18 @@ function Category({ onSelectCategory, selectedCategoryId }) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Закрытие по клику вне сайдбара
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target) && isOpen) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target) && isOpen) {
         setIsOpen(false);
+        setActiveSubmenu(null);
+        setActiveRootCategory(null);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen]);
 
-  // Блокировка скролла при открытом мобильном меню
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -79,19 +71,90 @@ function Category({ onSelectCategory, selectedCategoryId }) {
   const handleCategoryClick = (categoryId) => {
     const idToSet = categoryId === null ? null : Number(categoryId);
     setIsOpen(false);
+    setActiveSubmenu(null);
+    setActiveRootCategory(null);
     if (onSelectCategory) {
       onSelectCategory(idToSet);
     }
   };
 
-  if (loading) return <div className="category-loading">Загрузка категорий...</div>;
+  const handleRootCategoryClick = (categoryId, hasChildren) => {
+    console.log('handleRootCategoryClick:', categoryId, hasChildren);
+    if (hasChildren) {
+      setActiveRootCategory(categoryId);
+      setActiveSubmenu(categoryId);
+    } else {
+      handleCategoryClick(categoryId);
+    }
+  };
+
+  if (loading) return <div className="category-loading">Загрузка...</div>;
   if (error) return <div className="category-error">{error}</div>;
+
+  const renderDesktopDropdown = () => {
+    if (loading) return null;
+
+    console.log('Rendering - activeRootCategory:', activeRootCategory);
+
+    return (
+      <div className="category-dropdown" ref={dropdownRef}>
+        <button
+          className={`category-dropdown__toggle ${isOpen ? 'category-dropdown__toggle--active' : ''}`}
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          Каталог <FaChevronDown />
+        </button>
+
+        {isOpen && (
+          <div className="category-dropdown__menu">
+            {rootCategories.map(rootCategory => {
+              const hasChildren = rootCategory.children && rootCategory.children.length > 0;
+              const isActive = activeRootCategory === rootCategory.id;
+              
+              console.log('Rendering item:', rootCategory.id, 'isActive:', isActive, 'hasChildren:', hasChildren);
+              
+              return (
+                <div
+                  key={rootCategory.id}
+                  className={`category-dropdown__item ${isActive ? 'active' : ''}`}
+                >
+                  <span
+                    className="category-dropdown__link"
+                    onClick={() => handleRootCategoryClick(rootCategory.id, hasChildren)}
+                  >
+                    {rootCategory.name}
+                    {hasChildren && (
+                      <FaChevronRight className="category-dropdown__arrow" />
+                    )}
+                  </span>
+
+                  {isActive && hasChildren && (
+                    <div className="category-dropdown__submenu">
+                      {rootCategory.children.map(subCategory => (
+                        <span
+                          key={subCategory.id}
+                          className="category-dropdown__sublink"
+                          onClick={() => handleCategoryClick(subCategory.id)}
+                        >
+                          {subCategory.name}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   const renderCategoryButtons = () => {
     const activeId = activeCategoryId != null ? Number(activeCategoryId) : null;
     return (
       <div className="category">
-        {categories.map((cat) => {
+        {rootCategories.map(cat => {
           const catId = cat.id != null ? Number(cat.id) : null;
           const isActive = activeId === catId;
           return (
@@ -107,14 +170,12 @@ function Category({ onSelectCategory, selectedCategoryId }) {
       </div>
     );
   };
-  
 
   return (
     <>
-      {/* Мобильная версия с бургером */}
       {isMobile && (
         <>
-          <button 
+          <button
             className={`burger-btn ${isOpen ? 'burger-btn--active' : ''}`}
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Меню категорий"
@@ -126,13 +187,12 @@ function Category({ onSelectCategory, selectedCategoryId }) {
 
           {isOpen && <div className="overlay" onClick={() => setIsOpen(false)}></div>}
 
-          <div 
-            ref={sidebarRef}
+          <div
             className={`category-slider ${isOpen ? 'category-slider--open' : ''}`}
           >
             <div className="category-slider__header">
               <h3 className="category-slider__title">Категории товаров</h3>
-              <button 
+              <button
                 className="category-slider__close"
                 onClick={() => setIsOpen(false)}
               >
@@ -144,8 +204,7 @@ function Category({ onSelectCategory, selectedCategoryId }) {
         </>
       )}
 
-      {/* Десктопная версия (без слайдера, просто flex-wrap) */}
-      {!isMobile && renderCategoryButtons()}
+      {!isMobile && renderDesktopDropdown()}
     </>
   );
 }

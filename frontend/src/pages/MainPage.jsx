@@ -123,16 +123,16 @@ if (loading && products.length === 0) {
           <div className="content__top">
             <Category onSelectCategory={handleCategorySelect} selectedCategoryId={selectedCategoryId} />
             <Sort />
+            <form className="catalog-search" onSubmit={handleSearch}>
+              <input
+                type="text"
+                placeholder="Поиск по названию..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+              />
+              <button type="submit">Найти</button>
+            </form>
           </div>
-          <form className="catalog-search" onSubmit={handleSearch}>
-            <input 
-              type="text" 
-              placeholder="Поиск по названию..." 
-              value={searchQuery}
-              onChange={handleSearchChange}
-            />
-            <button type="submit">Найти</button>
-          </form>
           <h2 className="content__title">Все лекарственные средства</h2>
           
           <div className="content__items">
