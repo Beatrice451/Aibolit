@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams, Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Category from '../components/Category';
 import Sort from '../components/Sort';
@@ -11,18 +12,36 @@ import { FaExclamationTriangle } from 'react-icons/fa';
 
 const API_BASE_URL = '';
 
+const findCategoryPath = (categories, targetId, path = []) => {
+  for (const category of categories) {
+    const currentPath = [...path, { id: category.id, name: category.name }];
+    if (category.id === targetId) {
+      return currentPath;
+    }
+    if (category.children && category.children.length > 0) {
+      const found = findCategoryPath(category.children, targetId, currentPath);
+      if (found) return found;
+    }
+  }
+  return null;
+};
+
 const MainPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
+  const [categoriesTree, setCategoriesTree] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize] = useState(20);
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
-  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
+  
+  // Читаем параметры из URL
+  const selectedCategoryId = searchParams.get('categoryId') ? parseInt(searchParams.get('categoryId'), 10) : null;
+  const searchQuery = searchParams.get('search') || '';
 
   const fetchProducts = async (page = 0, size = pageSize, categoryId = selectedCategoryId, search = searchQuery) => {
     try {
@@ -48,8 +67,20 @@ const MainPage = () => {
   };
 
   useEffect(() => {
-    fetchProducts(currentPage);
+    const fetchData = async () => {
+      try {
+        const categories = await productApi.getCategoriesTree();
+        setCategoriesTree(categories);
+      } catch (err) {
+        console.error('Error fetching categories:', err);
+      }
+    };
+    fetchData();
   }, []);
+
+  useEffect(() => {
+    fetchProducts(currentPage, pageSize, selectedCategoryId, searchQuery);
+  }, [selectedCategoryId, searchQuery]);
 
   const handlePageChange = (newPage) => {
     if (newPage >= 0 && newPage < totalPages) {
@@ -58,19 +89,40 @@ const MainPage = () => {
   };
 
   const handleCategorySelect = (categoryId) => {
-    setSelectedCategoryId(categoryId);
+    const newParams = {};
+    if (categoryId) {
+      newParams.categoryId = categoryId;
+    }
+    if (searchQuery) {
+      newParams.search = searchQuery;
+    }
+    setSearchParams(newParams);
     setCurrentPage(0);
-    fetchProducts(0, pageSize, categoryId, searchQuery);
   };
 
   const handleSearch = (e) => {
     e.preventDefault();
+    const newParams = {};
+    if (selectedCategoryId) {
+      newParams.categoryId = selectedCategoryId;
+    }
+    if (searchQuery) {
+      newParams.search = searchQuery;
+    }
+    setSearchParams(newParams);
     setCurrentPage(0);
-    fetchProducts(0, pageSize, selectedCategoryId, searchQuery);
   };
 
   const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
+    const newValue = e.target.value;
+    const newParams = {};
+    if (selectedCategoryId) {
+      newParams.categoryId = selectedCategoryId;
+    }
+    if (newValue) {
+      newParams.search = newValue;
+    }
+    setSearchParams(newParams);
   };
 
 if (loading && products.length === 0) {
@@ -133,7 +185,39 @@ if (loading && products.length === 0) {
               <button type="submit">Найти</button>
             </form>
           </div>
-          <h2 className="content__title">Все лекарственные средства</h2>
+          
+          {selectedCategoryId && categoriesTree.length > 0 && (() => {
+            const categoryPath = findCategoryPath(categoriesTree, selectedCategoryId) || [];
+            const currentCategory = categoryPath[categoryPath.length - 1];
+            
+            return (
+              <>
+                <div className="product-page__breadcrumb" style={{ marginBottom: '10px', fontSize: '14px' }}>
+                  <Link to="/" className="product-page__breadcrumb-link">Главная</Link>
+                  {categoryPath.map((cat, index) => (
+                    <React.Fragment key={cat.id}>
+                      <span className="product-page__breadcrumb-separator">&gt;</span>
+                      {index === categoryPath.length - 1 ? (
+                        <span className="product-page__breadcrumb-current">{cat.name}</span>
+                      ) : (
+                        <Link
+                          to={`/?categoryId=${cat.id}`}
+                          className="product-page__breadcrumb-link"
+                        >
+                          {cat.name}
+                        </Link>
+                      )}
+                    </React.Fragment>
+                  ))}
+                </div>
+                <h2 className="content__title">{currentCategory?.name || 'Все лекарственные средства'}</h2>
+              </>
+            );
+          })()}
+          
+          {!selectedCategoryId && (
+            <h2 className="content__title">Все лекарственные средства</h2>
+          )}
           
           <div className="content__items">
             {loading && products.length > 0 && (

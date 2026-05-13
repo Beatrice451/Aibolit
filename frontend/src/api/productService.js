@@ -13,7 +13,7 @@ const productApi = {
     // 🔧 ИСПРАВЛЕНИЕ: передаём просто 'page' и 'size', без префикса 'pageable.'
     params.append('page', pageable.page?.toString() || '0');
     params.append('size', pageable.size?.toString() || '20');
-    
+
     // Если нужна сортировка (опционально)
     if (pageable.sort && Array.isArray(pageable.sort)) {
       pageable.sort.forEach((s, index) => {
@@ -27,6 +27,33 @@ const productApi = {
 
   getCategoriesTree: async () => {
     const response = await axiosInstance.get('/api/categories'); // твой эндпоинт
+    return response.data;
+  },
+
+  getProductById: async (id) => {
+    const response = await axiosInstance.get(`/api/products/${id}`);
+    return response.data;
+  },
+
+  getProductReviews: async (productId, pageable = { page: 0, size: 10 }) => {
+    const params = new URLSearchParams();
+    params.append('page', pageable.page?.toString() || '0');
+    params.append('size', pageable.size?.toString() || '10');
+
+    const response = await axiosInstance.get(`/api/products/${productId}/reviews`, { params });
+    return response.data;
+  },
+
+  addReview: async (productId, comment, rating) => {
+    const response = await axiosInstance.post(`/api/products/${productId}/reviews`, {
+      comment,
+      rating
+    });
+    return response.data;
+  },
+
+  deleteReview: async (reviewId) => {
+    const response = await axiosInstance.delete(`/api/reviews/${reviewId}`);
     return response.data;
   }
 };

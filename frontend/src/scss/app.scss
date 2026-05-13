@@ -1,19 +1,5 @@
 // ========== ПОДКЛЮЧЕНИЕ ШРИФТОВ ==========
-@font-face {
-  font-family: 'Oi';
-  src: url('../assets/fonts/Oi/Oi-Regular.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Orelega One';
-  src: url('../assets/fonts/OrelegaOne-regular/OrelegaOne-Regular.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
+@import url('https://fonts.googleapis.com/css2?family=Orelega+One:wght@400;500;600;700&family=Raleway:wght@400;500;600;700&display=swap');
 
 // ========== ЦВЕТОВАЯ ПАЛИТРА ==========
 html {
@@ -32,7 +18,8 @@ html {
   --color-gray: #e2e8f0;
   --color-gray-dark: #475569;
   --color-black: #1e293b;
-  
+  --color-gold: #FFD700;
+
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.05);
   --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
@@ -62,7 +49,7 @@ body {
 
 h1, h2, h3, h4, .logo-text, .accent-text {
   font-family: 'Oi', cursive;
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: 1px;
 }
 
@@ -78,6 +65,7 @@ h1, h2, h3, h4, .logo-text, .accent-text {
 @import './components/modal';
 @import './components/notifications';
 @import './components/category-select';
+@import './components/product-reviews';
 
 // ========== ИМПОРТ СТРАНИЦ ==========
 @import './pages/cart';
@@ -88,6 +76,8 @@ h1, h2, h3, h4, .logo-text, .accent-text {
 @import './pages/checkout';
 @import './pages/order-confirmation';
 @import './pages/verification';
+@import './pages/product';
+@import './pages/product-reviews';
 
 // ========== ОБЩИЕ СТИЛИ ДЛЯ КАТАЛОГА ==========
 .content__top {
@@ -122,6 +112,10 @@ h1, h2, h3, h4, .logo-text, .accent-text {
     &:focus {
       outline: none;
       border-color: var(--color-red);
+    }
+
+    &::placeholder {
+      color: var(--color-gray-dark);
     }
   }
 

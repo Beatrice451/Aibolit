@@ -81,10 +81,13 @@ export const useProducts = () => {
 
       // Add medicine-specific fields if it's a medicine
       if (form.isMedicine) {
+        data.productType = 'MEDICINE';
         data.dosage = parseInt(form.dosage);
         data.requiresPrescription = form.requiresPrescription;
         data.form = form.form;
         data.quantity = parseInt(form.quantity);
+      } else {
+        data.productType = 'PRODUCT';
       }
 
       if (editingProduct) {

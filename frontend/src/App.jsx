@@ -13,6 +13,8 @@ import AdminPage from './pages/AdminPage';
 import Checkout from './pages/Checkout';
 import OrderConfirmation from './pages/OrderConfirmation';
 import EmailVerification from './pages/EmailVerification';
+import ProductPage from './pages/ProductPage';
+import ProductReviewsPage from './pages/ProductReviewsPage';
 
 function App() {
   useEffect(() => {
@@ -28,6 +30,8 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/product/:id" element={<ProductPage />} />
+        <Route path="/product/:id/reviews" element={<ProductReviewsPage />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/order-confirmation/:orderId" element={<OrderConfirmation />} />
         <Route path="/verify-email" element={<EmailVerification />} />

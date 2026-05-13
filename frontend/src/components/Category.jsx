@@ -80,12 +80,20 @@ function Category({ onSelectCategory, selectedCategoryId }) {
 
   const handleRootCategoryClick = (categoryId, hasChildren) => {
     console.log('handleRootCategoryClick:', categoryId, hasChildren);
+    if (!hasChildren) {
+      handleCategoryClick(categoryId);
+    }
+  };
+
+  const handleRootCategoryHover = (categoryId, hasChildren) => {
     if (hasChildren) {
       setActiveRootCategory(categoryId);
       setActiveSubmenu(categoryId);
-    } else {
-      handleCategoryClick(categoryId);
     }
+  };
+
+  const handleRootCategoryLeave = () => {
+    // Не сбрасываем сразу, чтобы можно было навести на подменю
   };
 
   if (loading) return <div className="category-loading">Загрузка...</div>;
@@ -117,6 +125,8 @@ function Category({ onSelectCategory, selectedCategoryId }) {
                 <div
                   key={rootCategory.id}
                   className={`category-dropdown__item ${isActive ? 'active' : ''}`}
+                  onMouseEnter={() => handleRootCategoryHover(rootCategory.id, hasChildren)}
+                  onMouseLeave={handleRootCategoryLeave}
                 >
                   <span
                     className="category-dropdown__link"

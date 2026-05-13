@@ -17,7 +17,7 @@ const cartApi = {
   },
 
   removeItem: async (productId) => {
-    const response = await axiosInstance.put(`/api/cart/${productId}`, { quantity: 0 });
+    const response = await axiosInstance.delete(`/api/cart/${productId}`);
     return response.data;
   },
 

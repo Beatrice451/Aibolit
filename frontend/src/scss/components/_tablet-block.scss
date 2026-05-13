@@ -3,13 +3,16 @@
 .tablet-block {
   background: var(--color-white);
   border-radius: 16px;
-  padding: 20px 14px;
-  text-align: center;
+  padding: 0;
   transition: all 0.3s ease;
   box-shadow: var(--shadow-md);
   border: 1px solid var(--color-light-blue);
   position: relative;
   overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  height: 400px;
 
   &::before {
     content: '';
@@ -33,111 +36,85 @@
   }
 
   &__image {
-    font-size: 48px;
-    margin-bottom: 16px;
-    height: 110px;
+    height: 66.67%;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    background: var(--color-beige);
 
     img {
-      max-width: 100%;
-      max-height: 100%;
+      width: 100%;
+      height: 100%;
       object-fit: contain;
     }
   }
 
+  &__image-placeholder {
+    font-size: 80px;
+    color: var(--color-light-blue);
+  }
+
+  &__content {
+    height: 33.33%;
+    padding: 12px 14px 14px 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
   &__title {
-    font-family: 'Oi', cursive;
-    font-size: 16px;
-    font-weight: normal;
+    font-family: 'Raleway', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
     color: var(--color-dark-blue);
-    margin-bottom: 12px;
-    min-height: 48px;
+    text-align: left;
     line-height: 1.3;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    margin: 0 0 8px 0;
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
   }
 
   &__price {
-    font-size: 22px;
-    font-weight: bold;
+    font-size: 18px;
+    font-weight: 700;
     color: var(--color-red);
-    margin-bottom: 16px;
-    font-family: 'Orelega One', sans-serif;
-  }
-
-  &__quantity-selector {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    margin-bottom: 24px;
+    font-family: 'Raleway', sans-serif;
+    white-space: nowrap;
   }
 
   &__btn {
-    width: 100%;
     background: var(--color-dark-blue);
     color: var(--color-beige);
     border: none;
-    padding: 12px;
-    border-radius: 40px;
-    font-size: 16px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s;
-    font-family: 'Orelega One', sans-serif;
+    font-family: 'Raleway', sans-serif;
+    white-space: nowrap;
 
-    &:hover {
-      background: var(--color-dark-blue);
+    &:hover:not(:disabled) {
+      background: var(--color-blue);
       transform: translateY(-2px);
       box-shadow: var(--shadow-sm);
     }
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
   }
-}
-
-.quantity-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  border: 2px solid var(--color-light-blue);
-  background: var(--color-white);
-  font-size: 20px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-dark-blue);
-
-  &:hover:not(:disabled) {
-    background: var(--color-light-blue);
-    border-color: var(--color-blue);
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  &--minus {
-    color: var(--color-red);
-  }
-
-  &--plus {
-    color: var(--color-blue);
-  }
-}
-
-.quantity-value {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--color-dark-blue);
-  min-width: 40px;
-  text-align: center;
-  font-family: 'Orelega One', sans-serif;
 }
