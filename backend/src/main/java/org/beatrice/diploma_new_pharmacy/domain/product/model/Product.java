@@ -2,17 +2,18 @@ package org.beatrice.diploma_new_pharmacy.domain.product.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 
-@Setter
-@Getter
-@Builder
 @Entity
 @Table(name = "products", schema = "pharmacy")
 @Inheritance(strategy = InheritanceType.JOINED)
-@NoArgsConstructor
+@Setter
+@Getter
+@SuperBuilder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Product {
     @Id

@@ -8,6 +8,7 @@ import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.MedicineRes
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.ProductResponse;
 import org.beatrice.diploma_new_pharmacy.domain.product.exception.ProductNotFoundException;
 import org.beatrice.diploma_new_pharmacy.domain.product.mapper.ProductMapper;
+import org.beatrice.diploma_new_pharmacy.domain.product.model.Category;
 import org.beatrice.diploma_new_pharmacy.domain.product.model.Medicine;
 import org.beatrice.diploma_new_pharmacy.domain.product.model.Product;
 import org.beatrice.diploma_new_pharmacy.domain.product.repository.MedicineRepository;
@@ -34,19 +35,46 @@ public class ProductService {
     private final ProductMapper productMapper;
     private final MedicineRepository medicineRepository;
     private final CategoryService categoryService;
+    private final ReviewService reviewService;
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ProductResponse addProduct(AddProductRequest request) {
-        Product newProduct = Product.builder()
-                .price(request.price())
-                .description(request.description())
-                .name(request.name())
-                .manufacturer(request.manufacturer())
-                .imageUrl(request.imageUrl())
-                .category(categoryService.getCategoryEntityById(request.categoryId()))
-                .build();
+        Category category = categoryService.getCategoryEntityById(request.categoryId());
+        
+        if ("MEDICINE".equals(request.productType())) {
+            // Validate medicine-specific fields
+            if (request.dosage() == null || request.form() == null || request.quantity() == null) {
+                throw new IllegalArgumentException("Medicine requires dosage, form, and quantity fields");
+            }
 
-        return productMapper.toDto(productRepository.save(newProduct));
+            Medicine medicine = Medicine.builder()
+                    .category(category)
+                    .name(request.name())
+                    .description(request.description())
+                    .manufacturer(request.manufacturer())
+                    .imageUrl(request.imageUrl())
+                    .price(request.price())
+                    .isActive(true)
+                    .dosage(request.dosage())
+                    .form(request.form())
+                    .quantity(request.quantity())
+                    .requiresPrescription(request.requiresPrescription() != null ? request.requiresPrescription() : false)
+                    .build();
+
+            return productMapper.toDto(medicineRepository.save(medicine));
+        } else {
+            // Create regular Product
+            Product newProduct = Product.builder()
+                    .price(request.price())
+                    .description(request.description())
+                    .name(request.name())
+                    .manufacturer(request.manufacturer())
+                    .imageUrl(request.imageUrl())
+                    .category(category)
+                    .build();
+
+            return productMapper.toDto(productRepository.save(newProduct));
+        }
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
@@ -91,8 +119,13 @@ public class ProductService {
     }
 
     public ProductResponse getProductById(Integer id) {
-        return productMapper.toDto(productRepository.findProductById(id)
-                                           .orElseThrow(() -> new ProductNotFoundException("Product not found")));
+        Product product = productRepository.findProductById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
+
+        ProductResponse response = productMapper.toDto(product);
+        response.setAverageRating(reviewService.getAverageRating(id));
+        response.setReviewCount(reviewService.getReviewCount(id));
+        return response;
     }
 
     public Product getProductEntityById(Integer id) {
@@ -109,7 +142,8 @@ public class ProductService {
         }
 
         if (filter.categoryId() != null) {
-            spec = spec.and(ProductSpecifications.hasCategoryId(filter.categoryId()));
+            List<Integer> categoryIds = categoryService.getAllCategoryIdsIncludingChildren(filter.categoryId());
+            spec = spec.and(ProductSpecifications.hasCategoryIds(categoryIds));
         }
 
         if (filter.manufacturer() != null && !filter.manufacturer().isBlank()) {

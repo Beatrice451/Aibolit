@@ -4,6 +4,7 @@ import org.beatrice.diploma_new_pharmacy.domain.product.model.Product;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class ProductSpecifications {
     public static Specification<Product> search(String searchTerm) {
@@ -20,9 +21,11 @@ public class ProductSpecifications {
         });
     }
 
-    public static Specification<Product> hasCategoryId(Integer categoryId) {
+    public static Specification<Product> hasCategoryIds(List<Integer> categoryIds) {
         return ((root, query, criteriaBuilder) ->
-                categoryId == null ? criteriaBuilder.conjunction() : criteriaBuilder.equal(root.get("category").get("id"), categoryId)
+                categoryIds == null || categoryIds.isEmpty() 
+                    ? criteriaBuilder.conjunction() 
+                    : root.get("category").get("id").in(categoryIds)
         );
     }
 

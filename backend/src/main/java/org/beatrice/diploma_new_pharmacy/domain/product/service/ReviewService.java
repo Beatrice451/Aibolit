@@ -2,9 +2,11 @@ package org.beatrice.diploma_new_pharmacy.domain.product.service;
 
 import lombok.RequiredArgsConstructor;
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.ReviewResponse;
+import org.beatrice.diploma_new_pharmacy.domain.product.exception.ProductNotFoundException;
 import org.beatrice.diploma_new_pharmacy.domain.product.exception.ReviewAlreadyExistsException;
 import org.beatrice.diploma_new_pharmacy.domain.product.mapper.ReviewMapper;
 import org.beatrice.diploma_new_pharmacy.domain.product.model.Review;
+import org.beatrice.diploma_new_pharmacy.domain.product.repository.ProductRepository;
 import org.beatrice.diploma_new_pharmacy.domain.product.repository.ReviewRepository;
 import org.beatrice.diploma_new_pharmacy.domain.user.service.UserService;
 import org.springframework.data.domain.Page;
@@ -18,9 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ReviewService {
     private final UserService userService;
-    private final ProductService productService;
     private final ReviewMapper reviewMapper;
     private final ReviewRepository reviewRepository;
+    private final ProductRepository productRepository;
 
     public ReviewResponse addReview(
             Integer userId,
@@ -33,7 +35,8 @@ public class ReviewService {
         }
 
         var user = userService.getUserById(userId);
-        var product = productService.getProductEntityById(productId);
+        var product = productRepository.findProductById(userId)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
 
         if (reviewRepository.existsByUser_IdAndProduct_Id(userId, productId)) {
             throw new ReviewAlreadyExistsException("You can review a product only once");
@@ -55,6 +58,10 @@ public class ReviewService {
     public double getAverageRating(Integer productId) {
         Double avg = reviewRepository.findAverageRatingByProductId(productId);
         return avg != null ? avg : 0.0;
+    }
+
+    public int getReviewCount(Integer productId) {
+        return reviewRepository.countByProduct_Id(productId);
     }
 
     public void deleteReview(Integer reviewId, Integer userId) {

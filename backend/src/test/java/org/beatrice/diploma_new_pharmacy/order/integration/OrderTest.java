@@ -199,7 +199,7 @@ class OrderTest extends BaseIntegrationTest {
                 .consumeWith(result -> {
                     var cookies = result.getResponseHeaders().get("Set-Cookie");
                     if (cookies != null && !cookies.isEmpty()) {
-                        guestCookie[0] = cookies.get(0);
+                        guestCookie[0] = cookies.getFirst();
                     }
                 });
 

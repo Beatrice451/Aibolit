@@ -19,5 +19,7 @@ public class ProductResponse {
     private Integer categoryId;
     private String categoryName;
     private Boolean isActive;
+    private Double averageRating;
+    private Integer reviewCount;
 }
 

@@ -1,6 +1,5 @@
 package org.beatrice.diploma_new_pharmacy.order.integration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.beatrice.diploma_new_pharmacy.config.BaseIntegrationTest;
 import org.beatrice.diploma_new_pharmacy.domain.auth.dto.AuthRequest;
 import org.beatrice.diploma_new_pharmacy.domain.cart.dto.request.AddProductToCartRequest;
@@ -214,9 +213,7 @@ class AdminOrderTest extends BaseIntegrationTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(String.class)
-                .consumeWith(result -> {
-                    orderId[0] = extractOrderId(result.getResponseBody());
-                });
+                .consumeWith(result -> orderId[0] = extractOrderId(result.getResponseBody()));
 
         UpdateOrderStatusRequest toReadyRequest = new UpdateOrderStatusRequest(OrderStatus.READY);
         restClient.patch()
@@ -232,9 +229,7 @@ class AdminOrderTest extends BaseIntegrationTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(String.class)
-                .consumeWith(result -> {
-                    pickupCode[0] = extractPickupCode(result.getResponseBody());
-                });
+                .consumeWith(result -> pickupCode[0] = extractPickupCode(result.getResponseBody()));
 
         VerifyPickupCodeRequest verifyRequest = new VerifyPickupCodeRequest(pickupCode[0]);
         restClient.post()
@@ -365,9 +360,7 @@ class AdminOrderTest extends BaseIntegrationTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(String.class)
-                .consumeWith(result -> {
-                    orderId[0] = extractOrderId(result.getResponseBody());
-                });
+                .consumeWith(result -> orderId[0] = extractOrderId(result.getResponseBody()));
 
         UpdateOrderStatusRequest statusRequest = new UpdateOrderStatusRequest(OrderStatus.COMPLETED);
         restClient.patch()

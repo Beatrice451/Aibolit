@@ -71,6 +71,20 @@ class CartController {
     }
 
     @Operation(
+            summary = "Удалить товар из корзины",
+            description = "Удаляет конкретный товар из корзины пользователя или гостя."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Товар успешно удален из корзины", content = @Content(schema = @Schema(implementation = CartResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Товар не найден в корзине", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<CartResponse> removeItemFromCart(@PathVariable Integer productId, OrderIdentity identity) {
+        var response = cartService.removeItemFromCart(identity, productId);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
             summary = "Очистить корзину",
             description = "Удаляет все товары из корзины пользователя или гостя."
     )

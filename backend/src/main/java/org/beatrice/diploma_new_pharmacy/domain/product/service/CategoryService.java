@@ -11,6 +11,7 @@ import org.beatrice.diploma_new_pharmacy.domain.product.repository.CategoryRepos
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -52,6 +53,19 @@ public class CategoryService {
                 .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
     }
 
+    public List<Integer> getAllCategoryIdsIncludingChildren(Integer categoryId) {
+        Category category = getCategoryEntityById(categoryId);
+        List<Integer> ids = new ArrayList<>();
+        collectCategoryIds(category, ids);
+        return ids;
+    }
+
+    private void collectCategoryIds(Category category, List<Integer> ids) {
+        ids.add(category.getId());
+        for (Category child : category.getChildren()) {
+            collectCategoryIds(child, ids);
+        }
+    }
 
     private CategoryResponse findInTree(List<CategoryResponse> nodes, Integer id) {
         for (CategoryResponse node : nodes) {

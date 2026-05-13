@@ -39,6 +39,18 @@ public class CartService {
         return getCartResponse(identity);
     }
 
+    public CartResponse removeItemFromCart(OrderIdentity identity, Integer productId) {
+        Cart cart = getOrCreateCart(identity);
+        Product product = productRepository.findProductById(productId)
+                .orElseThrow(() -> new NotFoundException("Product does not exist"));
+        
+        CartItem cartItem = cartItemRepository.findCartItemByProductAndCart(product, cart)
+                .orElseThrow(() -> new NotFoundException("Product not in cart"));
+        
+        cartItemRepository.delete(cartItem);
+        return getCartResponse(identity);
+    }
+
     private void updateCartItemQuantity(OrderIdentity identity, Integer productId, Short quantity, boolean isAddition) {
         Cart cart = getOrCreateCart(identity);
         Product product = productRepository.findProductById(productId)

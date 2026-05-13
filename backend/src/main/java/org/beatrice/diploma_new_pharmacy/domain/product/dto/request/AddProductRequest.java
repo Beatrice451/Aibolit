@@ -26,6 +26,21 @@ public record AddProductRequest(
         String imageUrl,
 
         @Schema(description = "Цена продукта", example = "1500.00", requiredMode = Schema.RequiredMode.REQUIRED)
-        BigDecimal price
+        BigDecimal price,
+
+        @Schema(description = "Тип продукта: PRODUCT или MEDICINE", example = "PRODUCT", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+        String productType,
+
+        @Schema(description = "Дозировка в миллиграммах (только для лекарств)", example = "500", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+        Integer dosage,
+
+        @Schema(description = "Требуется ли рецепт (только для лекарств)", example = "false", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+        Boolean requiresPrescription,
+
+        @Schema(description = "Форма выпуска (только для лекарств)", example = "таблетки", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+        String form,
+
+        @Schema(description = "Количество единиц в упаковке (только для лекарств)", example = "20", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+        Short quantity
 ) {
 }
