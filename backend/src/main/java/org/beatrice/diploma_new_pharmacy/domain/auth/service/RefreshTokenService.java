@@ -48,21 +48,21 @@ public class RefreshTokenService {
      */
     @Transactional
     public RefreshToken replaceToken(String previousTokenValue) {
-        // АТОМНАЯ операция: сразу помечаем токен revoked
+
         int updated = refreshTokenRepository.consumeToken(previousTokenValue, "Token replaced", Instant.now());
 
         if (updated == 0) {
-            // Токен уже был использован — race condition detected!
+
             RefreshToken token = refreshTokenRepository.findByToken(previousTokenValue)
                     .orElseThrow(() -> new TokenNotFoundException("Refresh token not found"));
 
-            // Если токен уже revoked — это reuse атака
+
             if (token.getRevoked()) {
                 tokenRevocationService.revokeFamily(token.getTokenFamily(), "Reuse attack");
                 throw new RevokedTokenException("Token reuse detected. All tokens in family are revoked.");
             }
 
-            // Если не истёк — неизвестная ошибка
+
             if (token.getExpiryDate().isBefore(Instant.now())) {
                 throw new InvalidTokenException("Token expired");
             }
@@ -70,17 +70,17 @@ public class RefreshTokenService {
             throw new InvalidTokenException("Invalid refresh token");
         }
 
-        // Токен успешно помечен revoked, продолжаем
+
         RefreshToken previousToken = refreshTokenRepository.findByToken(previousTokenValue).get();
         previousToken.setIsCurrent(false);
         refreshTokenRepository.save(previousToken);
 
-        // Создаём новый токен в той же семье
+
         RefreshToken newToken = create(previousToken.getUser(), previousToken.getTokenFamily());
         newToken.setIsCurrent(true);
         refreshTokenRepository.save(newToken);
 
-        // Связываем old -> new
+
         previousToken.setReplacedBy(newToken);
         refreshTokenRepository.save(previousToken);
 

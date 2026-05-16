@@ -24,6 +24,8 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
 
     Optional<Review> findByIdAndUser_Id(Integer id, Integer userId);
 
+    Page<Review> findByUser_Id(Integer userId, Pageable pageable);
+
     boolean existsByUser_IdAndProduct_Id(Integer userId, Integer productId);
 
     int countByProduct_Id(Integer productId);

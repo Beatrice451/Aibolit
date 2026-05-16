@@ -1,7 +1,8 @@
 package org.beatrice.diploma_new_pharmacy.domain.product.service;
 
 import lombok.RequiredArgsConstructor;
-import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.ReviewResponse;
+import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.ReviewListItemResponse;
+import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.UserReviewResponse;
 import org.beatrice.diploma_new_pharmacy.domain.product.exception.ProductNotFoundException;
 import org.beatrice.diploma_new_pharmacy.domain.product.exception.ReviewAlreadyExistsException;
 import org.beatrice.diploma_new_pharmacy.domain.product.mapper.ReviewMapper;
@@ -9,6 +10,7 @@ import org.beatrice.diploma_new_pharmacy.domain.product.model.Review;
 import org.beatrice.diploma_new_pharmacy.domain.product.repository.ProductRepository;
 import org.beatrice.diploma_new_pharmacy.domain.product.repository.ReviewRepository;
 import org.beatrice.diploma_new_pharmacy.domain.user.service.UserService;
+import org.beatrice.diploma_new_pharmacy.exception.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -24,7 +26,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ProductRepository productRepository;
 
-    public ReviewResponse addReview(
+    public ReviewListItemResponse addReview(
             Integer userId,
             Integer productId,
             String comment,
@@ -35,7 +37,7 @@ public class ReviewService {
         }
 
         var user = userService.getUserById(userId);
-        var product = productRepository.findProductById(userId)
+        var product = productRepository.findProductById(productId)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
 
         if (reviewRepository.existsByUser_IdAndProduct_Id(userId, productId)) {
@@ -47,12 +49,17 @@ public class ReviewService {
 
         reviewRepository.save(rewiew);
 
-        return reviewMapper.toDto(rewiew);
+        return reviewMapper.toListItemDto(rewiew);
     }
 
-    public Page<ReviewResponse> getReviewsByProduct(Integer productId, Pageable pageable) {
+    public Page<UserReviewResponse> getReviewsByUser(Integer userId, Pageable pageable) {
+        Page<Review> page = reviewRepository.findByUser_Id(userId, pageable);
+        return page.map(reviewMapper::toUserReviewDto);
+    }
+
+    public Page<ReviewListItemResponse> getReviewsByProduct(Integer productId, Pageable pageable) {
         Page<Review> page = reviewRepository.findByProduct_Id(productId, pageable);
-        return page.map(reviewMapper::toDto);
+        return page.map(reviewMapper::toListItemDto);
     }
 
     public double getAverageRating(Integer productId) {
@@ -64,9 +71,16 @@ public class ReviewService {
         return reviewRepository.countByProduct_Id(productId);
     }
 
-    public void deleteReview(Integer reviewId, Integer userId) {
-        var review = reviewRepository.findByIdAndUser_Id(reviewId, userId)
-                .orElseThrow(() -> new AccessDeniedException("You have no access to edit this review"));
+    public void deleteReview(Integer reviewId, Integer userId, boolean isAdmin) {
+        Review review;
+
+        if (isAdmin) {
+            review = reviewRepository.findById(reviewId)
+                    .orElseThrow(() -> new NotFoundException("Review with id " + reviewId + " not found"));
+        } else {
+            review = reviewRepository.findByIdAndUser_Id(reviewId, userId)
+                    .orElseThrow(() -> new AccessDeniedException("You have no access to delete this review"));
+        }
 
         reviewRepository.delete(review);
     }

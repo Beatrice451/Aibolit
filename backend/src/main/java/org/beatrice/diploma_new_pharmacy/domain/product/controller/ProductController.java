@@ -5,7 +5,7 @@ import org.beatrice.diploma_new_pharmacy.domain.auth.security.SecurityUser;
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.request.AddReviewRequest;
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.MedicineResponse;
 import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.ProductResponse;
-import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.ReviewResponse;
+import org.beatrice.diploma_new_pharmacy.domain.product.dto.response.ReviewListItemResponse;
 import org.beatrice.diploma_new_pharmacy.domain.product.service.ProductService;
 import org.beatrice.diploma_new_pharmacy.domain.product.service.ReviewService;
 import org.beatrice.diploma_new_pharmacy.domain.product.specification.ProductFilter;
@@ -48,16 +48,16 @@ class ProductController {
     }
 
     @GetMapping("/{id}/reviews")
-    public ResponseEntity<Page<ReviewResponse>> getProductReviews(@PathVariable Integer id, Pageable pageable) {
+    public ResponseEntity<Page<ReviewListItemResponse>> getProductReviews(@PathVariable Integer id, Pageable pageable) {
         return ResponseEntity.ok(reviewService.getReviewsByProduct(id, pageable));
     }
 
     @PostMapping("/{id}/reviews")
-    public ResponseEntity<ReviewResponse> addReview(
+    public ResponseEntity<ReviewListItemResponse> addReview(
             @PathVariable Integer id, @RequestBody AddReviewRequest request, @AuthenticationPrincipal
             SecurityUser user
     ) {
-        ReviewResponse review = reviewService.addReview(user.user().getId(), id, request.comment(), request.rating());
+        ReviewListItemResponse review = reviewService.addReview(user.user().getId(), id, request.comment(), request.rating());
         URI location = ServletUriComponentsBuilder
         .fromCurrentRequest()
         .path("/{reviewId}")

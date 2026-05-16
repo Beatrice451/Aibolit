@@ -1,6 +1,8 @@
 package org.beatrice.diploma_new_pharmacy.domain.pharmacy.service;
 
 import org.beatrice.diploma_new_pharmacy.domain.order.model.Order;
+import org.beatrice.diploma_new_pharmacy.domain.pharmacy.dto.StockRequest;
+import org.beatrice.diploma_new_pharmacy.domain.pharmacy.dto.StockResponse;
 import org.beatrice.diploma_new_pharmacy.domain.pharmacy.exception.InsufficientStockException;
 import org.beatrice.diploma_new_pharmacy.domain.pharmacy.exception.StockNotFoundException;
 import org.beatrice.diploma_new_pharmacy.domain.pharmacy.model.Warehouse;
@@ -32,4 +34,16 @@ public interface StockService {
     List<Warehouse> findSharedWarehouses();
 
     Integer getWarehouseForOrder(Order order);
+
+    List<StockResponse> getAllStocks();
+
+    List<StockResponse> getStocksByProduct(Integer productId);
+
+    StockResponse getStock(Integer productId, Integer warehouseId);
+
+    StockResponse createStock(StockRequest request);
+
+    StockResponse updateStock(Integer productId, Integer warehouseId, StockRequest request);
+
+    void deleteStock(Integer productId, Integer warehouseId);
 }

@@ -15,7 +15,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class PharmacyService {
 
     private final PharmacyRepository pharmacyRepository;
@@ -36,24 +35,27 @@ public class PharmacyService {
                 .toList();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public List<PharmacyResponse> getAllPharmaciesIncludingInactive() {
         return pharmacyRepository.findAll()
                 .stream().map(pharmacyMapper::toDto)
                 .toList();
     }
 
+    @Transactional
     public PharmacyResponse createPharmacy(PharmacyRequest request) {
-        var pharmacy = new Pharmacy(request.phoneNumber(), request.address(), request.name());
+        var pharmacy = new Pharmacy(request.name(), request.address(), request.phone());
         pharmacy.setIsActive(request.isActive() != null ? request.isActive() : true);
         return pharmacyMapper.toDto(pharmacyRepository.save(pharmacy));
     }
 
+    @Transactional
     public void deletePharmacy(Integer pharmacyId) {
         var pharmacy = getPharmacyEntityById(pharmacyId);
         pharmacy.setIsActive(false);
-        pharmacyRepository.save(pharmacy);
     }
 
+    @Transactional
     public PharmacyResponse updatePharmacy(PharmacyRequest request, Integer pharmacyId) {
         var pharmacy = getPharmacyEntityById(pharmacyId);
         pharmacyMapper.updateFromRequest(request, pharmacy);

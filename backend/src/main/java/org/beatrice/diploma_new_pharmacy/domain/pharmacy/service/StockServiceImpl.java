@@ -3,6 +3,8 @@ package org.beatrice.diploma_new_pharmacy.domain.pharmacy.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.beatrice.diploma_new_pharmacy.domain.order.model.Order;
+import org.beatrice.diploma_new_pharmacy.domain.pharmacy.dto.StockRequest;
+import org.beatrice.diploma_new_pharmacy.domain.pharmacy.dto.StockResponse;
 import org.beatrice.diploma_new_pharmacy.domain.pharmacy.exception.InsufficientStockException;
 import org.beatrice.diploma_new_pharmacy.domain.pharmacy.exception.StockNotFoundException;
 import org.beatrice.diploma_new_pharmacy.domain.pharmacy.model.ReservationStatus;
@@ -14,13 +16,13 @@ import org.beatrice.diploma_new_pharmacy.domain.pharmacy.repository.StockReserva
 import org.beatrice.diploma_new_pharmacy.domain.pharmacy.repository.StockRepository;
 import org.beatrice.diploma_new_pharmacy.domain.pharmacy.repository.WarehouseRepository;
 import org.beatrice.diploma_new_pharmacy.domain.product.repository.ProductRepository;
+import org.beatrice.diploma_new_pharmacy.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -262,5 +264,111 @@ StockId pid = new StockId();
         }
 
         reserveStock(productId, selectedWarehouse.getId(), quantity, order);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<StockResponse> getAllStocks() {
+        return stockRepository.findAll().stream()
+                .map(this::toStockResponse)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<StockResponse> getStocksByProduct(Integer productId) {
+        return stockRepository.findAll().stream()
+                .filter(s -> s.getId().getProductId().equals(productId))
+                .map(this::toStockResponse)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public StockResponse getStock(Integer productId, Integer warehouseId) {
+        StockId id = new StockId();
+        id.setProductId(productId);
+        id.setWarehouseId(warehouseId);
+
+        Stock stock = stockRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(
+                        "Stock not found for productId=" + productId + " and warehouseId=" + warehouseId));
+
+        return toStockResponse(stock);
+    }
+
+    @Override
+    @Transactional
+    public StockResponse createStock(StockRequest request) {
+        StockId id = new StockId();
+        id.setProductId(request.productId());
+        id.setWarehouseId(request.warehouseId());
+
+        if (stockRepository.findById(id).isPresent()) {
+            throw new IllegalArgumentException(
+                    "Stock already exists for productId=" + request.productId()
+                            + " and warehouseId=" + request.warehouseId());
+        }
+
+        Stock stock = new Stock();
+        stock.setId(id);
+        stock.setProduct(productRepository.findById(request.productId())
+                .orElseThrow(() -> new NotFoundException("Product with id " + request.productId() + " not found")));
+        stock.setWarehouse(warehouseRepository.findById(request.warehouseId())
+                .orElseThrow(() -> new NotFoundException("Warehouse with id " + request.warehouseId() + " not found")));
+        stock.setQuantity(request.quantity());
+
+        return toStockResponse(stockRepository.save(stock));
+    }
+
+    @Override
+    @Transactional
+    public StockResponse updateStock(Integer productId, Integer warehouseId, StockRequest request) {
+        StockId id = new StockId();
+        id.setProductId(productId);
+        id.setWarehouseId(warehouseId);
+
+        Stock stock = stockRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(
+                        "Stock not found for productId=" + productId + " and warehouseId=" + warehouseId));
+
+        if (request.quantity() != null) {
+            stock.setQuantity(request.quantity());
+        }
+
+        return toStockResponse(stockRepository.save(stock));
+    }
+
+    @Override
+    @Transactional
+    public void deleteStock(Integer productId, Integer warehouseId) {
+        StockId id = new StockId();
+        id.setProductId(productId);
+        id.setWarehouseId(warehouseId);
+
+        if (!stockRepository.findById(id).isPresent()) {
+            throw new NotFoundException(
+                    "Stock not found for productId=" + productId + " and warehouseId=" + warehouseId);
+        }
+
+        stockRepository.deleteById(id);
+    }
+
+    private StockResponse toStockResponse(Stock stock) {
+        Integer reserved = stockReservationRepository.findByProductIdAndWarehouseId(
+                        stock.getId().getProductId(), stock.getId().getWarehouseId())
+                .stream()
+                .filter(r -> ReservationStatus.ACTIVE.equals(r.getStatus()))
+                .mapToInt(StockReservation::getQuantity)
+                .sum();
+
+        return new StockResponse(
+                stock.getId().getProductId(),
+                stock.getProduct().getName(),
+                stock.getId().getWarehouseId(),
+                stock.getWarehouse().getName(),
+                stock.getQuantity(),
+                reserved
+        );
     }
 }

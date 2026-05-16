@@ -22,8 +22,6 @@ import org.springframework.test.web.servlet.client.RestTestClient;
 
 import java.math.BigDecimal;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @DisplayName("Product Integration Tests")
 class ProductTest extends BaseIntegrationTest {
 
@@ -178,7 +176,7 @@ class ProductTest extends BaseIntegrationTest {
                 .expectStatus().isOk();
     }
 
-@Test
+    @Test
     @DisplayName("TC-25: Should add review to product when authenticated")
     void shouldAddReviewToProductWhenAuthenticated() {
         AddReviewRequest review = new AddReviewRequest((short) 5, "Good product");
@@ -217,9 +215,9 @@ class ProductTest extends BaseIntegrationTest {
     void shouldDeleteOwnReview() {
         // First, add a review
         AddReviewRequest review = new AddReviewRequest((short) 5, "Great product");
-        
+
         final int[] reviewId = new int[1];
-        
+
         restClient.post()
                 .uri(PRODUCTS_ENDPOINT + "/" + testProductId + "/reviews")
                 .header("Authorization", "Bearer " + validAccessToken)
@@ -268,13 +266,13 @@ class ProductTest extends BaseIntegrationTest {
                 .expectStatus().isOk()
                 .returnResult(String.class)
                 .getResponseBody();
-        
+
         anotherToken = extractAccessToken(anotherToken);
 
         AddReviewRequest review = new AddReviewRequest((short) 4, "Good product");
-        
+
         final int[] reviewId = new int[1];
-        
+
         restClient.post()
                 .uri(PRODUCTS_ENDPOINT + "/" + testProductId + "/reviews")
                 .header("Authorization", "Bearer " + anotherToken)

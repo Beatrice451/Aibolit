@@ -48,12 +48,12 @@ public abstract class BaseIntegrationTest {
      * Cleans all test data from the database.
      * Uses TRUNCATE with CASCADE to handle foreign key constraints.
      * Resets sequences with RESTART IDENTITY.
-     * 
+     *
      * Call this method in @BeforeEach to ensure clean state for each test.
      */
     protected void cleanDatabase() {
         jdbcTemplate.execute("""
-            TRUNCATE TABLE 
+            TRUNCATE TABLE
                 pharmacy.cart_items,
                 pharmacy.carts,
                 pharmacy.order_items,
