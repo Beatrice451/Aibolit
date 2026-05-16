@@ -38,7 +38,7 @@ const CategoryTreeItem = ({ category, expanded, onToggle, depth }) => {
   );
 };
 
-const ProductForm = ({ form, setForm, onSubmit, onCancel, loading, uploading, onUpload, isEditing, categories }) => {
+const ProductForm = ({ form, setForm, onSubmit, onCancel, loading, uploading, onUpload, isEditing, categories, getImageUrl }) => {
   return (
     <div className="admin-form-overlay">
       <form className="admin-form admin-form--compact" onSubmit={onSubmit}>
@@ -180,7 +180,7 @@ const ProductForm = ({ form, setForm, onSubmit, onCancel, loading, uploading, on
           <label>Изображение</label>
           {form.imageUrl && (
             <div className="admin-form__preview">
-              <img src={form.imageUrl} alt="Preview" />
+              <img src={getImageUrl(form.imageUrl)} alt="Preview" />
             </div>
           )}
           <input
@@ -264,6 +264,7 @@ const ProductsTab = () => {
           onUpload={handleImageUpload}
           isEditing={editingProduct}
           categories={flatCategories}
+          getImageUrl={getImageUrl}
         />
       )}
 
@@ -290,8 +291,8 @@ const ProductsTab = () => {
                 <td>{product.price} ₽</td>
                 <td>{product.categoryName}</td>
                 <td>
-                  <button className="admin-btn admin-btn--small" onClick={() => openEdit(product)}>Ред</button>
-                  <button className="admin-btn admin-btn--small admin-btn--danger" onClick={() => handleDelete(product.id)}>Удал</button>
+<button className="admin-btn admin-btn--small" onClick={() => openEdit(product)}>Редактировать</button>
+                   <button className="admin-btn admin-btn--small admin-btn--danger" onClick={() => handleDelete(product.id)}>Удалить</button>
                 </td>
               </tr>
             ))}

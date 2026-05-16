@@ -173,10 +173,75 @@
       margin: 0 0 12px 0;
     }
 
+    &-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+
     &-date {
       font-family: 'Orelega One', sans-serif;
       font-size: 12px;
       color: var(--color-gray-dark);
+    }
+
+    &-delete {
+      background: none;
+      border: none;
+      color: var(--color-gray-dark);
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Orelega One', sans-serif;
+
+      &:hover:not(:disabled) {
+        color: var(--color-red);
+        background: rgba(220, 38, 38, 0.1);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  &__my-review {
+    padding: 20px;
+    background: var(--color-white);
+    border-radius: 16px;
+    border: 2px solid var(--color-blue);
+    margin-bottom: 20px;
+
+    &-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    &-label {
+      font-family: 'Orelega One', sans-serif;
+      font-size: 14px;
+      color: var(--color-blue);
+      font-weight: 600;
+      padding: 4px 12px;
+      background: rgba(0, 102, 153, 0.1);
+      border-radius: 20px;
+    }
+
+    &-comment {
+      font-family: 'Orelega One', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--color-gray-dark);
+      margin: 0 0 12px 0;
     }
   }
 

@@ -4,6 +4,7 @@ import productApi from '../api/productService';
 import authApi from '../api/authService';
 import StarRating from './StarRating';
 import { showNotification } from './NotificationSystem';
+import ConfirmDialog from './ConfirmDialog';
 import { FaUser, FaTrash } from 'react-icons/fa';
 import '../scss/components/_product-reviews.scss';
 
@@ -11,7 +12,9 @@ const ProductReviews = ({ productId, showAllLink = true }) => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
-  const [hasReviewed, setHasReviewed] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
 
   const [newComment, setNewComment] = useState('');
   const [newRating, setNewRating] = useState(0);
@@ -19,7 +22,7 @@ const ProductReviews = ({ productId, showAllLink = true }) => {
 
   useEffect(() => {
     fetchReviews();
-    checkUserReview();
+    fetchCurrentUser();
   }, [productId]);
 
   const fetchReviews = async () => {
@@ -33,14 +36,22 @@ const ProductReviews = ({ productId, showAllLink = true }) => {
     }
   };
 
-  const checkUserReview = async () => {
+  const fetchCurrentUser = async () => {
     try {
       const userData = await authApi.getCurrentUser();
       setUser(userData);
+
+      const adminStatus = await authApi.isAdmin();
+      setIsAdmin(!!adminStatus);
     } catch (err) {
       setUser(null);
+      setIsAdmin(false);
     }
   };
+
+  const myReview = user && reviews.find(r => r.userId === user.id);
+  const otherReviews = reviews.filter(r => !user || r.userId !== user.id);
+  const canDelete = (review) => isAdmin || (user && review.userId === user.id);
 
   const handleSubmitReview = async (e) => {
     e.preventDefault();
@@ -61,7 +72,6 @@ const ProductReviews = ({ productId, showAllLink = true }) => {
       showNotification('Отзыв успешно добавлен!', 'success');
       setNewComment('');
       setNewRating(0);
-      setHasReviewed(true);
       fetchReviews();
     } catch (err) {
       console.error('Error adding review:', err);
@@ -72,6 +82,20 @@ const ProductReviews = ({ productId, showAllLink = true }) => {
       }
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleDeleteReview = async (reviewId) => {
+    setDeletingId(reviewId);
+    setConfirmDeleteId(null);
+    try {
+      await productApi.deleteReview(reviewId);
+      showNotification('Отзыв удален', 'success');
+      fetchReviews();
+    } catch (err) {
+      showNotification('Не удалось удалить отзыв', 'error');
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -88,7 +112,13 @@ const ProductReviews = ({ productId, showAllLink = true }) => {
     <div className="product-reviews">
       <h3 className="product-reviews__title">Отзывы</h3>
 
-      {user && !hasReviewed && (
+      {!user && (
+        <div className="product-reviews__login-prompt">
+          <Link to="/login">Войдите</Link>, чтобы оставить отзыв
+        </div>
+      )}
+
+      {user && !myReview && (
         <form className="product-reviews__form" onSubmit={handleSubmitReview}>
           <div className="product-reviews__form-rating">
             <span>Ваша оценка:</span>
@@ -116,43 +146,75 @@ const ProductReviews = ({ productId, showAllLink = true }) => {
         </form>
       )}
 
-      {user && hasReviewed && (
-        <div className="product-reviews__already">
-          Вы уже оставили отзыв на этот товар
-        </div>
-      )}
-
-      {!user && (
-        <div className="product-reviews__login-prompt">
-          <Link to="/login">Войдите</Link>, чтобы оставить отзыв
-        </div>
-      )}
+      <ConfirmDialog
+        isOpen={confirmDeleteId !== null}
+        message="Вы уверены, что хотите удалить этот отзыв?"
+        onConfirm={() => handleDeleteReview(confirmDeleteId)}
+        onCancel={() => setConfirmDeleteId(null)}
+      />
 
       {loading ? (
         <div className="product-reviews__loading">Загрузка отзывов...</div>
       ) : reviews.length === 0 ? (
         <div className="product-reviews__empty">Отзывов пока нет. Будьте первым!</div>
       ) : (
-        <div className="product-reviews__list">
-          {reviews.map((review) => (
-            <div key={review.reviewId} className="product-reviews__item">
-              <div className="product-reviews__item-header">
-                <div className="product-reviews__item-user">
-                  <FaUser className="product-reviews__item-icon" />
-                  <span>{review.username}</span>
-                </div>
-                <StarRating rating={review.rating} size={16} />
+        <>
+          {myReview && (
+            <div className="product-reviews__my-review">
+              <div className="product-reviews__my-review-header">
+                <span className="product-reviews__my-review-label">Мой отзыв</span>
+                <StarRating rating={myReview.rating} size={16} />
               </div>
-              <p className="product-reviews__item-comment">{review.comment}</p>
-              <span className="product-reviews__item-date">
-                {formatDate(review.createdAt)}
-              </span>
+              <p className="product-reviews__my-review-comment">{myReview.comment}</p>
+              <div className="product-reviews__item-footer">
+                <span className="product-reviews__item-date">
+                  {formatDate(myReview.createdAt)}
+                </span>
+                <button
+                  className="product-reviews__item-delete"
+                  onClick={() => setConfirmDeleteId(myReview.reviewId)}
+                  disabled={deletingId === myReview.reviewId}
+                >
+                  <FaTrash /> Удалить
+                </button>
+              </div>
             </div>
-          ))}
-        </div>
+          )}
+
+          {otherReviews.length > 0 && (
+            <div className="product-reviews__list">
+              {otherReviews.map((review) => (
+                <div key={review.reviewId} className="product-reviews__item">
+                  <div className="product-reviews__item-header">
+                    <div className="product-reviews__item-user">
+                      <FaUser className="product-reviews__item-icon" />
+                      <span>{review.username}</span>
+                    </div>
+                    <StarRating rating={review.rating} size={16} />
+                  </div>
+                  <p className="product-reviews__item-comment">{review.comment}</p>
+                  <div className="product-reviews__item-footer">
+                    <span className="product-reviews__item-date">
+                      {formatDate(review.createdAt)}
+                    </span>
+                    {canDelete(review) && (
+                      <button
+                        className="product-reviews__item-delete"
+                        onClick={() => setConfirmDeleteId(review.reviewId)}
+                        disabled={deletingId === review.reviewId}
+                      >
+                        <FaTrash /> Удалить
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
       )}
 
-      {showAllLink && (
+      {showAllLink && reviews.length > 0 && (
         <Link to={`/product/${productId}/reviews`} className="product-reviews__all-link">
           Показать все отзывы
         </Link>

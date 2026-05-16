@@ -55,6 +55,16 @@ const productApi = {
   deleteReview: async (reviewId) => {
     const response = await axiosInstance.delete(`/api/reviews/${reviewId}`);
     return response.data;
+  },
+
+  getMyReviews: async (pageable = { page: 0, size: 10 }) => {
+    const params = new URLSearchParams();
+    params.append('page', pageable.page?.toString() || '0');
+    params.append('size', pageable.size?.toString() || '10');
+    params.append('sort', 'createdAt,desc');
+
+    const response = await axiosInstance.get('/api/reviews/me', { params });
+    return response.data;
   }
 };
 

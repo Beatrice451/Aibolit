@@ -1247,3 +1247,54 @@
   }
 }
 
+// ========== FORM ACTIONS ==========
+.admin-form__actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-light-blue);
+}
+
+// ========== INFO TEXT ==========
+.admin-form__info {
+  font-size: 13px;
+  color: var(--color-gray-dark);
+  margin-bottom: 15px;
+  padding: 10px;
+  background: var(--color-beige);
+  border-radius: 8px;
+  line-height: 1.6;
+}
+
+// ========== BADGES ==========
+.admin-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-family: 'Orelega One', sans-serif;
+  font-weight: 600;
+
+  &--active {
+    background: #dcfce7;
+    color: #16a34a;
+  }
+
+  &--inactive {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+
+  &--shared {
+    background: #dbeafe;
+    color: #2563eb;
+  }
+
+  &--pharmacy {
+    background: #fef3c7;
+    color: #d97706;
+  }
+}
+

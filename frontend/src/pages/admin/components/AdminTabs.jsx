@@ -5,7 +5,10 @@ const AdminTabs = ({ activeTab, onTabChange }) => {
     { id: 'products', label: 'Товары' },
     { id: 'categories', label: 'Категории' },
     { id: 'orders', label: 'Заказы' },
-    { id: 'users', label: 'Пользователи' }
+    { id: 'users', label: 'Пользователи' },
+    { id: 'pharmacies', label: 'Аптеки' },
+    { id: 'warehouses', label: 'Склады' },
+    { id: 'stocks', label: 'Остатки' }
   ];
 
   return (

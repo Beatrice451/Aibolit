@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import Header from '../components/Header';
 import { showNotification } from '../components/NotificationSystem';
 import authApi from '../api/authService';
 import pharmacyApi from '../api/pharmacyService';
 import axiosInstance from '../api/axiosInstance';
-import { FaUserMd, FaUser, FaBox, FaCog, FaSignOutAlt, FaEnvelope, FaPhone, FaExclamationTriangle, FaTrash, FaEdit, FaSave, FaTimes } from 'react-icons/fa';
+import productApi from '../api/productService';
+import StarRating from '../components/StarRating';
+import { FaUserMd, FaUser, FaBox, FaCog, FaSignOutAlt, FaEnvelope, FaPhone, FaExclamationTriangle, FaTrash, FaEdit, FaSave, FaTimes, FaStar, FaCheck, FaChevronLeft, FaChevronRight, FaPills } from 'react-icons/fa';
 
 const globalNotifications = [];
 let globalNotificationId = 0;
@@ -42,6 +44,10 @@ const Profile = () => {
   const [savingInfo, setSavingInfo] = useState(false);
   const [pharmacies, setPharmacies] = useState([]);
   const [loadingPharmacies, setLoadingPharmacies] = useState(false);
+  const [myReviews, setMyReviews] = useState([]);
+  const [myReviewsPage, setMyReviewsPage] = useState(0);
+  const [myReviewsTotalPages, setMyReviewsTotalPages] = useState(0);
+  const [myReviewsLoading, setMyReviewsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -151,6 +157,37 @@ const Profile = () => {
       console.error('Failed to delete account:', err);
       showGlobalNotification('Ошибка удаления аккаунта', 'error');
     }
+  };
+
+  const fetchMyReviews = async (page = 0) => {
+    setMyReviewsLoading(true);
+    try {
+      const data = await productApi.getMyReviews({ page, size: 10 });
+      setMyReviews(data.content || []);
+      setMyReviewsTotalPages(data.totalPages || 0);
+      setMyReviewsPage(page);
+    } catch (err) {
+      console.error('Failed to fetch reviews:', err);
+    } finally {
+      setMyReviewsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'reviews') {
+      fetchMyReviews(0);
+    }
+  }, [activeTab]);
+
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return null;
+    if (imagePath.startsWith('http')) return imagePath;
+    return `/media/${imagePath}`;
+  };
+
+  const truncate = (text, max) => {
+    if (!text) return '';
+    return text.length > max ? text.slice(0, max) + '...' : text;
   };
 
   const handleResendVerification = async () => {
@@ -280,6 +317,12 @@ const Profile = () => {
                   onClick={() => setActiveTab('orders')}
                 >
                   <FaBox /> Мои заказы
+                </button>
+                <button
+                  className={`profile-sidebar__item ${activeTab === 'reviews' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('reviews')}
+                >
+                  <FaStar /> Мои отзывы
                 </button>
                 <button
                   className={`profile-sidebar__item ${activeTab === 'settings' ? 'active' : ''}`}
@@ -491,6 +534,91 @@ const Profile = () => {
                       <FaTrash /> Удалить аккаунт
                     </button>
                   </div>
+                </div>
+              )}
+
+              {activeTab === 'reviews' && (
+                <div className="profile-reviews">
+                  <h3 className="profile-card__title">Мои отзывы</h3>
+
+                  {myReviewsLoading ? (
+                    <div className="profile-reviews__loading">Загрузка отзывов...</div>
+                  ) : myReviews.length === 0 ? (
+                    <div className="profile-reviews__empty">Вы ещё не оставляли отзывы</div>
+                  ) : (
+                    <>
+                      <div className="profile-reviews__list">
+                        {myReviews.map(review => (
+                          <div key={review.reviewId} className="profile-reviews__item">
+                            <div className="profile-reviews__item-actions">
+                              <div className="profile-reviews__item-status">
+                                <FaCheck /> Опубликован
+                              </div>
+                              <div className="profile-reviews__item-actions-group">
+                                <button className="profile-reviews__item-delete" title="Удалить">
+                                  <FaTrash />
+                                </button>
+                                <button className="profile-reviews__item-edit">Редактировать</button>
+                              </div>
+                            </div>
+
+                            <div className="profile-reviews__item-body">
+                              <Link to={`/product/${review.productId}`} className="profile-reviews__item-image-link">
+                                <div className="profile-reviews__item-image">
+                                  {review.productImageUrl ? (
+                                    <img src={getImageUrl(review.productImageUrl)} alt={review.productName} />
+                                  ) : (
+                                    <FaPills />
+                                  )}
+                                </div>
+                              </Link>
+                              <div className="profile-reviews__item-info">
+                                <div className="profile-reviews__item-rating-row">
+                                  <StarRating rating={review.rating} size={18} />
+                                  <span className="profile-reviews__item-date">
+                                    {new Date(review.createdAt).toLocaleDateString('ru-RU', {
+                                      day: 'numeric',
+                                      month: 'long',
+                                      year: 'numeric'
+                                    })}
+                                  </span>
+                                </div>
+                                <Link to={`/product/${review.productId}`} className="profile-reviews__item-product-link">
+                                  <span className="profile-reviews__item-product">
+                                    {truncate(review.productName, 64)}
+                                  </span>
+                                </Link>
+                              </div>
+                            </div>
+
+                            <p className="profile-reviews__item-comment">{review.comment}</p>
+                          </div>
+                        ))}
+                      </div>
+
+                      {myReviewsTotalPages > 1 && (
+                        <div className="profile-reviews__pagination">
+                          <button
+                            className="admin-btn admin-btn--small"
+                            disabled={myReviewsPage === 0}
+                            onClick={() => fetchMyReviews(myReviewsPage - 1)}
+                          >
+                            <FaChevronLeft />
+                          </button>
+                          <span className="profile-reviews__page-info">
+                            {myReviewsPage + 1} из {myReviewsTotalPages}
+                          </span>
+                          <button
+                            className="admin-btn admin-btn--small"
+                            disabled={myReviewsPage >= myReviewsTotalPages - 1}
+                            onClick={() => fetchMyReviews(myReviewsPage + 1)}
+                          >
+                            <FaChevronRight />
+                          </button>
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
               )}
             </div>

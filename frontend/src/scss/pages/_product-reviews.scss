@@ -146,10 +146,41 @@
       white-space: pre-wrap;
     }
 
+    &-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
     &-date {
       font-family: 'Orelega One', sans-serif;
       font-size: 13px;
       color: var(--color-gray);
+    }
+
+    &-delete {
+      background: none;
+      border: none;
+      color: var(--color-gray-dark);
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Orelega One', sans-serif;
+
+      &:hover:not(:disabled) {
+        color: var(--color-red);
+        background: rgba(220, 38, 38, 0.1);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
     }
   }
 }

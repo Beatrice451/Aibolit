@@ -107,7 +107,7 @@ const CategoriesTab = () => {
         </div>
       )}
 
-      <div className="admin-categories-tree">
+      <div className="admin-categories-tree" style={{ marginTop: '20px' }}>
         {categories.map(category => (
           <CategoryTreeItem
             key={category.id}

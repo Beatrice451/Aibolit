@@ -164,6 +164,86 @@ const adminApi = {
   deleteUser: async (userId) => {
     const response = await axiosInstance.delete(`/api/admin/user/${userId}`);
     return response.data;
+  },
+
+  // Pharmacies
+  getPharmacies: async (includeInactive = false) => {
+    const response = await axiosInstance.get('/api/pharmacies', {
+      params: { includeInactive }
+    });
+    return response.data;
+  },
+
+  getPharmacy: async (id) => {
+    const response = await axiosInstance.get(`/api/pharmacies/${id}`);
+    return response.data;
+  },
+
+  createPharmacy: async (data) => {
+    const response = await axiosInstance.post('/api/pharmacies', data);
+    return response.data;
+  },
+
+  updatePharmacy: async (id, data) => {
+    const response = await axiosInstance.patch(`/api/pharmacies/${id}`, data);
+    return response.data;
+  },
+
+  deletePharmacy: async (id) => {
+    const response = await axiosInstance.delete(`/api/pharmacies/${id}`);
+    return response.data;
+  },
+
+  // Warehouses
+  getWarehouses: async () => {
+    const response = await axiosInstance.get('/api/warehouses');
+    return response.data;
+  },
+
+  getWarehouse: async (id) => {
+    const response = await axiosInstance.get(`/api/warehouses/${id}`);
+    return response.data;
+  },
+
+  createWarehouse: async (data) => {
+    const response = await axiosInstance.post('/api/warehouses', data);
+    return response.data;
+  },
+
+  updateWarehouse: async (id, data) => {
+    const response = await axiosInstance.patch(`/api/warehouses/${id}`, data);
+    return response.data;
+  },
+
+  deleteWarehouse: async (id) => {
+    const response = await axiosInstance.delete(`/api/warehouses/${id}`);
+    return response.data;
+  },
+
+  // Stocks
+  getStocks: async () => {
+    const response = await axiosInstance.get('/api/stocks');
+    return response.data;
+  },
+
+  getStocksByProduct: async (productId) => {
+    const response = await axiosInstance.get(`/api/stocks/product/${productId}`);
+    return response.data;
+  },
+
+  createStock: async (data) => {
+    const response = await axiosInstance.post('/api/stocks', data);
+    return response.data;
+  },
+
+  updateStock: async (productId, warehouseId, data) => {
+    const response = await axiosInstance.patch(`/api/stocks/${productId}/${warehouseId}`, data);
+    return response.data;
+  },
+
+  deleteStock: async (productId, warehouseId) => {
+    const response = await axiosInstance.delete(`/api/stocks/${productId}/${warehouseId}`);
+    return response.data;
   }
 };
 

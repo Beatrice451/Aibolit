@@ -10,6 +10,9 @@ import ProductsTab from './admin/components/ProductsTab';
 import OrdersTab from './admin/components/OrdersTab';
 import UsersTab from './admin/components/UsersTab';
 import CategoriesTab from './admin/components/CategoriesTab';
+import PharmaciesTab from './admin/components/PharmaciesTab';
+import WarehousesTab from './admin/components/WarehousesTab';
+import StocksTab from './admin/components/StocksTab';
 
 const AdminPage = () => {
   const navigate = useNavigate();
@@ -102,6 +105,9 @@ const AdminPage = () => {
           {activeTab === 'categories' && <CategoriesTab />}
           {activeTab === 'orders' && <OrdersTab />}
           {activeTab === 'users' && <UsersTab roles={roles} />}
+          {activeTab === 'pharmacies' && <PharmaciesTab />}
+          {activeTab === 'warehouses' && <WarehousesTab />}
+          {activeTab === 'stocks' && <StocksTab />}
         </div>
       </div>
     </>

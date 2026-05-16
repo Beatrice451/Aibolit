@@ -4,6 +4,10 @@ import Header from '../components/Header';
 import Pagination from '../components/Pagination';
 import StarRating from '../components/StarRating';
 import productApi from '../api/productService';
+import authApi from '../api/authService';
+import { showNotification } from '../components/NotificationSystem';
+import ConfirmDialog from '../components/ConfirmDialog';
+import { FaTrash } from 'react-icons/fa';
 import '../scss/pages/_product-reviews.scss';
 
 const ProductReviewsPage = () => {
@@ -16,10 +20,15 @@ const ProductReviewsPage = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize] = useState(10);
+  const [user, setUser] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
 
   useEffect(() => {
     fetchProduct();
     fetchReviews(currentPage);
+    fetchCurrentUser();
   }, [id, currentPage]);
 
   const fetchProduct = async () => {
@@ -41,6 +50,32 @@ const ProductReviewsPage = () => {
       console.error('Error fetching reviews:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchCurrentUser = async () => {
+    try {
+      const userData = await authApi.getCurrentUser();
+      setUser(userData);
+      const adminStatus = await authApi.isAdmin();
+      setIsAdmin(!!adminStatus);
+    } catch (err) {
+      setUser(null);
+      setIsAdmin(false);
+    }
+  };
+
+  const handleDeleteReview = async (reviewId) => {
+    setDeletingId(reviewId);
+    setConfirmDeleteId(null);
+    try {
+      await productApi.deleteReview(reviewId);
+      showNotification('Отзыв удален', 'success');
+      fetchReviews(currentPage);
+    } catch (err) {
+      showNotification('Не удалось удалить отзыв', 'error');
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -98,22 +133,43 @@ const ProductReviewsPage = () => {
           ) : (
             <>
               <div className="product-reviews-page__list">
-                {reviews.map((review) => (
-                  <div key={review.reviewId} className="product-reviews-page__item">
-                    <div className="product-reviews-page__item-header">
-                      <div className="product-reviews-page__item-user">
-                        <span className="product-reviews-page__item-avatar">👤</span>
-                        <span className="product-reviews-page__item-name">{review.username}</span>
+                {reviews.map((review) => {
+                  const canDelete = isAdmin || (user && review.userId === user.id);
+                  return (
+                    <div key={review.reviewId} className="product-reviews-page__item">
+                      <div className="product-reviews-page__item-header">
+                        <div className="product-reviews-page__item-user">
+                          <span className="product-reviews-page__item-avatar">👤</span>
+                          <span className="product-reviews-page__item-name">{review.username}</span>
+                        </div>
+                        <StarRating rating={review.rating} size={18} />
                       </div>
-                      <StarRating rating={review.rating} size={18} />
+                      <p className="product-reviews-page__item-comment">{review.comment}</p>
+                      <div className="product-reviews-page__item-footer">
+                        <span className="product-reviews-page__item-date">
+                          {formatDate(review.createdAt)}
+                        </span>
+                        {canDelete && (
+                          <button
+                            className="product-reviews-page__item-delete"
+                            onClick={() => setConfirmDeleteId(review.reviewId)}
+                            disabled={deletingId === review.reviewId}
+                          >
+                            <FaTrash /> Удалить
+                          </button>
+                        )}
+                      </div>
                     </div>
-                    <p className="product-reviews-page__item-comment">{review.comment}</p>
-                    <span className="product-reviews-page__item-date">
-                      {formatDate(review.createdAt)}
-                    </span>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
+
+              <ConfirmDialog
+                isOpen={confirmDeleteId !== null}
+                message="Вы уверены, что хотите удалить этот отзыв?"
+                onConfirm={() => handleDeleteReview(confirmDeleteId)}
+                onCancel={() => setConfirmDeleteId(null)}
+              />
 
               {totalPages > 1 && (
                 <Pagination
